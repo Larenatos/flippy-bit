@@ -4,8 +4,6 @@ pygame.init()
 screen = pygame.display.set_mode(size=(500, 400))
 screen.fill("grey")
 
-rect_colour = "blue"
-rectangle = pygame.draw.rect(screen, rect_colour, pygame.Rect(35, 35, 50, 50))
 binary_box_background = pygame.draw.rect(screen, "#06001a", pygame.Rect(150, 150, 70, 70))
 
 binary_rect = pygame.Rect(0, 0, 80, 80)
@@ -25,13 +23,8 @@ while True:
     match event.type:
       case pygame.QUIT:
         pygame.quit()
-      case pygame.MOUSEBUTTONDOWN:
-        if rectangle.collidepoint(pygame.mouse.get_pos()):
-          if rect_colour == "blue":
-            rect_colour = "red"
-          else:
-            rect_colour = "blue"
-          pygame.draw.rect(screen, rect_colour, pygame.Rect(35, 35, 50, 50))
+      # case pygame.MOUSEBUTTONDOWN:
+      #   if rectangle.collidepoint(pygame.mouse.get_pos()): 
       case pygame.KEYDOWN:
         if event.key == pygame.K_a:
           if current_binary == "0":
@@ -44,4 +37,4 @@ while True:
             binary_box_text = font.render(current_binary, True, "#bfbfbf")
           screen.blit(binary_box_text, binary_box_text_rect)
 
-    pygame.display.update()
+  pygame.display.update()
