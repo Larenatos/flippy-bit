@@ -64,8 +64,6 @@ while True:
     match event.type:
       case pygame.QUIT:
         pygame.quit()
-      # case pygame.MOUSEBUTTONDOWN:
-      #   if rectangle.collidepoint(pygame.mouse.get_pos()): 
       case pygame.KEYDOWN:
         match event.key:
           case pygame.K_z | pygame.K_a | pygame.K_q | pygame.K_1:
