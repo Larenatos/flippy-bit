@@ -1,3 +1,4 @@
+from turtle import distance
 import pygame
 pygame.init()
 
@@ -25,7 +26,7 @@ class binary_box():
     box_rect.center = self.background.center
     self.box_border = pygame.draw.rect(screen, self.border_colour, box_rect, 5)
     
-    self.font = pygame.font.SysFont(None, 70)
+    self.font = pygame.font.SysFont(None, 40)
     binary_box_text = self.font.render(self.current_binary, True, self.text_colour)
     binary_box_text_rect = binary_box_text.get_rect()
     binary_box_text_rect.center = self.background.center
@@ -43,18 +44,19 @@ class binary_box():
     self.create_box()
 
 
-positionx = 100
-positiony = 100
-dimensions = (70, 70)
+positionx = 50
+positiony = 50
+dimensions = (40, 40)
+distance_between = 50
 
 binary_box_1 = binary_box((positionx, positiony), dimensions)
-binary_box_2 = binary_box((positionx + 100, positiony), dimensions)
-binary_box_3 = binary_box((positionx + 200, positiony), dimensions)
-binary_box_4 = binary_box((positionx + 300, positiony), dimensions)
-binary_box_5 = binary_box((positionx + 400, positiony), dimensions)
-binary_box_6 = binary_box((positionx + 500, positiony), dimensions)
-binary_box_7 = binary_box((positionx + 600, positiony), dimensions)
-binary_box_8 = binary_box((positionx + 700, positiony), dimensions)
+binary_box_2 = binary_box((positionx + distance_between, positiony), dimensions)
+binary_box_3 = binary_box((positionx + 2*distance_between, positiony), dimensions)
+binary_box_4 = binary_box((positionx + 3*distance_between, positiony), dimensions)
+binary_box_5 = binary_box((positionx + 4*distance_between, positiony), dimensions)
+binary_box_6 = binary_box((positionx + 5*distance_between, positiony), dimensions)
+binary_box_7 = binary_box((positionx + 6*distance_between, positiony), dimensions)
+binary_box_8 = binary_box((positionx + 7*distance_between, positiony), dimensions)
 
 pygame.display.flip()
 
