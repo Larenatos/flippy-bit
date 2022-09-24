@@ -36,10 +36,12 @@ while True:
         if event.key == pygame.K_a:
           if current_binary == "0":
             current_binary = "1"
+            pygame.draw.rect(screen, "#bfbfbf", pygame.Rect(150, 150, 70, 70))
+            binary_box_text = font.render(current_binary, True, "#06001a")
           else:
             current_binary = "0"
-          pygame.draw.rect(screen, "#06001a", pygame.Rect(150, 150, 70, 70))
-          binary_box_text = font.render(current_binary, True, "white")
+            pygame.draw.rect(screen, "#06001a", pygame.Rect(150, 150, 70, 70))
+            binary_box_text = font.render(current_binary, True, "#bfbfbf")
           screen.blit(binary_box_text, binary_box_text_rect)
 
     pygame.display.update()
