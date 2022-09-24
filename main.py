@@ -68,21 +68,21 @@ while True:
       #   if rectangle.collidepoint(pygame.mouse.get_pos()): 
       case pygame.KEYDOWN:
         match event.key:
-          case pygame.K_a:
+          case pygame.K_z | pygame.K_a | pygame.K_q | pygame.K_1:
             binary_box_1.update_binary()
-          case pygame.K_s:
+          case pygame.K_x | pygame.K_s | pygame.K_w | pygame.K_2:
             binary_box_2.update_binary()
-          case pygame.K_d:
+          case pygame.K_c | pygame.K_d | pygame.K_e | pygame.K_3:
             binary_box_3.update_binary()
-          case pygame.K_f:
+          case pygame.K_v | pygame.K_f | pygame.K_r | pygame.K_4:
             binary_box_4.update_binary()
-          case pygame.K_g:
+          case pygame.K_b | pygame.K_g | pygame.K_t | pygame.K_5:
             binary_box_5.update_binary()
-          case pygame.K_h:
+          case pygame.K_n | pygame.K_h | pygame.K_y | pygame.K_6:
             binary_box_6.update_binary()
-          case pygame.K_j:
+          case pygame.K_m | pygame.K_j | pygame.K_u | pygame.K_7:
             binary_box_7.update_binary()
-          case pygame.K_k:
+          case pygame.K_COMMA | pygame.K_l | pygame.K_o | pygame.K_9:
             binary_box_8.update_binary()
 
   pygame.display.update()
