@@ -1,7 +1,7 @@
 import pygame
 pygame.init()
 
-screen = pygame.display.set_mode(size=(500, 400))
+screen = pygame.display.set_mode(size=(1000, 500))
 screen.fill("grey")
 
 binary_box_bg_colour = "#06001a"
@@ -42,7 +42,19 @@ class binary_box():
       self.bg_colour = binary_box_bg_colour
     self.create_box()
 
-binary_box_1 = binary_box((100, 100), (70, 70))
+
+positionx = 100
+positiony = 100
+dimensions = (70, 70)
+
+binary_box_1 = binary_box((positionx, positiony), dimensions)
+binary_box_2 = binary_box((positionx + 100, positiony), dimensions)
+binary_box_3 = binary_box((positionx + 200, positiony), dimensions)
+binary_box_4 = binary_box((positionx + 300, positiony), dimensions)
+binary_box_5 = binary_box((positionx + 400, positiony), dimensions)
+binary_box_6 = binary_box((positionx + 500, positiony), dimensions)
+binary_box_7 = binary_box((positionx + 600, positiony), dimensions)
+binary_box_8 = binary_box((positionx + 700, positiony), dimensions)
 
 pygame.display.flip()
 
@@ -54,7 +66,22 @@ while True:
       # case pygame.MOUSEBUTTONDOWN:
       #   if rectangle.collidepoint(pygame.mouse.get_pos()): 
       case pygame.KEYDOWN:
-        if event.key == pygame.K_a:
-          binary_box_1.update_binary()
+        match event.key:
+          case pygame.K_a:
+            binary_box_1.update_binary()
+          case pygame.K_s:
+            binary_box_2.update_binary()
+          case pygame.K_d:
+            binary_box_3.update_binary()
+          case pygame.K_f:
+            binary_box_4.update_binary()
+          case pygame.K_g:
+            binary_box_5.update_binary()
+          case pygame.K_h:
+            binary_box_6.update_binary()
+          case pygame.K_j:
+            binary_box_7.update_binary()
+          case pygame.K_k:
+            binary_box_8.update_binary()
 
   pygame.display.update()
