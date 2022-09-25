@@ -4,6 +4,25 @@ pygame.init()
 screen = pygame.display.set_mode(size=(600, 300))
 screen.fill("#00334d")
 
+hexadecimals_in_binary = {
+  "0000": "",
+  "0001": "1",
+  "0010": "2",
+  "0011": "3",
+  "0100": "4",
+  "0101": "5",
+  "0110": "6",
+  "0111": "7",
+  "1000": "8",
+  "1001": "9",
+  "1010": "A",
+  "1011": "B",
+  "1100": "C",
+  "1101": "D",
+  "1110": "E",
+  "1111": "F"
+}
+
 class BinaryBox():
   def __init__(self, position):
     self.bg_colour = "#06001a"
@@ -44,7 +63,7 @@ class HexadecimalDisplay():
   def __init__(self, position, dimensions, font_size):
     self.bg_colour = "#06001a"
     self.text_colour = "#bfbfbf"
-    self.current_hexadecimal = "EE"
+    self.current_hexadecimal = ""
     self.position = position
     self.dimensions = dimensions
 
@@ -62,7 +81,12 @@ class HexadecimalDisplay():
     current_bits = [binary_box.get_current_bit() for binary_box in binary_boxes]
     first_4_bits = f"{current_bits[0]}{current_bits[1]}{current_bits[2]}{current_bits[3]}"
     last_4_bits = f"{current_bits[4]}{current_bits[5]}{current_bits[6]}{current_bits[7]}"
-    print(f"{first_4_bits} {last_4_bits}")
+    first_hexadecimal = hexadecimals_in_binary[first_4_bits]
+    second_hexadecimal = hexadecimals_in_binary[last_4_bits]
+    if first_hexadecimal != "" and second_hexadecimal == "":
+      second_hexadecimal = "0"
+    self.current_hexadecimal = f"{first_hexadecimal}{second_hexadecimal}"
+    self.draw_display()
 
 bar_position_x = 50
 bar_position_y = 50
@@ -105,6 +129,6 @@ while True:
           case pygame.K_m | pygame.K_j | pygame.K_u | pygame.K_7:
             binary_boxes[6].flip_bit()
             hexadecimal_display.update_display(binary_boxes)
-          case pygame.K_COMMA | pygame.K_l | pygame.K_o | pygame.K_9:
+          case pygame.K_COMMA | pygame.K_k | pygame.K_i | pygame.K_8:
             binary_boxes[7].flip_bit()
             hexadecimal_display.update_display(binary_boxes)
