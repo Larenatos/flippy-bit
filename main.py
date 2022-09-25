@@ -49,6 +49,7 @@ while True:
     match event.type:
       case pygame.QUIT:
         pygame.quit()
+        exit()
       case pygame.KEYDOWN:
         match event.key:
           case pygame.K_z | pygame.K_a | pygame.K_q | pygame.K_1:
