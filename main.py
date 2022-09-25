@@ -1,8 +1,8 @@
 import pygame
 pygame.init()
 
-screen = pygame.display.set_mode(size=(1000, 500))
-screen.fill("grey")
+screen = pygame.display.set_mode(size=(600, 300))
+screen.fill("#00334d")
 
 class BinaryBox():
   def __init__(self, position):
@@ -43,9 +43,8 @@ box_padding = 10
 
 binary_boxes = [BinaryBox((bar_position_x + i*(box_width + box_padding), bar_position_y)) for i in range(8)]
 
-pygame.display.flip()
-
 while True:
+  pygame.display.flip()
   for event in pygame.event.get():
     match event.type:
       case pygame.QUIT:
@@ -69,4 +68,4 @@ while True:
           case pygame.K_COMMA | pygame.K_l | pygame.K_o | pygame.K_9:
             binary_boxes[7].flip_bit()
 
-  pygame.display.update()
+  pygame.display.flip()
