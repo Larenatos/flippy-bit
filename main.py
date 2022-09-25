@@ -61,6 +61,10 @@ box_padding = 10
 
 binary_boxes = [BinaryBox((bar_position_x + i*(box_width + box_padding), bar_position_y)) for i in range(8)]
 
+display_dimensions = (70, 70)
+display_position_x = bar_position_x + 4 * (box_width + box_padding) - 5 - display_dimensions[0] / 2
+hexadecimal_display = HexadecimalDisplay((display_position_x, 130), display_dimensions, 50)
+
 while True:
   pygame.display.flip()
   for event in pygame.event.get():
