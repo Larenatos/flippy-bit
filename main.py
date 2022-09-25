@@ -36,7 +36,7 @@ class BinaryBox():
       self.current_bit = "0"
     self.bg_colour, self.text_colour = self.text_colour, self.bg_colour
     self.draw_box()
-    
+
   def get_current_bit(self):
     return self.current_bit
 
@@ -57,6 +57,12 @@ class HexadecimalDisplay():
     display_text_rect = display_text.get_rect()
     display_text_rect.center = background.center
     screen.blit(display_text, display_text_rect)
+  
+  def update_display(self, binary_boxes):
+    current_bits = [binary_box.get_current_bit() for binary_box in binary_boxes]
+    first_4_bits = f"{current_bits[0]}{current_bits[1]}{current_bits[2]}{current_bits[3]}"
+    last_4_bits = f"{current_bits[4]}{current_bits[5]}{current_bits[6]}{current_bits[7]}"
+    print(f"{first_4_bits} {last_4_bits}")
 
 bar_position_x = 50
 bar_position_y = 50
@@ -80,17 +86,25 @@ while True:
         match event.key:
           case pygame.K_z | pygame.K_a | pygame.K_q | pygame.K_1:
             binary_boxes[0].flip_bit()
+            hexadecimal_display.update_display(binary_boxes)
           case pygame.K_x | pygame.K_s | pygame.K_w | pygame.K_2:
             binary_boxes[1].flip_bit()
+            hexadecimal_display.update_display(binary_boxes)
           case pygame.K_c | pygame.K_d | pygame.K_e | pygame.K_3:
             binary_boxes[2].flip_bit()
+            hexadecimal_display.update_display(binary_boxes)
           case pygame.K_v | pygame.K_f | pygame.K_r | pygame.K_4:
             binary_boxes[3].flip_bit()
+            hexadecimal_display.update_display(binary_boxes)
           case pygame.K_b | pygame.K_g | pygame.K_t | pygame.K_5:
             binary_boxes[4].flip_bit()
+            hexadecimal_display.update_display(binary_boxes)
           case pygame.K_n | pygame.K_h | pygame.K_y | pygame.K_6:
             binary_boxes[5].flip_bit()
+            hexadecimal_display.update_display(binary_boxes)
           case pygame.K_m | pygame.K_j | pygame.K_u | pygame.K_7:
             binary_boxes[6].flip_bit()
+            hexadecimal_display.update_display(binary_boxes)
           case pygame.K_COMMA | pygame.K_l | pygame.K_o | pygame.K_9:
             binary_boxes[7].flip_bit()
+            hexadecimal_display.update_display(binary_boxes)
