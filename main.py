@@ -68,5 +68,3 @@ while True:
             binary_boxes[6].flip_bit()
           case pygame.K_COMMA | pygame.K_l | pygame.K_o | pygame.K_9:
             binary_boxes[7].flip_bit()
-
-  pygame.display.flip()
