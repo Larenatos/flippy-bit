@@ -4,15 +4,15 @@ pygame.init()
 screen = pygame.display.set_mode(size=(1000, 500))
 screen.fill("grey")
 
-binary_box_bg_colour = "#06001a"
-binary_box_border_colour = "#666666"
-binary_box_text_colour = "#bfbfbf"
-
-class binary_box():
+class BinaryBox():
   def __init__(self, position, dimensions):
-    self.bg_colour = binary_box_bg_colour
-    self.border_colour = binary_box_border_colour
-    self.text_colour = binary_box_text_colour
+    self.binary_box_bg_colour = "#06001a"
+    self.binary_box_border_colour = "#666666"
+    self.binary_box_text_colour = "#bfbfbf"
+
+    self.bg_colour = self.binary_box_bg_colour
+    self.border_colour = self.binary_box_border_colour
+    self.text_colour = self.binary_box_text_colour
     self.position = position
     self.dimensions = dimensions
     self.current_binary = "0"
@@ -34,12 +34,12 @@ class binary_box():
   def update_binary(self):
     if self.current_binary == "0":
       self.current_binary = "1"
-      self.bg_colour = binary_box_text_colour
-      self.text_colour = binary_box_bg_colour
+      self.bg_colour = self.binary_box_text_colour
+      self.text_colour = self.binary_box_bg_colour
     else:
       self.current_binary = "0"
-      self.text_colour = binary_box_text_colour
-      self.bg_colour = binary_box_bg_colour
+      self.text_colour = self.binary_box_text_colour
+      self.bg_colour = self.binary_box_bg_colour
     self.create_box()
 
 
@@ -48,14 +48,14 @@ positiony = 50
 dimensions = (40, 40)
 distance_between = 50
 
-binary_box_1 = binary_box((positionx, positiony), dimensions)
-binary_box_2 = binary_box((positionx + distance_between, positiony), dimensions)
-binary_box_3 = binary_box((positionx + 2*distance_between, positiony), dimensions)
-binary_box_4 = binary_box((positionx + 3*distance_between, positiony), dimensions)
-binary_box_5 = binary_box((positionx + 4*distance_between, positiony), dimensions)
-binary_box_6 = binary_box((positionx + 5*distance_between, positiony), dimensions)
-binary_box_7 = binary_box((positionx + 6*distance_between, positiony), dimensions)
-binary_box_8 = binary_box((positionx + 7*distance_between, positiony), dimensions)
+binary_box_1 = BinaryBox((positionx, positiony), dimensions)
+binary_box_2 = BinaryBox((positionx + distance_between, positiony), dimensions)
+binary_box_3 = BinaryBox((positionx + 2*distance_between, positiony), dimensions)
+binary_box_4 = BinaryBox((positionx + 3*distance_between, positiony), dimensions)
+binary_box_5 = BinaryBox((positionx + 4*distance_between, positiony), dimensions)
+binary_box_6 = BinaryBox((positionx + 5*distance_between, positiony), dimensions)
+binary_box_7 = BinaryBox((positionx + 6*distance_between, positiony), dimensions)
+binary_box_8 = BinaryBox((positionx + 7*distance_between, positiony), dimensions)
 
 pygame.display.flip()
 
