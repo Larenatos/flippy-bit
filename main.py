@@ -11,7 +11,7 @@ class BinaryBox():
     self.text_colour = "#bfbfbf"
     self.position = position
     self.dimensions = (50, 50)
-    self.current_binary = "0"
+    self.current_bit = "0"
 
     self.border_rect = pygame.Rect(self.position, self.dimensions)
     self.background_rect = pygame.Rect((0, 0), (self.dimensions[0]- 10, self.dimensions[1] - 10))
@@ -23,18 +23,22 @@ class BinaryBox():
   def draw_box(self):
     pygame.draw.rect(screen, self.bg_colour, self.background_rect)
     
-    binary_box_text = self.font.render(self.current_binary, True, self.text_colour)
+    binary_box_text = self.font.render(self.current_bit, True, self.text_colour)
     binary_box_text_rect = binary_box_text.get_rect()
     binary_box_text_rect.center = self.background_rect.center
     screen.blit(binary_box_text, binary_box_text_rect)
   
+  
   def flip_bit(self):
-    if self.current_binary == "0":
-      self.current_binary = "1"
+    if self.current_bit == "0":
+      self.current_bit = "1"
     else:
-      self.current_binary = "0"
+      self.current_bit = "0"
     self.bg_colour, self.text_colour = self.text_colour, self.bg_colour
     self.draw_box()
+    
+  def get_current_bit(self):
+    return self.current_bit
 
 class HexadecimalDisplay():
   def __init__(self, position, dimensions, font_size):
