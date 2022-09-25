@@ -17,19 +17,20 @@ class BinaryBox():
     self.dimensions = dimensions
     self.current_binary = "0"
 
-    self.border_dimensions = (self.dimensions[0] + 5, self.dimensions[1] + 5)
-    self.box_rect = pygame.Rect((0, 0), self.border_dimensions)
+    self.border_dimensions = (self.dimensions[0] + 10, self.dimensions[1] + 10)
+    self.border_rect = pygame.Rect((0, 0), self.border_dimensions)
+    self.background_rect = pygame.Rect (self.position, self.dimensions)
+    self.border_rect.center = self.background_rect.center
     self.font = pygame.font.SysFont(None, 40)
+    pygame.draw.rect(screen, self.border_colour, self.border_rect, 5)
     self.draw_box()
 
   def draw_box(self):
-    self.background = pygame.draw.rect(screen, self.bg_colour, pygame.Rect(self.position, self.dimensions))
-    self.box_rect.center = self.background.center
-    self.box_border = pygame.draw.rect(screen, self.border_colour, self.box_rect, 5)
+    pygame.draw.rect(screen, self.bg_colour, self.background_rect)
     
     binary_box_text = self.font.render(self.current_binary, True, self.text_colour)
     binary_box_text_rect = binary_box_text.get_rect()
-    binary_box_text_rect.center = self.background.center
+    binary_box_text_rect.center = self.background_rect.center
     screen.blit(binary_box_text, binary_box_text_rect)
   
   def update_binary(self):
@@ -46,7 +47,7 @@ class BinaryBox():
 positionx = 50
 positiony = 50
 dimensions = (40, 40)
-distance_between = 50
+distance_between = 60
 
 binary_box_1 = BinaryBox((positionx, positiony), dimensions)
 binary_box_2 = BinaryBox((positionx + distance_between, positiony), dimensions)
