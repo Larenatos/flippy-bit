@@ -41,14 +41,7 @@ bar_position_y = 50
 box_width = 50
 box_padding = 10
 
-binary_box_1 = BinaryBox((bar_position_x, bar_position_y))
-binary_box_2 = BinaryBox((bar_position_x + box_width + box_padding, bar_position_y))
-binary_box_3 = BinaryBox((bar_position_x + 2*(box_width + box_padding), bar_position_y))
-binary_box_4 = BinaryBox((bar_position_x + 3*(box_width + box_padding), bar_position_y))
-binary_box_5 = BinaryBox((bar_position_x + 4*(box_width + box_padding), bar_position_y))
-binary_box_6 = BinaryBox((bar_position_x + 5*(box_width + box_padding), bar_position_y))
-binary_box_7 = BinaryBox((bar_position_x + 6*(box_width + box_padding), bar_position_y))
-binary_box_8 = BinaryBox((bar_position_x + 7*(box_width + box_padding), bar_position_y))
+binary_boxes = [BinaryBox((bar_position_x + i*(box_width + box_padding), bar_position_y)) for i in range(8)]
 
 pygame.display.flip()
 
@@ -60,20 +53,20 @@ while True:
       case pygame.KEYDOWN:
         match event.key:
           case pygame.K_z | pygame.K_a | pygame.K_q | pygame.K_1:
-            binary_box_1.flip_bit()
+            binary_boxes[0].flip_bit()
           case pygame.K_x | pygame.K_s | pygame.K_w | pygame.K_2:
-            binary_box_2.flip_bit()
+            binary_boxes[1].flip_bit()
           case pygame.K_c | pygame.K_d | pygame.K_e | pygame.K_3:
-            binary_box_3.flip_bit()
+            binary_boxes[2].flip_bit()
           case pygame.K_v | pygame.K_f | pygame.K_r | pygame.K_4:
-            binary_box_4.flip_bit()
+            binary_boxes[3].flip_bit()
           case pygame.K_b | pygame.K_g | pygame.K_t | pygame.K_5:
-            binary_box_5.flip_bit()
+            binary_boxes[4].flip_bit()
           case pygame.K_n | pygame.K_h | pygame.K_y | pygame.K_6:
-            binary_box_6.flip_bit()
+            binary_boxes[5].flip_bit()
           case pygame.K_m | pygame.K_j | pygame.K_u | pygame.K_7:
-            binary_box_7.flip_bit()
+            binary_boxes[6].flip_bit()
           case pygame.K_COMMA | pygame.K_l | pygame.K_o | pygame.K_9:
-            binary_box_8.flip_bit()
+            binary_boxes[7].flip_bit()
 
   pygame.display.update()
