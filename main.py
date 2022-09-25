@@ -12,7 +12,6 @@ class BinaryBox():
     self.position = position
     self.dimensions = (50, 50)
     self.current_binary = "0"
-
     self.border_rect = pygame.Rect((0, 0), self.dimensions)
     self.background_rect = pygame.Rect (self.position, (self.dimensions[0]- 10, self.dimensions[1] - 10))
     self.border_rect.center = self.background_rect.center
