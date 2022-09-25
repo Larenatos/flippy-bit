@@ -36,6 +36,24 @@ class BinaryBox():
     self.bg_colour, self.text_colour = self.text_colour, self.bg_colour
     self.draw_box()
 
+class HexadecimalDisplay():
+  def __init__(self, position, dimensions, font_size):
+    self.bg_colour = "#06001a"
+    self.text_colour = "#bfbfbf"
+    self.current_hexadecimal = "EE"
+    self.position = position
+    self.dimensions = dimensions
+
+    self.font = pygame.font.SysFont(None, font_size)
+    self.draw_display()
+
+  def draw_display(self):
+    background = pygame.draw.rect(screen, self.bg_colour, (self.position, self.dimensions))
+    display_text = self.font.render(self.current_hexadecimal, True, self.text_colour)
+    display_text_rect = display_text.get_rect()
+    display_text_rect.center = background.center
+    screen.blit(display_text, display_text_rect)
+
 bar_position_x = 50
 bar_position_y = 50
 box_width = 50
