@@ -4,7 +4,7 @@ pygame.init()
 screen = pygame.display.set_mode(size=(600, 300))
 screen.fill("#00334d")
 
-hexadecimals_in_binary = {
+binary_to_hexadecimals = {
   "0000": "",
   "0001": "1",
   "0010": "2",
@@ -63,29 +63,28 @@ class HexadecimalDisplay():
   def __init__(self, position, dimensions, font_size):
     self.bg_colour = "#06001a"
     self.text_colour = "#bfbfbf"
-    self.current_hexadecimal = ""
-    self.position = position
-    self.dimensions = dimensions
+    self.current_hexadecimals = ""
 
     self.font = pygame.font.SysFont(None, font_size)
+    self.background_rect = pygame.Rect(position, dimensions)
     self.draw_display()
 
   def draw_display(self):
-    background = pygame.draw.rect(screen, self.bg_colour, (self.position, self.dimensions))
-    display_text = self.font.render(self.current_hexadecimal, True, self.text_colour)
+    background = pygame.draw.rect(screen, self.bg_colour, self.background_rect)
+    display_text = self.font.render(self.current_hexadecimals, True, self.text_colour)
     display_text_rect = display_text.get_rect()
-    display_text_rect.center = background.center
+    display_text_rect.center = self.background_rect.center
     screen.blit(display_text, display_text_rect)
   
   def update_display(self, binary_boxes):
     current_bits = [binary_box.get_current_bit() for binary_box in binary_boxes]
     first_4_bits = f"{current_bits[0]}{current_bits[1]}{current_bits[2]}{current_bits[3]}"
     last_4_bits = f"{current_bits[4]}{current_bits[5]}{current_bits[6]}{current_bits[7]}"
-    first_hexadecimal = hexadecimals_in_binary[first_4_bits]
-    second_hexadecimal = hexadecimals_in_binary[last_4_bits]
+    first_hexadecimal = binary_to_hexadecimals[first_4_bits]
+    second_hexadecimal = binary_to_hexadecimals[last_4_bits]
     if first_hexadecimal != "" and second_hexadecimal == "":
       second_hexadecimal = "0"
-    self.current_hexadecimal = f"{first_hexadecimal}{second_hexadecimal}"
+    self.current_hexadecimals = f"{first_hexadecimal}{second_hexadecimal}"
     self.draw_display()
 
 bar_position_x = 50
