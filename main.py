@@ -4,25 +4,6 @@ pygame.init()
 screen = pygame.display.set_mode(size=(600, 300))
 screen.fill("#00334d")
 
-binary_to_hexadecimals = {
-  "0000": "",
-  "0001": "1",
-  "0010": "2",
-  "0011": "3",
-  "0100": "4",
-  "0101": "5",
-  "0110": "6",
-  "0111": "7",
-  "1000": "8",
-  "1001": "9",
-  "1010": "A",
-  "1011": "B",
-  "1100": "C",
-  "1101": "D",
-  "1110": "E",
-  "1111": "F"
-}
-
 class BinaryBox():
   def __init__(self, position):
     self.bg_colour = "#06001a"
@@ -78,13 +59,13 @@ class HexadecimalDisplay():
   
   def update_display(self, binary_boxes):
     current_bits = [binary_box.get_current_bit() for binary_box in binary_boxes]
-    first_4_bits = f"{current_bits[0]}{current_bits[1]}{current_bits[2]}{current_bits[3]}"
-    last_4_bits = f"{current_bits[4]}{current_bits[5]}{current_bits[6]}{current_bits[7]}"
-    first_hexadecimal = binary_to_hexadecimals[first_4_bits]
-    second_hexadecimal = binary_to_hexadecimals[last_4_bits]
+    first_nibble = "".join(str(bit) for bit in current_bits[0:4])
+    second_nibble = "".join(str(bit) for bit in current_bits[4:8])
+    first_hexadecimal = hex(int(first_nibble, 2))[2]
+    second_hexadecimal = hex(int(second_nibble, 2))[2]
     if first_hexadecimal != "" and second_hexadecimal == "":
       second_hexadecimal = "0"
-    self.current_hexadecimals = f"{first_hexadecimal}{second_hexadecimal}"
+    self.current_hexadecimals = f"{first_hexadecimal.upper()}{second_hexadecimal.upper()}"
     self.draw_display()
 
 bar_position_x = 50
