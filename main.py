@@ -4,6 +4,18 @@ pygame.init()
 screen = pygame.display.set_mode(size=(600, 300))
 screen.fill("#00334d")
 
+class Missile():
+  def __init__(self, positions):
+    self.bg_colour = "#06001a"
+    self.border_colour = "#666666"
+    self.positions = positions
+
+    self.draw_missile()
+  
+  def draw_missile(self):
+    pygame.draw.polygon(screen, self.bg_colour, self.positions)
+
+
 class BinaryBox():
   def __init__(self, position):
     self.bg_colour = "#06001a"
@@ -63,7 +75,7 @@ class HexadecimalDisplay():
     self.draw_display()
 
 bar_position_x = 50
-bar_position_y = 50
+bar_position_y = 100
 box_height = box_width = 50
 box_padding = 10
 
@@ -74,6 +86,9 @@ display_dimensions = (70, 70)
 display_position_x = bar_position_x + 4 * (box_width + box_padding) - box_padding / 2 - display_dimensions[0] / 2
 display_position_y = bar_position_y + box_height + 30
 hexadecimal_display = HexadecimalDisplay((display_position_x, display_position_y), display_dimensions, 50)
+
+missile_positions = ((55, 80), (95, 80), (75, 40))
+missile_1 = Missile(missile_positions)
 
 def on_keypress(binary_box_index):
   binary_boxes[binary_box_index].flip_bit()
