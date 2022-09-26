@@ -44,11 +44,13 @@ class BinaryBox():
     screen.blit(binary_box_text, binary_box_text_rect)
   
   
-  def flip_bit(self):
+  def flip_bit(self, bit_index, bit_missiles):
     if self.current_bit == "0":
       self.current_bit = "1"
+      bit_missiles[bit_index].draw_missile()
     else:
       self.current_bit = "0"
+      bit_missiles[bit_index].erase_missile()
     self.bg_colour, self.text_colour = self.text_colour, self.bg_colour
     self.draw_box()
 
@@ -88,9 +90,9 @@ bit_missiles = []
 for i in range(8):
   position_1 = (bar_position_x + 5 + i * (box_width + box_padding), bar_position_y-20)
   position_2 = (bar_position_x + box_width - 5 + i * (box_width + box_padding), bar_position_y-20)
-  position_3 = (bar_position_x + (position_1[0] - position_2[0]) / 2 + i * (box_width + box_padding), bar_position_y - 20 - position_1[0] - position_2[0])
+  position_3 = (bar_position_x + 5 + (box_width - 10) / 2 + i * (box_width + box_padding), bar_position_y - 20 - box_width + 10)
 
-  bit_missiles.append(Missile(position_1, position_2, position_3))
+  bit_missiles.append(Missile((position_1, position_2, position_3)))
 
 display_dimensions = (70, 70)
 # center the display relative to the binary bar
@@ -101,8 +103,8 @@ hexadecimal_display = HexadecimalDisplay((display_position_x, display_position_y
 missile_positions = ((55, 80), (95, 80), (75, 40))
 missile_1 = Missile(missile_positions)
 
-def on_keypress(binary_box_index):
-  binary_boxes[binary_box_index].flip_bit()
+def on_keypress(bit_index):
+  binary_boxes[bit_index].flip_bit(bit_index, bit_missiles)
   hexadecimal_display.update_display(binary_boxes)
 
 while True:
@@ -116,7 +118,6 @@ while True:
         match event.key:
           case pygame.K_z | pygame.K_a | pygame.K_q | pygame.K_1:
             on_keypress(0)
-            missile_1.erase_missile()
           case pygame.K_x | pygame.K_s | pygame.K_w | pygame.K_2:
             on_keypress(1)
           case pygame.K_c | pygame.K_d | pygame.K_e | pygame.K_3:
