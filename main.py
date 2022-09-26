@@ -2,18 +2,23 @@ import pygame
 pygame.init()
 
 screen = pygame.display.set_mode(size=(600, 300))
-screen.fill("#00334d")
+screen_bg_colour = "#00334d"
+screen.fill(screen_bg_colour)
 
 class Missile():
   def __init__(self, positions):
     self.bg_colour = "#06001a"
     self.border_colour = "#666666"
     self.positions = positions
+    self.erase_rect = pygame.Rect(positions[0][0] - 2, positions[2][1] - 2, positions[1][0] - positions[0][0] + 4, positions[1][1] - positions[2][1] + 4)
 
     self.draw_missile()
   
   def draw_missile(self):
     pygame.draw.polygon(screen, self.bg_colour, self.positions)
+  
+  def erase_missile(self):
+    pygame.draw.rect(screen, screen_bg_colour, self.erase_rect)
 
 
 class BinaryBox():
@@ -105,6 +110,7 @@ while True:
         match event.key:
           case pygame.K_z | pygame.K_a | pygame.K_q | pygame.K_1:
             on_keypress(0)
+            missile_1.erase_missile()
           case pygame.K_x | pygame.K_s | pygame.K_w | pygame.K_2:
             on_keypress(1)
           case pygame.K_c | pygame.K_d | pygame.K_e | pygame.K_3:
