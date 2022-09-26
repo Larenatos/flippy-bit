@@ -99,6 +99,10 @@ display_dimensions = (70, 70)
 display_position_x = bar_position_x + 4 * (box_width + box_padding) - 5 - display_dimensions[0] / 2
 hexadecimal_display = HexadecimalDisplay((display_position_x, 130), display_dimensions, 50)
 
+def update_when_keypressed(binary_box_index):
+  binary_boxes[binary_box_index].flip_bit()
+  hexadecimal_display.update_display(binary_boxes)
+
 while True:
   pygame.display.flip()
   for event in pygame.event.get():
@@ -109,26 +113,18 @@ while True:
       case pygame.KEYDOWN:
         match event.key:
           case pygame.K_z | pygame.K_a | pygame.K_q | pygame.K_1:
-            binary_boxes[0].flip_bit()
-            hexadecimal_display.update_display(binary_boxes)
+            update_when_keypressed(0)
           case pygame.K_x | pygame.K_s | pygame.K_w | pygame.K_2:
-            binary_boxes[1].flip_bit()
-            hexadecimal_display.update_display(binary_boxes)
+            update_when_keypressed(1)
           case pygame.K_c | pygame.K_d | pygame.K_e | pygame.K_3:
-            binary_boxes[2].flip_bit()
-            hexadecimal_display.update_display(binary_boxes)
+            update_when_keypressed(2)
           case pygame.K_v | pygame.K_f | pygame.K_r | pygame.K_4:
-            binary_boxes[3].flip_bit()
-            hexadecimal_display.update_display(binary_boxes)
+            update_when_keypressed(3)
           case pygame.K_b | pygame.K_g | pygame.K_t | pygame.K_5:
-            binary_boxes[4].flip_bit()
-            hexadecimal_display.update_display(binary_boxes)
+            update_when_keypressed(4)
           case pygame.K_n | pygame.K_h | pygame.K_y | pygame.K_6:
-            binary_boxes[5].flip_bit()
-            hexadecimal_display.update_display(binary_boxes)
+            update_when_keypressed(5)
           case pygame.K_m | pygame.K_j | pygame.K_u | pygame.K_7:
-            binary_boxes[6].flip_bit()
-            hexadecimal_display.update_display(binary_boxes)
+            update_when_keypressed(6)
           case pygame.K_COMMA | pygame.K_k | pygame.K_i | pygame.K_8:
-            binary_boxes[7].flip_bit()
-            hexadecimal_display.update_display(binary_boxes)
+            update_when_keypressed(7)
