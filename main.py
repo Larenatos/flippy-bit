@@ -8,7 +8,6 @@ screen.fill(screen_bg_colour)
 class Missile():
   def __init__(self, positions):
     self.bg_colour = "#06001a"
-    self.border_colour = "#666666"
     self.positions = positions
     self.erase_rect = pygame.Rect(positions[0][0] - 2, positions[2][1] - 2, positions[1][0] - positions[0][0] + 4, positions[1][1] - positions[2][1] + 4)
   
@@ -17,7 +16,6 @@ class Missile():
   
   def erase_missile(self):
     pygame.draw.rect(screen, screen_bg_colour, self.erase_rect)
-
 
 class BinaryBox():
   def __init__(self, position):
@@ -91,7 +89,6 @@ for i in range(8):
   position_1 = (bar_position_x + 5 + i * (box_width + box_padding), bar_position_y-20)
   position_2 = (bar_position_x + box_width - 5 + i * (box_width + box_padding), bar_position_y-20)
   position_3 = (bar_position_x + 5 + (box_width - 10) / 2 + i * (box_width + box_padding), bar_position_y - 20 - box_width + 10)
-
   bit_missiles.append(Missile((position_1, position_2, position_3)))
 
 display_dimensions = (70, 70)
@@ -99,9 +96,6 @@ display_dimensions = (70, 70)
 display_position_x = bar_position_x + 4 * (box_width + box_padding) - box_padding / 2 - display_dimensions[0] / 2
 display_position_y = bar_position_y + box_height + 30
 hexadecimal_display = HexadecimalDisplay((display_position_x, display_position_y), display_dimensions, 50)
-
-missile_positions = ((55, 80), (95, 80), (75, 40))
-missile_1 = Missile(missile_positions)
 
 def on_keypress(bit_index):
   binary_boxes[bit_index].flip_bit(bit_index, bit_missiles)
