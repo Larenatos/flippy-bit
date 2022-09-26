@@ -70,7 +70,7 @@ class HexadecimalDisplay():
     self.draw_display()
 
   def draw_display(self):
-    background = pygame.draw.rect(screen, self.bg_colour, self.background_rect)
+    pygame.draw.rect(screen, self.bg_colour, self.background_rect)
     display_text = self.font.render(self.current_hexadecimals, True, self.text_colour)
     display_text_rect = display_text.get_rect()
     display_text_rect.center = self.background_rect.center
