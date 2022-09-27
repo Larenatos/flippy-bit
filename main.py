@@ -58,28 +58,24 @@ class HexadecimalDisplay():
     screen.blit(display_text, display_text_rect)
   
   def update_display(self, binary_boxes):
-    current_bits = [binary_box.get_current_bit() for binary_box in binary_boxes]
-    first_nibble = "".join(str(bit) for bit in current_bits[0:4])
-    second_nibble = "".join(str(bit) for bit in current_bits[4:8])
-    first_hexadecimal = hex(int(first_nibble, 2))[2]
-    second_hexadecimal = hex(int(second_nibble, 2))[2]
-    if first_hexadecimal != "" and second_hexadecimal == "":
-      second_hexadecimal = "0"
-    self.current_hexadecimals = f"{first_hexadecimal.upper()}{second_hexadecimal.upper()}"
+    binary = "".join(binary_box.get_current_bit() for binary_box in binary_boxes)
+    self.current_hexadecimals =  f"{int(binary, 2):X}"
     self.draw_display()
 
 bar_position_x = 50
 bar_position_y = 50
-box_width = 50
+box_height = box_width = 50
 box_padding = 10
 
 binary_boxes = [BinaryBox((bar_position_x + i*(box_width + box_padding), bar_position_y)) for i in range(8)]
 
 display_dimensions = (70, 70)
-display_position_x = bar_position_x + 4 * (box_width + box_padding) - 5 - display_dimensions[0] / 2
-hexadecimal_display = HexadecimalDisplay((display_position_x, 130), display_dimensions, 50)
+# center the display relative to the binary bar
+display_position_x = bar_position_x + 4 * (box_width + box_padding) - box_padding / 2 - display_dimensions[0] / 2
+display_position_y = bar_position_y + box_height + 30
+hexadecimal_display = HexadecimalDisplay((display_position_x, display_position_y), display_dimensions, 50)
 
-def update_on_keypress(binary_box_index):
+def on_keypress(binary_box_index):
   binary_boxes[binary_box_index].flip_bit()
   hexadecimal_display.update_display(binary_boxes)
 
@@ -93,18 +89,18 @@ while True:
       case pygame.KEYDOWN:
         match event.key:
           case pygame.K_z | pygame.K_a | pygame.K_q | pygame.K_1:
-            update_on_keypress(0)
+            on_keypress(0)
           case pygame.K_x | pygame.K_s | pygame.K_w | pygame.K_2:
-            update_on_keypress(1)
+            on_keypress(1)
           case pygame.K_c | pygame.K_d | pygame.K_e | pygame.K_3:
-            update_on_keypress(2)
+            on_keypress(2)
           case pygame.K_v | pygame.K_f | pygame.K_r | pygame.K_4:
-            update_on_keypress(3)
+            on_keypress(3)
           case pygame.K_b | pygame.K_g | pygame.K_t | pygame.K_5:
-            update_on_keypress(4)
+            on_keypress(4)
           case pygame.K_n | pygame.K_h | pygame.K_y | pygame.K_6:
-            update_on_keypress(5)
+            on_keypress(5)
           case pygame.K_m | pygame.K_j | pygame.K_u | pygame.K_7:
-            update_on_keypress(6)
+            on_keypress(6)
           case pygame.K_COMMA | pygame.K_k | pygame.K_i | pygame.K_8:
-            update_on_keypress(7)
+            on_keypress(7)
