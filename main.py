@@ -1,7 +1,7 @@
 import pygame
 pygame.init()
 
-screen = pygame.display.set_mode(size=(600, 300))
+screen = pygame.display.set_mode(size=(550, 740))
 screen.fill("#00334d")
 
 class BinaryBox():
@@ -62,8 +62,13 @@ class HexadecimalDisplay():
     self.current_hexadecimals =  f"{int(binary, 2):X}"
     self.draw_display()
 
-bar_position_x = 50
-bar_position_y = 50
+def create_layout():
+  pygame.draw.rect(screen, "#06001a", (20, 20, 510, 700), 5)
+
+create_layout()
+
+bar_position_x = 40
+bar_position_y = 560
 box_height = box_width = 50
 box_padding = 10
 
@@ -72,7 +77,7 @@ binary_boxes = [BinaryBox((bar_position_x + i*(box_width + box_padding), bar_pos
 display_dimensions = (70, 70)
 # center the display relative to the binary bar
 display_position_x = bar_position_x + 4 * (box_width + box_padding) - box_padding / 2 - display_dimensions[0] / 2
-display_position_y = bar_position_y + box_height + 30
+display_position_y = bar_position_y + box_height + 20
 hexadecimal_display = HexadecimalDisplay((display_position_x, display_position_y), display_dimensions, 50)
 
 def on_keypress(binary_box_index):
