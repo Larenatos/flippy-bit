@@ -6,15 +6,15 @@ screen_bg_colour = "#00334d"
 screen.fill(screen_bg_colour)
 
 class Missile():
-  def __init__(self, positions):
+  def __init__(self, vertices):
     self.bg_colour = "#06001a"
-    self.positions = positions
+    self.vertices = vertices
   
   def draw_missile(self):
-    pygame.draw.polygon(screen, self.bg_colour, self.positions)
+    pygame.draw.polygon(screen, self.bg_colour, self.vertices)
   
   def erase_missile(self):
-    pygame.draw.polygon(screen, screen_bg_colour, self.positions)
+    pygame.draw.polygon(screen, screen_bg_colour, self.vertices)
 
 class BinaryBox():
   def __init__(self, position):
@@ -85,10 +85,10 @@ binary_boxes = [BinaryBox((bar_position_x + i*(box_width + box_padding), bar_pos
 bit_missiles = []
 for i in range(8):
 # calculating the position and dimensions for each missile based on the loaction of binary bar
-  position_1 = (bar_position_x + 5 + i * (box_width + box_padding), bar_position_y-20)
-  position_2 = (bar_position_x + box_width - 5 + i * (box_width + box_padding), bar_position_y-20)
-  position_3 = (bar_position_x + 5 + (box_width - 10) / 2 + i * (box_width + box_padding), bar_position_y - 20 - box_width + 10)
-  bit_missiles.append(Missile((position_1, position_2, position_3)))
+  vertex_1 = (bar_position_x + 5 + i * (box_width + box_padding), bar_position_y-20)
+  vertex_1 = (bar_position_x + box_width - 5 + i * (box_width + box_padding), bar_position_y-20)
+  vertex_1 = (bar_position_x + 5 + (box_width - 10) / 2 + i * (box_width + box_padding), bar_position_y - 20 - box_width + 10)
+  bit_missiles.append(Missile((vertex_1, vertex_1, vertex_1)))
 
 display_dimensions = (70, 70)
 # center the display relative to the binary bar
