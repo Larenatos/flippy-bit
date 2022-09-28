@@ -1,8 +1,9 @@
+from turtle import position
 import pygame
 pygame.init()
 
 screen = pygame.display.set_mode(size=(550, 740))
-screen.fill("#00334d")
+screen.fill("#004466")
 
 class BinaryBox():
   def __init__(self, position):
@@ -63,7 +64,18 @@ class HexadecimalDisplay():
     self.draw_display()
 
 def create_layout():
-  pygame.draw.rect(screen, "#06001a", (20, 20, 510, 700), 5)
+  position_x = 20
+  position_y = 20
+  width = 510
+  height = 700
+  border_width = 5
+  playarea_height = 520
+  border_colour = "#06001a"
+  bg_colour = "#00334d"
+
+  pygame.draw.rect(screen, bg_colour, (position_x + border_width, position_y + border_width, width - 2 * border_width, height - 2 * border_width))
+  pygame.draw.rect(screen, border_colour, (position_x, position_y, width, height), border_width)
+  pygame.draw.rect(screen, border_colour, (position_x, position_y + playarea_height, width, height - playarea_height), border_width)
 
 create_layout()
 
