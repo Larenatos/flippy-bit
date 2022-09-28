@@ -73,6 +73,7 @@ def create_layout():
   border_colour = "#06001a"
   bg_colour = "#00334d"
 
+  # calculating the position and dimensions based on information given above
   pygame.draw.rect(screen, bg_colour, (position_x + border_width, position_y + border_width, width - 2 * border_width, height - 2 * border_width))
   pygame.draw.rect(screen, border_colour, (position_x, position_y, width, height), border_width)
   pygame.draw.rect(screen, border_colour, (position_x, position_y + playarea_height, width, height - playarea_height), border_width)
