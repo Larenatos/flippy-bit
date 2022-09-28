@@ -41,7 +41,6 @@ class BinaryBox():
     binary_box_text_rect.center = self.background_rect.center
     screen.blit(binary_box_text, binary_box_text_rect)
   
-  
   def flip_bit(self, bit_index, bit_missiles):
     if self.current_bit == "0":
       self.current_bit = "1"
@@ -86,6 +85,7 @@ binary_boxes = [BinaryBox((bar_position_x + i*(box_width + box_padding), bar_pos
 
 bit_missiles = []
 for i in range(8):
+# calculating the position and dimensions for each missile based on the loaction of binary bar
   position_1 = (bar_position_x + 5 + i * (box_width + box_padding), bar_position_y-20)
   position_2 = (bar_position_x + box_width - 5 + i * (box_width + box_padding), bar_position_y-20)
   position_3 = (bar_position_x + 5 + (box_width - 10) / 2 + i * (box_width + box_padding), bar_position_y - 20 - box_width + 10)
