@@ -9,13 +9,12 @@ class Missile():
   def __init__(self, positions):
     self.bg_colour = "#06001a"
     self.positions = positions
-    self.erase_rect = pygame.Rect(positions[0][0] - 2, positions[2][1] - 2, positions[1][0] - positions[0][0] + 4, positions[1][1] - positions[2][1] + 4)
   
   def draw_missile(self):
     pygame.draw.polygon(screen, self.bg_colour, self.positions)
   
   def erase_missile(self):
-    pygame.draw.rect(screen, screen_bg_colour, self.erase_rect)
+    pygame.draw.polygon(screen, screen_bg_colour, self.positions)
 
 class BinaryBox():
   def __init__(self, position):
