@@ -10,10 +10,10 @@ class Missile():
     self.bg_colour = "#06001a"
     self.vertices = vertices
   
-  def draw_missile(self):
+  def draw(self):
     pygame.draw.polygon(screen, self.bg_colour, self.vertices)
   
-  def erase_missile(self):
+  def erase(self):
     pygame.draw.polygon(screen, screen_bg_colour, self.vertices)
 
 class BinaryBox():
@@ -43,10 +43,10 @@ class BinaryBox():
   def flip_bit(self, bit_index, bit_missiles):
     if self.current_bit == "0":
       self.current_bit = "1"
-      bit_missiles[bit_index].draw_missile()
+      bit_missiles[bit_index].draw()
     else:
       self.current_bit = "0"
-      bit_missiles[bit_index].erase_missile()
+      bit_missiles[bit_index].erase()
     self.bg_colour, self.text_colour = self.text_colour, self.bg_colour
     self.draw_box()
 
