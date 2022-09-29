@@ -1,3 +1,4 @@
+from collections import namedtuple
 import pygame
 pygame.init()
 
@@ -17,19 +18,18 @@ class Missile():
     pygame.draw.polygon(screen, screen_bg_colour, self.vertices)
 
 class BinaryBox():
-  def __init__(self, position):
+  def __init__(self, position, size, border_width):
     self.bg_colour = "#06001a"
     self.border_colour = "#666666"
     self.text_colour = "#bfbfbf"
-    self.position = position
-    self.dimensions = (50, 50)
     self.current_bit = "0"
 
-    self.border_rect = pygame.Rect(self.position, self.dimensions)
-    self.background_rect = pygame.Rect((0, 0), (self.dimensions[0]- 10, self.dimensions[1] - 10))
-    self.background_rect.center = self.border_rect.center
+    internal_box_size = size - 2 * border_width
+    border_rect = pygame.Rect(position, (size,)*2)
+    self.background_rect = pygame.Rect((0, 0), (internal_box_size,)*2)
+    self.background_rect.center = border_rect.center
     self.font = pygame.font.SysFont(None, 40)
-    pygame.draw.rect(screen, self.border_colour, self.border_rect, 5)
+    pygame.draw.rect(screen, self.border_colour, border_rect, border_width)
     self.draw_box()
 
   def draw_box(self):
@@ -54,13 +54,13 @@ class BinaryBox():
     return self.current_bit
 
 class HexadecimalDisplay():
-  def __init__(self, position, dimensions, font_size):
+  def __init__(self, position, size, font_size):
     self.bg_colour = "#06001a"
     self.text_colour = "#bfbfbf"
     self.current_hexadecimals = ""
 
     self.font = pygame.font.SysFont(None, font_size)
-    self.background_rect = pygame.Rect(position, dimensions)
+    self.background_rect = pygame.Rect(position, (size,)*2)
     self.draw_display()
 
   def draw_display(self):
@@ -77,28 +77,29 @@ class HexadecimalDisplay():
 
 bar_position_x = 50
 bar_position_y = 100
-box_height = box_width = 50
-internal_box_height = internal_box_width = 40
+box_size = 50
+internal_box_size = 40
 box_border_width = 5
 box_padding = 10
+whole_box_width = box_size + box_padding
 
-binary_boxes = [BinaryBox((bar_position_x + i*(box_width + box_padding), bar_position_y)) for i in range(8)]
+binary_boxes = [BinaryBox((bar_position_x + i*(whole_box_width), bar_position_y), box_size, box_border_width) for i in range(8)]
 
 bit_missiles = []
-whole_box_width = box_width + box_padding
+Point = namedtuple("Point", "x y")
 
 for i in range(8):
   # calculating the position and dimensions for each missile based on the loaction of binary bar
-  vertex_1 = (bar_position_x + box_border_width + i * whole_box_width, bar_position_y - 20)
-  vertex_2 = (vertex_1[0] + internal_box_width, vertex_1[1])
-  vertex_3 = (vertex_1[0] + internal_box_width / 2, vertex_1[1] - internal_box_height)
+  vertex_1 = Point(bar_position_x + box_border_width + i * whole_box_width, bar_position_y - 20)
+  vertex_2 = Point(vertex_1.x + internal_box_size, vertex_1.y)
+  vertex_3 = Point(vertex_1.x + internal_box_size / 2, vertex_1.y - internal_box_size)
   bit_missiles.append(Missile((vertex_1, vertex_2, vertex_3)))
 
-display_dimensions = (70, 70)
+display_size = 70
 # center the display relative to the binary bar
-display_position_x = bar_position_x + 4 * (box_width + box_padding) - box_padding / 2 - display_dimensions[0] / 2
-display_position_y = bar_position_y + box_height + 30
-hexadecimal_display = HexadecimalDisplay((display_position_x, display_position_y), display_dimensions, 50)
+display_position_x = bar_position_x + 4 * whole_box_width - box_padding / 2 - display_size / 2
+display_position_y = bar_position_y + box_size + 30
+hexadecimal_display = HexadecimalDisplay((display_position_x, display_position_y), display_size, 50)
 
 def on_keypress(bit_index):
   binary_boxes[bit_index].flip_bit(bit_index, bit_missiles)
