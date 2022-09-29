@@ -78,17 +78,21 @@ class HexadecimalDisplay():
 bar_position_x = 50
 bar_position_y = 100
 box_height = box_width = 50
+internal_box_height = internal_box_width = 40
+box_border_width = 5
 box_padding = 10
 
 binary_boxes = [BinaryBox((bar_position_x + i*(box_width + box_padding), bar_position_y)) for i in range(8)]
 
 bit_missiles = []
+whole_box_width = box_width + box_padding
+
 for i in range(8):
-# calculating the position and dimensions for each missile based on the loaction of binary bar
-  vertex_1 = (bar_position_x + 5 + i * (box_width + box_padding), bar_position_y-20)
-  vertex_1 = (bar_position_x + box_width - 5 + i * (box_width + box_padding), bar_position_y-20)
-  vertex_1 = (bar_position_x + 5 + (box_width - 10) / 2 + i * (box_width + box_padding), bar_position_y - 20 - box_width + 10)
-  bit_missiles.append(Missile((vertex_1, vertex_1, vertex_1)))
+  # calculating the position and dimensions for each missile based on the loaction of binary bar
+  vertex_1 = (bar_position_x + box_border_width + i * whole_box_width, bar_position_y - 20)
+  vertex_2 = (vertex_1[0] + internal_box_width, vertex_1[1])
+  vertex_3 = (vertex_1[0] + internal_box_width / 2, vertex_1[1] - internal_box_height)
+  bit_missiles.append(Missile((vertex_1, vertex_2, vertex_3)))
 
 display_dimensions = (70, 70)
 # center the display relative to the binary bar
