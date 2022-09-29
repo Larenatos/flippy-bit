@@ -89,7 +89,7 @@ bit_missiles = []
 Point = namedtuple("Point", "x y")
 
 for i in range(8):
-  # calculating the position and dimensions for each missile based on the loaction of binary bar
+  # calculating the position and dimensions for each missile based on the location of binary bar
   vertex_1 = Point(bar_position_x + box_border_width + i * whole_box_width, bar_position_y - 20)
   vertex_2 = Point(vertex_1.x + internal_box_size, vertex_1.y)
   vertex_3 = Point(vertex_1.x + internal_box_size / 2, vertex_1.y - internal_box_size)
