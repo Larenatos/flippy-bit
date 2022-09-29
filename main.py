@@ -1,4 +1,5 @@
 import pygame
+import random
 pygame.init()
 
 screen = pygame.display.set_mode(size=(600, 300))
@@ -80,9 +81,17 @@ display_dimensions = (70, 70)
 # center the display relative to the binary bar
 display_position_x = bar_position_x + 4 * (box_width + box_padding) - box_padding / 2 - display_dimensions[0] / 2
 display_position_y = bar_position_y + box_height + 30
-hexadecimal_display = HexadecimalDisplay((display_position_x, display_position_y), display_dimensions, 50, "")
+hexadecimal_display = HexadecimalDisplay((display_position_x, display_position_y), display_dimensions, 50, "0")
 
-enemy = HexadecimalDisplay((100, 30), (50, 40), 30, "9A")
+hexadecimals = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "A", "B", "C", "D", "E", "F"]
+
+first_hexadecimal = random.choice(hexadecimals)
+second_hexadecimal = random.choice(hexadecimals)
+
+if first_hexadecimal == "0": 
+  first_hexadecimal = ""
+
+enemy = HexadecimalDisplay((random.randint(50, 400), 30), (50, 40), 40, f"{random.choice(hexadecimals)}{random.choice(hexadecimals)}")
 enemy.draw_border()
 
 def on_keypress(binary_box_index):
