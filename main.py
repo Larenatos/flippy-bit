@@ -41,10 +41,12 @@ class BinaryBox():
     return self.current_bit
 
 class HexadecimalDisplay():
-  def __init__(self, position, dimensions, font_size):
+  def __init__(self, position, dimensions, font_size, hexadecimals):
     self.bg_colour = "#06001a"
     self.text_colour = "#bfbfbf"
-    self.current_hexadecimals = ""
+    self.border_colour = "#850020"
+    self.current_hexadecimals = hexadecimals
+    self.dimensions = dimensions
 
     self.font = pygame.font.SysFont(None, font_size)
     self.background_rect = pygame.Rect(position, dimensions)
@@ -57,13 +59,18 @@ class HexadecimalDisplay():
     display_text_rect.center = self.background_rect.center
     screen.blit(display_text, display_text_rect)
   
+  def draw_border(self):
+    border_rect = pygame.Rect((0, 0), (self.dimensions[0] + 5, self.dimensions[1] + 5))
+    border_rect.center = self.background_rect.center
+    pygame.draw.rect(screen, self.border_colour, border_rect, 5)
+  
   def update_display(self, binary_boxes):
     binary = "".join(binary_box.get_current_bit() for binary_box in binary_boxes)
     self.current_hexadecimals =  f"{int(binary, 2):X}"
     self.draw_display()
 
 bar_position_x = 50
-bar_position_y = 50
+bar_position_y = 120
 box_height = box_width = 50
 box_padding = 10
 
@@ -73,7 +80,10 @@ display_dimensions = (70, 70)
 # center the display relative to the binary bar
 display_position_x = bar_position_x + 4 * (box_width + box_padding) - box_padding / 2 - display_dimensions[0] / 2
 display_position_y = bar_position_y + box_height + 30
-hexadecimal_display = HexadecimalDisplay((display_position_x, display_position_y), display_dimensions, 50)
+hexadecimal_display = HexadecimalDisplay((display_position_x, display_position_y), display_dimensions, 50, "")
+
+enemy = HexadecimalDisplay((100, 30), (50, 40), 30, "9A")
+enemy.draw_border()
 
 def on_keypress(binary_box_index):
   binary_boxes[binary_box_index].flip_bit()
