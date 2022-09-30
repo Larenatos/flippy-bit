@@ -2,9 +2,23 @@ from collections import namedtuple
 import pygame
 pygame.init()
 
-screen = pygame.display.set_mode(size=(600, 300))
-screen_bg_colour = "#00334d"
-screen.fill(screen_bg_colour)
+screen = pygame.display.set_mode(size=(550, 740))
+screen.fill("#004466")
+
+game_position_x = 20
+game_position_y = 20
+game_width = 510
+game_height = 700
+border_width = 5
+play_area_height = 540
+game_border_colour = "#06001a"
+game_bg_colour = "#00334d"
+game_rect = pygame.Rect(game_position_x, game_position_y, game_width, game_height)
+
+# calculating the position and dimensions based on information given above
+background = pygame.draw.rect(screen, game_bg_colour, game_rect)
+game_border = pygame.draw.rect(screen, game_border_colour, game_rect, border_width)
+area_separator = pygame.draw.rect(screen, game_border_colour, (game_position_x, play_area_height, game_width, border_width))
 
 class Missile():
   def __init__(self, vertices):
@@ -15,7 +29,7 @@ class Missile():
     pygame.draw.polygon(screen, self.bg_colour, self.vertices)
   
   def erase(self):
-    pygame.draw.polygon(screen, screen_bg_colour, self.vertices)
+    pygame.draw.polygon(screen, game_bg_colour, self.vertices)
 
 class BinaryBox():
   def __init__(self, position, size, border_width):
@@ -75,8 +89,8 @@ class HexadecimalDisplay():
     self.current_hexadecimals =  f"{int(binary, 2):X}"
     self.draw_display()
 
-bar_position_x = 50
-bar_position_y = 100
+bar_position_x = 40
+bar_position_y = 560
 box_size = 50
 internal_box_size = 40
 box_border_width = 5
@@ -90,7 +104,7 @@ Point = namedtuple("Point", "x y")
 
 for i in range(8):
   # calculating the position and dimensions for each missile based on the location of binary bar
-  vertex_1 = Point(bar_position_x + box_border_width + i * whole_box_width, bar_position_y - 20)
+  vertex_1 = Point(bar_position_x + box_border_width + i * whole_box_width, bar_position_y - 30)
   vertex_2 = Point(vertex_1.x + internal_box_size, vertex_1.y)
   vertex_3 = Point(vertex_1.x + internal_box_size / 2, vertex_1.y - internal_box_size)
   bit_missiles.append(Missile((vertex_1, vertex_2, vertex_3)))
@@ -98,7 +112,7 @@ for i in range(8):
 display_size = 70
 # center the display relative to the binary bar
 display_position_x = bar_position_x + 4 * whole_box_width - box_padding / 2 - display_size / 2
-display_position_y = bar_position_y + box_size + 30
+display_position_y = bar_position_y + box_size + 20
 hexadecimal_display = HexadecimalDisplay((display_position_x, display_position_y), display_size, 50)
 
 def on_keypress(bit_index):
