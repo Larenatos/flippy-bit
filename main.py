@@ -67,14 +67,15 @@ game_position_y = 20
 game_width = 510
 game_height = 700
 border_width = 5
-play_area_height = 520
+play_area_height = 540
 game_border_colour = "#06001a"
 game_bg_colour = "#00334d"
+game_rect = pygame.Rect(game_position_x, game_position_y, game_width, game_height)
 
 # calculating the position and dimensions based on information given above
-pygame.draw.rect(screen, game_bg_colour, (game_position_x + border_width, game_position_y + border_width, game_width - 2 * border_width, game_height - 2 * border_width))
-pygame.draw.rect(screen, game_border_colour, (game_position_x, game_position_y, game_width, game_height), border_width)
-pygame.draw.rect(screen, game_border_colour, (game_position_x, game_position_y + play_area_height, game_width, game_height - play_area_height), border_width)
+background = pygame.draw.rect(screen, game_bg_colour, game_rect)
+game_border = pygame.draw.rect(screen, game_border_colour, game_rect, border_width)
+area_separator = pygame.draw.rect(screen, game_border_colour, (game_position_x, play_area_height, game_width, border_width))
 
 bar_position_x = 40
 bar_position_y = 560
