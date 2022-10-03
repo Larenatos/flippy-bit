@@ -3,6 +3,8 @@ import pygame
 import random
 pygame.init()
 
+clock = pygame.time.Clock()
+
 screen = pygame.display.set_mode(size=(550, 740))
 screen.fill("#004466")
 
@@ -100,13 +102,22 @@ class Enemy(HexadecimalDisplay):
     self.position = position
     self.border_colour = "#850020"
     self.border_width = 5
-    self.border_rect = pygame.Rect(position, (size,)*2)
-    self.background_rect = pygame.Rect((0, 0), (size,)*2)
-    self.background_rect.center = self.border_rect.center
   
   def draw(self):
+    self.border_rect = pygame.Rect(self.position, (self.size,)*2)
+    self.background_rect = pygame.Rect((0, 0), (self.size,)*2)
+    self.background_rect.center = self.border_rect.center
+    pygame.draw.rect(screen, game_bg_colour, self.background_rect)
     self.draw_display()
     pygame.draw.rect(screen, self.border_colour, self.border_rect, self.border_width)
+  
+  def update_position(self):
+    # checking if the enemy has reached the bottom
+    if self.position.y in range(game_position_y, game_position_y + play_area_height + 10 + self.size):
+      self.position = Point(self.position.x, self.position.y + 1)
+      self.draw()
+    else:
+      pygame.draw.rect(screen, game_bg_colour, (self.position, (self.size,)*2))
 
 bar_position_x = 40
 bar_position_y = 560
@@ -135,6 +146,7 @@ display_position_y = bar_position_y + box_size + 20
 hexadecimal_display = Preview((display_position_x, display_position_y), display_size, 50, "0")
 
 hexadecimals = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "A", "B", "C", "D", "E", "F"]
+enemy_size = 50
 
 first_hexadecimal = random.choice(hexadecimals)
 second_hexadecimal = random.choice(hexadecimals)
@@ -142,7 +154,8 @@ second_hexadecimal = random.choice(hexadecimals)
 if first_hexadecimal == "0": 
   first_hexadecimal = ""
 
-enemy = Enemy(Point(random.randint(30, 450), 30), 50, 40, f"{random.choice(hexadecimals)}{random.choice(hexadecimals)}")
+# moving the enemy to correct area
+enemy = Enemy(Point(random.randint(game_position_x + 10, game_width - enemy_size + 10), game_position_y + 10), enemy_size, 40, f"{random.choice(hexadecimals)}{random.choice(hexadecimals)}")
 enemy.draw()
 
 def on_keypress(bit_index):
@@ -150,7 +163,9 @@ def on_keypress(bit_index):
   hexadecimal_display.update_display(binary_boxes)
 
 while True:
+  clock.tick(30)
   pygame.display.flip()
+  enemy.update_position()
   for event in pygame.event.get():
     match event.type:
       case pygame.QUIT:
