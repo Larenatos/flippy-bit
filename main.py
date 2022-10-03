@@ -69,16 +69,12 @@ class BinaryBox():
     return self.current_bit
 
 class HexadecimalDisplay():
-  def __init__(self, position, size, font_size, hexadecimals):
+  def __init__(self, size, font_size, hexadecimals):
     self.bg_colour = "#06001a"
     self.text_colour = "#bfbfbf"
-    self.border_colour = "#850020"
     self.current_hexadecimals = hexadecimals
     self.size = size
-
     self.font = pygame.font.SysFont(None, font_size)
-    self.background_rect = pygame.Rect(position, (size,)*2)
-    self.draw_display()
 
   def draw_display(self):
     pygame.draw.rect(screen, self.bg_colour, self.background_rect)
@@ -87,15 +83,30 @@ class HexadecimalDisplay():
     display_text_rect.center = self.background_rect.center
     screen.blit(display_text, display_text_rect)
   
-  def draw_border(self):
-    border_rect = pygame.Rect((0, 0), (self.size + 5,)*2)
-    border_rect.center = self.background_rect.center
-    pygame.draw.rect(screen, self.border_colour, border_rect, 5)
-  
+class Preview(HexadecimalDisplay):
+  def __init__(self, position, size, font_size, hexadecimals):
+    HexadecimalDisplay.__init__(self, size, font_size, hexadecimals)
+    self.background_rect = pygame.Rect(position, (size,)*2)
+    self.draw_display()
+
   def update_display(self, binary_boxes):
     binary = "".join(binary_box.get_current_bit() for binary_box in binary_boxes)
     self.current_hexadecimals =  f"{int(binary, 2):X}"
     self.draw_display()
+
+class Enemy(HexadecimalDisplay):
+  def __init__(self, position, size, font_size, hexadecimals):
+    HexadecimalDisplay.__init__(self, size, font_size, hexadecimals)
+    self.position = position
+    self.border_colour = "#850020"
+    self.border_width = 5
+    self.border_rect = pygame.Rect(position, (size,)*2)
+    self.background_rect = pygame.Rect((0, 0), (size,)*2)
+    self.background_rect.center = self.border_rect.center
+  
+  def draw(self):
+    self.draw_display()
+    pygame.draw.rect(screen, self.border_colour, self.border_rect, self.border_width)
 
 bar_position_x = 40
 bar_position_y = 560
@@ -121,7 +132,7 @@ display_size = 70
 # center the display relative to the binary bar
 display_position_x = bar_position_x + 4 * whole_box_width - box_padding / 2 - display_size / 2
 display_position_y = bar_position_y + box_size + 20
-hexadecimal_display = HexadecimalDisplay((display_position_x, display_position_y), display_size, 50, "0")
+hexadecimal_display = Preview((display_position_x, display_position_y), display_size, 50, "0")
 
 hexadecimals = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "A", "B", "C", "D", "E", "F"]
 
@@ -131,8 +142,8 @@ second_hexadecimal = random.choice(hexadecimals)
 if first_hexadecimal == "0": 
   first_hexadecimal = ""
 
-enemy = HexadecimalDisplay((random.randint(30, 450), 30), 50, 40, f"{random.choice(hexadecimals)}{random.choice(hexadecimals)}")
-enemy.draw_border()
+enemy = Enemy(Point(random.randint(30, 450), 30), 50, 40, f"{random.choice(hexadecimals)}{random.choice(hexadecimals)}")
+enemy.draw()
 
 def on_keypress(bit_index):
   binary_boxes[bit_index].flip_bit(bit_index, bit_missiles)
