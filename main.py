@@ -39,7 +39,7 @@ box_border_width = 5
 box_padding = 10
 whole_box_width = box_size + box_padding
 
-binary_boxes = [BinaryBox((bar_position_x + i*(whole_box_width), bar_position_y), box_size, box_border_width, i, screen) for i in range(8)]
+binary_boxes = [BinaryBox((bar_position_x + i*(whole_box_width), bar_position_y), box_size, box_border_width, screen) for i in range(8)]
 
 bit_missiles = []
 
@@ -54,7 +54,7 @@ display_size = 70
 # center the display relative to the binary bar
 display_position_x = bar_position_x + 4 * whole_box_width - box_padding / 2 - display_size / 2
 display_position_y = bar_position_y + box_size + 20
-hexadecimal_display = Preview((display_position_x, display_position_y), display_size, 50, "0", screen)
+binary_bar_preview = Preview((display_position_x, display_position_y), display_size, 50, "0", screen)
 
 hexadecimals = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "A", "B", "C", "D", "E", "F"]
 enemy_size = 50
@@ -78,7 +78,7 @@ def create_enemy():
 def redraw_screen():
   screen.fill(bg_colour)
   draw_layout()
-  hexadecimal_display.draw_display()
+  binary_bar_preview.draw_display()
   for box in binary_boxes:
     box.draw_box()
   for enemy in alive_enemies:
@@ -86,7 +86,7 @@ def redraw_screen():
 
 def on_keypress(bit_index):
   binary_boxes[bit_index].flip_bit(bit_index, bit_missiles)
-  hexadecimal_display.update_display(binary_boxes)
+  binary_bar_preview.update_display(binary_boxes)
 
 time_since_enemy_spawn = time.time()
 
