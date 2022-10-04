@@ -85,14 +85,17 @@ def on_keypress(bit_index):
   binary_bar_preview.update_display(binary_boxes)
 
 time_since_enemy_spawn = time.time()
+time_between_spawns = 5
 
 while True:
   clock.tick(60)
   pygame.display.flip()
 
   current_time = time.time()
-  if current_time - time_since_enemy_spawn >= 5:
+  if current_time - time_since_enemy_spawn >= time_between_spawns:
     time_since_enemy_spawn = current_time
+    if time_between_spawns > 1.5:
+      time_between_spawns -= 0.25
     create_enemy()
 
   for enemy in alive_enemies:
