@@ -6,7 +6,8 @@ pygame.init()
 clock = pygame.time.Clock()
 
 screen = pygame.display.set_mode(size=(550, 740))
-screen.fill("#004466")
+bg_colour = "#004466"
+screen.fill(bg_colour)
 
 game_position_x = 20
 game_position_y = 20
@@ -16,12 +17,16 @@ border_width = 5
 play_area_height = 540
 game_border_colour = "#06001a"
 game_bg_colour = "#00334d"
-game_rect = pygame.Rect(game_position_x, game_position_y, game_width, game_height)
 
-# calculating the position and dimensions based on information given above
-background = pygame.draw.rect(screen, game_bg_colour, game_rect)
-game_border = pygame.draw.rect(screen, game_border_colour, game_rect, border_width)
-area_separator = pygame.draw.rect(screen, game_border_colour, (game_position_x, play_area_height, game_width, border_width))
+def draw_layout():
+  game_rect = pygame.Rect(game_position_x, game_position_y, game_width, game_height)
+
+  # calculating the position and dimensions based on information given above
+  background = pygame.draw.rect(screen, game_bg_colour, game_rect)
+  game_border = pygame.draw.rect(screen, game_border_colour, game_rect, border_width)
+  # calculating the position for the line above binary bar
+  area_separator = pygame.draw.line(screen, game_border_colour, (game_position_x, play_area_height), (game_position_x + game_width - border_width, play_area_height), border_width)
+  dead_line = pygame.draw.line(screen, "#550000", (game_position_x + border_width, play_area_height - 50), (game_position_x + game_width - border_width, play_area_height - 50), border_width)
 
 class Missile():
   def __init__(self, vertices):
@@ -35,29 +40,34 @@ class Missile():
     pygame.draw.polygon(screen, game_bg_colour, self.vertices)
 
 class BinaryBox():
-  def __init__(self, position, size, border_width):
+  def __init__(self, position, size, border_width, index):
     self.bg_colour = "#06001a"
     self.border_colour = "#666666"
     self.text_colour = "#bfbfbf"
     self.current_bit = "0"
+    self.index = index
+    self.bit_missiles = []
 
     internal_box_size = size - 2 * border_width
-    border_rect = pygame.Rect(position, (size,)*2)
+    self.border_rect = pygame.Rect(position, (size,)*2)
     self.background_rect = pygame.Rect((0, 0), (internal_box_size,)*2)
-    self.background_rect.center = border_rect.center
+    self.background_rect.center = self.border_rect.center
     self.font = pygame.font.SysFont(None, 40)
-    pygame.draw.rect(screen, self.border_colour, border_rect, border_width)
     self.draw_box()
 
   def draw_box(self):
+    pygame.draw.rect(screen, self.border_colour, self.border_rect, border_width)
     pygame.draw.rect(screen, self.bg_colour, self.background_rect)
     
     binary_box_text = self.font.render(self.current_bit, True, self.text_colour)
     binary_box_text_rect = binary_box_text.get_rect()
     binary_box_text_rect.center = self.background_rect.center
     screen.blit(binary_box_text, binary_box_text_rect)
+    if self.current_bit == "1":
+      self.bit_missiles[self.index].draw()
   
   def flip_bit(self, bit_index, bit_missiles):
+    self.bit_missiles = bit_missiles
     if self.current_bit == "0":
       self.current_bit = "1"
       bit_missiles[bit_index].draw()
@@ -102,22 +112,22 @@ class Enemy(HexadecimalDisplay):
     self.position = position
     self.border_colour = "#850020"
     self.border_width = 5
+    self.status = "alive"
   
   def draw(self):
     self.border_rect = pygame.Rect(self.position, (self.size,)*2)
     self.background_rect = pygame.Rect((0, 0), (self.size,)*2)
     self.background_rect.center = self.border_rect.center
-    pygame.draw.rect(screen, game_bg_colour, self.background_rect)
     self.draw_display()
     pygame.draw.rect(screen, self.border_colour, self.border_rect, self.border_width)
   
   def update_position(self):
     # checking if the enemy has reached the bottom
-    if self.position.y in range(game_position_y, game_position_y + play_area_height + 10 + self.size):
+    if self.position.y in range(game_position_y, play_area_height - 50 - self.size):
       self.position = Point(self.position.x, self.position.y + 1)
       self.draw()
     else:
-      pygame.draw.rect(screen, game_bg_colour, (self.position, (self.size,)*2))
+      self.status = "dead"
 
 bar_position_x = 40
 bar_position_y = 560
@@ -127,7 +137,7 @@ box_border_width = 5
 box_padding = 10
 whole_box_width = box_size + box_padding
 
-binary_boxes = [BinaryBox((bar_position_x + i*(whole_box_width), bar_position_y), box_size, box_border_width) for i in range(8)]
+binary_boxes = [BinaryBox((bar_position_x + i*(whole_box_width), bar_position_y), box_size, box_border_width, i) for i in range(8)]
 
 bit_missiles = []
 Point = namedtuple("Point", "x y")
@@ -158,14 +168,29 @@ if first_hexadecimal == "0":
 enemy = Enemy(Point(random.randint(game_position_x + 10, game_width - enemy_size + 10), game_position_y + 10), enemy_size, 40, f"{random.choice(hexadecimals)}{random.choice(hexadecimals)}")
 enemy.draw()
 
+alive_enemies = [enemy]
+
+def redraw_screen():
+  screen.fill(bg_colour)
+  draw_layout()
+  hexadecimal_display.draw_display()
+  for box in binary_boxes:
+    box.draw_box()
+  for enemy in alive_enemies:
+    enemy.draw()
+
 def on_keypress(bit_index):
   binary_boxes[bit_index].flip_bit(bit_index, bit_missiles)
   hexadecimal_display.update_display(binary_boxes)
 
 while True:
-  clock.tick(30)
+  clock.tick(60)
   pygame.display.flip()
-  enemy.update_position()
+  for enemy in alive_enemies:
+    if enemy.status == "dead":
+      alive_enemies.remove(enemy)
+    enemy.update_position()
+  redraw_screen()
   for event in pygame.event.get():
     match event.type:
       case pygame.QUIT:
