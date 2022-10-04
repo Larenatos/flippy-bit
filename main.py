@@ -56,22 +56,18 @@ display_position_x = bar_position_x + 4 * whole_box_width - box_padding / 2 - di
 display_position_y = bar_position_y + box_size + 20
 binary_bar_preview = Preview((display_position_x, display_position_y), display_size, 50, "0", screen)
 
-hexadecimals = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "A", "B", "C", "D", "E", "F"]
 enemy_size = 50
 
 alive_enemies = []
 
 def create_enemy():
-  first_hexadecimal = random.choice(hexadecimals)
-  second_hexadecimal = random.choice(hexadecimals)
-
-  if first_hexadecimal == "0": 
-    first_hexadecimal = ""
+  integer = random.randint(0, 256)
+  hexadecimal =  f"{integer:X}"
 
   position = Point(random.randint(game_position_x + 10, game_width - enemy_size + 10), game_position_y + 10)
 
   # moving the enemy to correct area
-  enemy = Enemy(position, enemy_size, 40, f"{first_hexadecimal}{second_hexadecimal}", screen)
+  enemy = Enemy(position, enemy_size, 40, hexadecimal, screen)
   enemy.draw()
   alive_enemies.append(enemy)
 
