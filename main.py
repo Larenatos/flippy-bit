@@ -1,6 +1,7 @@
 from collections import namedtuple
-import pygame
 import random
+import time
+import pygame
 pygame.init()
 
 clock = pygame.time.Clock()
@@ -158,17 +159,20 @@ hexadecimal_display = Preview((display_position_x, display_position_y), display_
 hexadecimals = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "A", "B", "C", "D", "E", "F"]
 enemy_size = 50
 
-first_hexadecimal = random.choice(hexadecimals)
-second_hexadecimal = random.choice(hexadecimals)
+alive_enemies = []
 
-if first_hexadecimal == "0": 
-  first_hexadecimal = ""
+def create_enemy():
+  first_hexadecimal = random.choice(hexadecimals)
+  second_hexadecimal = random.choice(hexadecimals)
 
-# moving the enemy to correct area
-enemy = Enemy(Point(random.randint(game_position_x + 10, game_width - enemy_size + 10), game_position_y + 10), enemy_size, 40, f"{random.choice(hexadecimals)}{random.choice(hexadecimals)}")
-enemy.draw()
+  if first_hexadecimal == "0": 
+    first_hexadecimal = ""
 
-alive_enemies = [enemy]
+  # moving the enemy to correct area
+  enemy = Enemy(Point(random.randint(game_position_x + 10, game_width - enemy_size + 10), game_position_y + 10), enemy_size, 40, f"{first_hexadecimal}{second_hexadecimal}")
+  enemy.draw()
+  alive_enemies.append(enemy)
+
 
 def redraw_screen():
   screen.fill(bg_colour)
@@ -183,14 +187,25 @@ def on_keypress(bit_index):
   binary_boxes[bit_index].flip_bit(bit_index, bit_missiles)
   hexadecimal_display.update_display(binary_boxes)
 
+time_since_enemy_spawn = time.time()
+
 while True:
   clock.tick(60)
   pygame.display.flip()
+
+  current_time = time.time()
+  if current_time - time_since_enemy_spawn >= 5:
+    print("enemy spawned")
+    time_since_enemy_spawn = current_time
+    create_enemy()
+
   for enemy in alive_enemies:
     if enemy.status == "dead":
       alive_enemies.remove(enemy)
     enemy.update_position()
+  
   redraw_screen()
+
   for event in pygame.event.get():
     match event.type:
       case pygame.QUIT:
