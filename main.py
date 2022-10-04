@@ -5,16 +5,16 @@ pygame.init()
 
 clock = pygame.time.Clock()
 
-screen = pygame.display.set_mode(size=(550, 740))
+screen = pygame.display.set_mode(size=(550, 840))
 bg_colour = "#004466"
 screen.fill(bg_colour)
 
 game_position_x = 20
 game_position_y = 20
 game_width = 510
-game_height = 700
+game_height = 800
 border_width = 5
-play_area_height = 540
+play_area_height = game_height - 160
 game_border_colour = "#06001a"
 game_bg_colour = "#00334d"
 
@@ -130,7 +130,7 @@ class Enemy(HexadecimalDisplay):
       self.status = "dead"
 
 bar_position_x = 40
-bar_position_y = 560
+bar_position_y = game_height - 140
 box_size = 50
 internal_box_size = 40
 box_border_width = 5
