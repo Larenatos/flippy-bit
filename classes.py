@@ -92,7 +92,7 @@ class Enemy(HexadecimalDisplay):
     self.position = position
     self.border_colour = "#850020"
     self.border_width = 5
-    self.status = "alive"
+    self.is_destroyed = False
   
   def draw(self):
     self.border_rect = pygame.Rect(self.position, (self.size,)*2)
@@ -107,4 +107,4 @@ class Enemy(HexadecimalDisplay):
       self.position = Point(self.position.x, self.position.y + 1)
       self.draw()
     else:
-      self.status = "dead"
+      self.is_destroyed = True

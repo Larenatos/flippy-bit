@@ -100,7 +100,7 @@ while True:
     create_enemy()
 
   for enemy in alive_enemies:
-    if enemy.status == "dead":
+    if enemy.is_destroyed == True:
       alive_enemies.remove(enemy)
     enemy.update_position(game_position_y, play_area_height)
   
