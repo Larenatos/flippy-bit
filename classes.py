@@ -17,15 +17,14 @@ class Missile():
     pygame.draw.polygon(self.screen, self.game_bg_colour, self.vertices)
 
 class BinaryBox():
-  def __init__(self, position, size, border_width, index, screen):
+  def __init__(self, position, size, border_width, screen):
     self.screen = screen
     self.border_width = border_width
     self.bg_colour = "#06001a"
     self.border_colour = "#666666"
     self.text_colour = "#bfbfbf"
     self.current_bit = "0"
-    self.index = index
-    self.bit_missiles = []
+    self.missile = []
 
     internal_box_size = size - 2 * border_width
     self.border_rect = pygame.Rect(position, (size,)*2)
@@ -43,10 +42,10 @@ class BinaryBox():
     binary_box_text_rect.center = self.background_rect.center
     self.screen.blit(binary_box_text, binary_box_text_rect)
     if self.current_bit == "1":
-      self.bit_missiles[self.index].draw()
+      self.missile.draw()
   
   def flip_bit(self, bit_index, bit_missiles):
-    self.bit_missiles = bit_missiles
+    self.missile = bit_missiles[bit_index]
     if self.current_bit == "0":
       self.current_bit = "1"
       bit_missiles[bit_index].draw()
