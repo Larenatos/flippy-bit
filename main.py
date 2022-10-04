@@ -24,11 +24,12 @@ def draw_layout():
   game_rect = pygame.Rect(game_position_x, game_position_y, game_width, game_height)
 
   # calculating the position and dimensions based on information given above
-  background = pygame.draw.rect(screen, game_bg_colour, game_rect)
-  game_border = pygame.draw.rect(screen, game_border_colour, game_rect, border_width)
+  pygame.draw.rect(screen, game_bg_colour, game_rect) # background
+  pygame.draw.rect(screen, game_border_colour, game_rect, border_width) # full border 
   # calculating the position for the line above binary bar
-  area_separator = pygame.draw.line(screen, game_border_colour, (game_position_x, play_area_height), (game_position_x + game_width - border_width, play_area_height), border_width)
-  dead_line = pygame.draw.line(screen, "#550000", (game_position_x + border_width, play_area_height - 50), (game_position_x + game_width - border_width, play_area_height - 50), border_width)
+  pygame.draw.line(screen, game_border_colour, (game_position_x, play_area_height), (game_position_x + game_width - border_width, play_area_height), border_width)
+  # The line where enemies have to reach
+  pygame.draw.line(screen, "#550000", (game_position_x + border_width, play_area_height - 50), (game_position_x + game_width - border_width, play_area_height - 50), border_width)
 
 bar_position_x = 40
 bar_position_y = game_height - 140
