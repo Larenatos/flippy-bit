@@ -1,4 +1,4 @@
-import random
+from random import randint
 import time
 import pygame
 from classes import BinaryBox, Missile, Preview, Enemy, Point
@@ -63,10 +63,10 @@ enemy_size = 50
 alive_enemies = []
 
 def create_enemy():
-  integer = random.randint(0, 256)
+  integer = randint(0, 255)
   hexadecimal =  f"{integer:X}"
 
-  position = Point(random.randint(game_position_x + 10, game_width - enemy_size + 10), game_position_y + 10)
+  position = Point(randint(game_position_x + 10, game_width - enemy_size + 10), game_position_y + 10)
 
   # moving the enemy to correct area
   enemy = Enemy(position, enemy_size, 40, hexadecimal, screen)
