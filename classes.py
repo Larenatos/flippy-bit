@@ -16,7 +16,7 @@ class Missile:
     pygame.draw.polygon(self.game.screen, self.game.game_bg_colour, self.vertices)
 
 class BinaryBox:
-  def __init__(self, position, game):
+  def __init__(self, position, size, game):
     self.game = game
     self.bg_colour = "#06001a"
     self.border_colour = "#666666"
@@ -24,8 +24,8 @@ class BinaryBox:
     self.current_bit = "0"
     self.missile = None
 
-    internal_box_size = game.binary_box_size - 2 * game.border_width
-    self.border_rect = pygame.Rect(position, (game.binary_box_size,)*2)
+    internal_box_size = size - 2 * game.border_width
+    self.border_rect = pygame.Rect(position, (size,)*2)
     self.background_rect = pygame.Rect((0, 0), (internal_box_size,)*2)
     self.background_rect.center = self.border_rect.center
     self.font = pygame.font.SysFont(None, 40)
@@ -72,9 +72,9 @@ class HexadecimalDisplay:
     self.game.screen.blit(display_text, display_text_rect)
   
 class Preview(HexadecimalDisplay):
-  def __init__(self, position, game, hexadecimals):
-    HexadecimalDisplay.__init__(self, game, game.preview_font_size, hexadecimals)
-    self.background_rect = pygame.Rect(position, (game.preview_size,)*2)
+  def __init__(self, position, size, font_size, hexadecimals, game):
+    HexadecimalDisplay.__init__(self, game, font_size, hexadecimals)
+    self.background_rect = pygame.Rect(position, (size,)*2)
     self.draw_display()
 
   def update_display(self, binary_boxes):
@@ -83,23 +83,24 @@ class Preview(HexadecimalDisplay):
     self.draw_display()
 
 class Enemy(HexadecimalDisplay):
-  def __init__(self, position, game, hexadecimals):
-    HexadecimalDisplay.__init__(self, game, game.enemy_font_size, hexadecimals)
+  def __init__(self, position, size, font_size, hexadecimals, game):
+    HexadecimalDisplay.__init__(self, game, font_size, hexadecimals)
     self.position = position
+    self.size = size
     self.border_colour = "#850020"
     self.border_width = 5
     self.is_destroyed = False
   
   def draw(self):
-    self.border_rect = pygame.Rect(self.position, (self.game.enemy_size,)*2)
-    self.background_rect = pygame.Rect((0, 0), (self.game.enemy_size,)*2)
+    self.border_rect = pygame.Rect(self.position, (self.size,)*2)
+    self.background_rect = pygame.Rect((0, 0), (self.size,)*2)
     self.background_rect.center = self.border_rect.center
     self.draw_display()
     pygame.draw.rect(self.game.screen, self.border_colour, self.border_rect, self.border_width)
   
   def update_position(self, game_position_y, play_area_height):
     # checking if the enemy has reached the bottom
-    if self.position.y in range(game_position_y, play_area_height - 50 - self.game.enemy_size):
+    if self.position.y in range(game_position_y, play_area_height - 50 - self.size):
       self.position = Point(self.position.x, self.position.y + 1)
       self.draw()
     else:

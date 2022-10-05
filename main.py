@@ -34,12 +34,12 @@ def draw_layout():
 
 bar_position_x = 40
 bar_position_y = game_height - 140
-game.binary_box_size = 50
+binary_box_size = 50
 internal_box_size = 40
 box_padding = 10
-whole_box_width = game.binary_box_size + box_padding
+whole_box_width = binary_box_size + box_padding
 
-binary_boxes = [BinaryBox((bar_position_x + i*(whole_box_width), bar_position_y), game) for i in range(8)]
+binary_boxes = [BinaryBox((bar_position_x + i*(whole_box_width), bar_position_y), binary_box_size, game) for i in range(8)]
 
 bit_missiles = []
 
@@ -53,15 +53,15 @@ for i in range(8):
 for i, box in enumerate(binary_boxes):
   box.set_missile(bit_missiles[i])
 
-game.preview_size = 70
-game.preview_font_size = 50
+preview_size = 70
+preview_font_size = 50
 # center the display relative to the binary bar
-display_position_x = bar_position_x + 4 * whole_box_width - box_padding / 2 - game.preview_size / 2
-display_position_y = bar_position_y + game.binary_box_size + 20
-binary_bar_preview = Preview((display_position_x, display_position_y), game, "0")
+display_position_x = bar_position_x + 4 * whole_box_width - box_padding / 2 - preview_size / 2
+display_position_y = bar_position_y + binary_box_size + 20
+binary_bar_preview = Preview((display_position_x, display_position_y), preview_size, preview_font_size, "0", game)
 
-game.enemy_size = 50
-game.enemy_font_size = 40
+enemy_size = 50
+enemy_font_size = 40
 
 alive_enemies = []
 
@@ -69,10 +69,10 @@ def create_enemy():
   integer = randint(0, 255)
   hexadecimal =  f"{integer:X}"
 
-  position = Point(randint(game_position_x + 10, game_width - game.enemy_size + 10), game_position_y + 10)
+  position = Point(randint(game_position_x + 10, game_width - enemy_size + 10), game_position_y + 10)
 
   # moving the enemy to correct area
-  enemy = Enemy(position, game, hexadecimal)
+  enemy = Enemy(position, enemy_size, enemy_font_size, hexadecimal, game)
   enemy.draw()
   alive_enemies.append(enemy)
 
@@ -85,12 +85,12 @@ def draw_screen():
 
 def update_enemy_position():
   for enemy in alive_enemies:
-    pygame.draw.rect(game.screen, game.game_bg_colour, (enemy.position, (game.enemy_size,)*2))
+    pygame.draw.rect(game.screen, game.game_bg_colour, (enemy.position, (enemy_size,)*2))
     enemy.update_position(game_position_y, play_area_height)
     enemy.draw()
 
 def remove_enemy(enemy):
-  pygame.draw.rect(game.screen, game.game_bg_colour, (enemy.position, (game.enemy_size,)*2))
+  pygame.draw.rect(game.screen, game.game_bg_colour, (enemy.position, (enemy_size,)*2))
 
 def on_keypress(bit_index):
   binary_boxes[bit_index].flip_bit()
