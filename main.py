@@ -19,10 +19,9 @@ border_width = 5
 play_area_height = game_height - 160
 game_border_colour = "#06001a"
 game_bg_colour = "#00334d"
+game_rect = pygame.Rect(game_position_x, game_position_y, game_width, game_height)
 
 def draw_layout():
-  game_rect = pygame.Rect(game_position_x, game_position_y, game_width, game_height)
-
   # calculating the position and dimensions based on information given above
   pygame.draw.rect(screen, game_bg_colour, game_rect) # background
   pygame.draw.rect(screen, game_border_colour, game_rect, border_width) # full border 
