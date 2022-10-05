@@ -28,7 +28,7 @@ def draw_layout():
   # calculating the position for the line above binary bar
   pygame.draw.line(screen, game_border_colour, (game_position_x, play_area_height), (game_position_x + game_width - border_width, play_area_height), border_width)
   # The line where enemies have to reach
-  pygame.draw.line(screen, "#550000", (game_position_x + border_width, play_area_height - 50), (game_position_x + game_width - border_width, play_area_height - 50), border_width)
+  # pygame.draw.line(screen, "#550000", (game_position_x + border_width, play_area_height - 50), (game_position_x + game_width - border_width, play_area_height - 50), border_width)
 
 bar_position_x = 40
 bar_position_y = game_height - 140
@@ -73,14 +73,21 @@ def create_enemy():
   enemy.draw()
   alive_enemies.append(enemy)
 
-def redraw_screen():
+def draw_screen():
   screen.fill(bg_colour)
   draw_layout()
   binary_bar_preview.draw_display()
   for box in binary_boxes:
     box.draw_box()
+
+def update_enemy_position():
   for enemy in alive_enemies:
+    pygame.draw.rect(screen, game_bg_colour, (enemy.position, (enemy.size,)*2))
+    enemy.update_position(game_position_y, play_area_height)
     enemy.draw()
+
+def remove_enemy(enemy):
+  pygame.draw.rect(screen, game_bg_colour, (enemy.position, (enemy.size,)*2))
 
 def on_keypress(bit_index):
   binary_boxes[bit_index].flip_bit()
@@ -88,6 +95,8 @@ def on_keypress(bit_index):
 
 time_since_enemy_spawn = time.time()
 time_between_spawns = 5
+
+draw_screen()
 
 while True:
   clock.tick(60)
@@ -102,10 +111,9 @@ while True:
 
   for enemy in alive_enemies:
     if enemy.is_destroyed:
+      remove_enemy(enemy)
       alive_enemies.remove(enemy)
-    enemy.update_position(game_position_y, play_area_height)
-  
-  redraw_screen()
+  update_enemy_position()
 
   for event in pygame.event.get():
     match event.type:

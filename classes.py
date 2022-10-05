@@ -41,8 +41,6 @@ class BinaryBox:
     binary_box_text_rect = binary_box_text.get_rect()
     binary_box_text_rect.center = self.background_rect.center
     self.screen.blit(binary_box_text, binary_box_text_rect)
-    if self.current_bit == "1":
-      self.missile.draw()
   
   def flip_bit(self):
     if self.current_bit == "0":
