@@ -49,6 +49,9 @@ for i in range(8):
   vertex_3 = Point(vertex_1.x + internal_box_size / 2, vertex_1.y - internal_box_size)
   bit_missiles.append(Missile((vertex_1, vertex_2, vertex_3), screen, game_bg_colour))
 
+for i, box in enumerate(binary_boxes):
+  box.set_missile(bit_missiles[i])
+
 display_size = 70
 # center the display relative to the binary bar
 display_position_x = bar_position_x + 4 * whole_box_width - box_padding / 2 - display_size / 2
@@ -80,7 +83,7 @@ def redraw_screen():
     enemy.draw()
 
 def on_keypress(bit_index):
-  binary_boxes[bit_index].flip_bit(bit_index, bit_missiles)
+  binary_boxes[bit_index].flip_bit()
   binary_bar_preview.update_display(binary_boxes)
 
 time_since_enemy_spawn = time.time()

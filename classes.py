@@ -24,7 +24,7 @@ class BinaryBox:
     self.border_colour = "#666666"
     self.text_colour = "#bfbfbf"
     self.current_bit = "0"
-    self.missile = []
+    self.missile = None
 
     internal_box_size = size - 2 * border_width
     self.border_rect = pygame.Rect(position, (size,)*2)
@@ -44,16 +44,18 @@ class BinaryBox:
     if self.current_bit == "1":
       self.missile.draw()
   
-  def flip_bit(self, bit_index, bit_missiles):
-    self.missile = bit_missiles[bit_index]
+  def flip_bit(self):
     if self.current_bit == "0":
       self.current_bit = "1"
-      bit_missiles[bit_index].draw()
+      self.missile.draw()
     else:
       self.current_bit = "0"
-      bit_missiles[bit_index].erase()
+      self.missile.erase()
     self.bg_colour, self.text_colour = self.text_colour, self.bg_colour
     self.draw_box()
+
+  def set_missile(self, missile):
+    self.missile = missile
 
   def get_current_bit(self):
     return self.current_bit
