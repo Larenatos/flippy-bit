@@ -3,7 +3,7 @@ import pygame
 
 Point = namedtuple("Point", "x y")
 
-class Missile():
+class Missile:
   def __init__(self, vertices, screen, game_bg_colour):
     self.bg_colour = "#06001a"
     self.vertices = vertices
@@ -16,7 +16,7 @@ class Missile():
   def erase(self):
     pygame.draw.polygon(self.screen, self.game_bg_colour, self.vertices)
 
-class BinaryBox():
+class BinaryBox:
   def __init__(self, position, size, border_width, screen):
     self.screen = screen
     self.border_width = border_width
@@ -58,7 +58,7 @@ class BinaryBox():
   def get_current_bit(self):
     return self.current_bit
 
-class HexadecimalDisplay():
+class HexadecimalDisplay:
   def __init__(self, size, font_size, hexadecimals, screen):
     self.screen = screen
     self.bg_colour = "#06001a"
