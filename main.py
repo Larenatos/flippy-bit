@@ -1,126 +1,77 @@
-from collections import namedtuple
+from time import time
 import pygame
+from classes import Game, BinaryBox, Missile, Preview, Point
+from functions import draw_layout, create_enemy
+
 pygame.init()
 
-screen = pygame.display.set_mode(size=(550, 740))
-screen.fill("#004466")
+clock = pygame.time.Clock()
 
-game_position_x = 20
-game_position_y = 20
-game_width = 510
-game_height = 700
-border_width = 5
-play_area_height = 540
-game_border_colour = "#06001a"
-game_bg_colour = "#00334d"
-game_rect = pygame.Rect(game_position_x, game_position_y, game_width, game_height)
+game = Game()
 
-# calculating the position and dimensions based on information given above
-background = pygame.draw.rect(screen, game_bg_colour, game_rect)
-game_border = pygame.draw.rect(screen, game_border_colour, game_rect, border_width)
-area_separator = pygame.draw.rect(screen, game_border_colour, (game_position_x, play_area_height, game_width, border_width))
-
-class Missile():
-  def __init__(self, vertices):
-    self.bg_colour = "#06001a"
-    self.vertices = vertices
-  
-  def draw(self):
-    pygame.draw.polygon(screen, self.bg_colour, self.vertices)
-  
-  def erase(self):
-    pygame.draw.polygon(screen, game_bg_colour, self.vertices)
-
-class BinaryBox():
-  def __init__(self, position, size, border_width):
-    self.bg_colour = "#06001a"
-    self.border_colour = "#666666"
-    self.text_colour = "#bfbfbf"
-    self.current_bit = "0"
-
-    internal_box_size = size - 2 * border_width
-    border_rect = pygame.Rect(position, (size,)*2)
-    self.background_rect = pygame.Rect((0, 0), (internal_box_size,)*2)
-    self.background_rect.center = border_rect.center
-    self.font = pygame.font.SysFont(None, 40)
-    pygame.draw.rect(screen, self.border_colour, border_rect, border_width)
-    self.draw_box()
-
-  def draw_box(self):
-    pygame.draw.rect(screen, self.bg_colour, self.background_rect)
-    
-    binary_box_text = self.font.render(self.current_bit, True, self.text_colour)
-    binary_box_text_rect = binary_box_text.get_rect()
-    binary_box_text_rect.center = self.background_rect.center
-    screen.blit(binary_box_text, binary_box_text_rect)
-  
-  def flip_bit(self, bit_index, bit_missiles):
-    if self.current_bit == "0":
-      self.current_bit = "1"
-      bit_missiles[bit_index].draw()
-    else:
-      self.current_bit = "0"
-      bit_missiles[bit_index].erase()
-    self.bg_colour, self.text_colour = self.text_colour, self.bg_colour
-    self.draw_box()
-
-  def get_current_bit(self):
-    return self.current_bit
-
-class HexadecimalDisplay():
-  def __init__(self, position, size, font_size):
-    self.bg_colour = "#06001a"
-    self.text_colour = "#bfbfbf"
-    self.current_hexadecimals = ""
-
-    self.font = pygame.font.SysFont(None, font_size)
-    self.background_rect = pygame.Rect(position, (size,)*2)
-    self.draw_display()
-
-  def draw_display(self):
-    pygame.draw.rect(screen, self.bg_colour, self.background_rect)
-    display_text = self.font.render(self.current_hexadecimals, True, self.text_colour)
-    display_text_rect = display_text.get_rect()
-    display_text_rect.center = self.background_rect.center
-    screen.blit(display_text, display_text_rect)
-  
-  def update_display(self, binary_boxes):
-    binary = "".join(binary_box.get_current_bit() for binary_box in binary_boxes)
-    self.current_hexadecimals =  f"{int(binary, 2):X}"
-    self.draw_display()
+bg_colour = "#004466"
+game.screen.fill(bg_colour)
 
 bar_position_x = 40
-bar_position_y = 560
-box_size = 50
+bar_position_y = game.rect.height - 140
+binary_box_size = 50
 internal_box_size = 40
-box_border_width = 5
 box_padding = 10
-whole_box_width = box_size + box_padding
+whole_box_width = binary_box_size + box_padding
 
-binary_boxes = [BinaryBox((bar_position_x + i*(whole_box_width), bar_position_y), box_size, box_border_width) for i in range(8)]
-
-bit_missiles = []
-Point = namedtuple("Point", "x y")
+binary_boxes = []
 
 for i in range(8):
   # calculating the position and dimensions for each missile based on the location of binary bar
-  vertex_1 = Point(bar_position_x + box_border_width + i * whole_box_width, bar_position_y - 30)
+  vertex_1 = Point(bar_position_x + game.border_width + i * whole_box_width, bar_position_y - 30)
   vertex_2 = Point(vertex_1.x + internal_box_size, vertex_1.y)
   vertex_3 = Point(vertex_1.x + internal_box_size / 2, vertex_1.y - internal_box_size)
-  bit_missiles.append(Missile((vertex_1, vertex_2, vertex_3)))
 
-display_size = 70
+  binary_boxes.append(BinaryBox(
+    (bar_position_x + i*(whole_box_width), bar_position_y), 
+    binary_box_size,
+    game, 
+    Missile((vertex_1, vertex_2, vertex_3), game)
+  ))
+
+preview_size = 70
+preview_font_size = 50
 # center the display relative to the binary bar
-display_position_x = bar_position_x + 4 * whole_box_width - box_padding / 2 - display_size / 2
-display_position_y = bar_position_y + box_size + 20
-hexadecimal_display = HexadecimalDisplay((display_position_x, display_position_y), display_size, 50)
+display_position_x = bar_position_x + 4 * whole_box_width - box_padding / 2 - preview_size / 2
+display_position_y = bar_position_y + binary_box_size + 20
+binary_bar_preview = Preview((display_position_x, display_position_y), preview_size, preview_font_size, "0", game)
+
+alive_enemies = []
+
+draw_layout(game)
+binary_bar_preview.draw_display()
+for box in binary_boxes:
+  box.draw_box()
 
 def on_keypress(bit_index):
-  binary_boxes[bit_index].flip_bit(bit_index, bit_missiles)
-  hexadecimal_display.update_display(binary_boxes)
+  binary_boxes[bit_index].flip_bit()
+  binary_bar_preview.update_display(binary_boxes)
+
+time_since_enemy_spawn = time()
+time_between_spawns = 5
 
 while True:
+  clock.tick(60)
   pygame.display.flip()
+
+  current_time = time()
+  if current_time - time_since_enemy_spawn >= time_between_spawns:
+    time_since_enemy_spawn = current_time
+    if time_between_spawns > 1.5:
+      time_between_spawns -= 0.25
+    alive_enemies.append(create_enemy(game))
+
+  for enemy in alive_enemies:
+    if enemy.is_destroyed:
+      alive_enemies.remove(enemy)
+    else:
+      enemy.update_position()
+
   for event in pygame.event.get():
     match event.type:
       case pygame.QUIT:
