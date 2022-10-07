@@ -1,39 +1,28 @@
 from random import randint
 import time
 import pygame
-from classes import BinaryBox, Missile, Preview, Enemy, Point
+from classes import Game, BinaryBox, Missile, Preview, Enemy, Point
 
 pygame.init()
 
-game = type("Game", (), {})()
-
 clock = pygame.time.Clock()
 
-game.screen = pygame.display.set_mode(size=(550, 840))
+game = Game()
+
 bg_colour = "#004466"
 game.screen.fill(bg_colour)
 
-game_position_x = 20
-game_position_y = 20
-game_width = 510
-game_height = 800
-game.border_width = 5
-play_area_height = game_height - 160
-game_border_colour = "#06001a"
-game.game_bg_colour = "#00334d"
-game_rect = pygame.Rect(game_position_x, game_position_y, game_width, game_height)
-
 def draw_layout():
   # calculating the position and dimensions based on information given above
-  pygame.draw.rect(game.screen, game.game_bg_colour, game_rect) # background
-  pygame.draw.rect(game.screen, game_border_colour, game_rect, game.border_width) # full border 
+  pygame.draw.rect(game.screen, game.bg_colour, game.rect) # background
+  pygame.draw.rect(game.screen, game.border_colour, game.rect, game.border_width) # full border 
   # calculating the position for the line above binary bar
-  pygame.draw.line(game.screen, game_border_colour, (game_position_x, play_area_height), (game_position_x + game_width - game.border_width, play_area_height), game.border_width)
-  # The line where enemies have to reach
-  # pygame.draw.line(screen, "#550000", (game_position_x + border_width, play_area_height - 50), (game_position_x + game_width - border_width, play_area_height - 50), border_width)
+  start_position = (game.rect.x, game.play_area_height)
+  end_position = (game.rect.right, game.play_area_height)
+  pygame.draw.line(game.screen, game.border_colour, start_position, end_position, game.border_width)
 
 bar_position_x = 40
-bar_position_y = game_height - 140
+bar_position_y = game.rect.height - 140
 binary_box_size = 50
 internal_box_size = 40
 box_padding = 10
@@ -68,7 +57,7 @@ def create_enemy():
   integer = randint(0, 255)
   hexadecimal =  f"{integer:X}"
 
-  position = Point(randint(game_position_x + 10, game_width - enemy_size + 10), game_position_y + 10)
+  position = Point(randint(game.rect.x + 10, game.rect.width - enemy_size + 10), game.rect.y + 10)
 
   # moving the enemy to correct area
   enemy = Enemy(position, enemy_size, enemy_font_size, hexadecimal, game)
@@ -106,7 +95,7 @@ while True:
     if enemy.is_destroyed:
       alive_enemies.remove(enemy)
     else:
-      enemy.update_position(game_position_y, play_area_height)
+      enemy.update_position(game.rect.y, game.play_area_height)
 
   for event in pygame.event.get():
     match event.type:
