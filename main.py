@@ -51,7 +51,7 @@ for i in range(8):
   bit_missiles.append(Missile((vertex_1, vertex_2, vertex_3), game))
 
 for i, box in enumerate(binary_boxes):
-  box.set_missile(bit_missiles[i])
+  box.missile = bit_missiles[i]
 
 preview_size = 70
 preview_font_size = 50

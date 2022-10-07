@@ -50,12 +50,6 @@ class BinaryBox:
     self.bg_colour, self.text_colour = self.text_colour, self.bg_colour
     self.draw_box()
 
-  def set_missile(self, missile):
-    self.missile = missile
-
-  def get_current_bit(self):
-    return self.current_bit
-
 class HexadecimalDisplay:
   def __init__(self, game, font_size, hexadecimals):
     self.game = game
@@ -78,7 +72,7 @@ class Preview(HexadecimalDisplay):
     self.draw_display()
 
   def update_display(self, binary_boxes):
-    binary = "".join(binary_box.get_current_bit() for binary_box in binary_boxes)
+    binary = "".join(binary_box.current_bit for binary_box in binary_boxes)
     self.current_hexadecimals =  f"{int(binary, 2):X}"
     self.draw_display()
 
