@@ -83,15 +83,6 @@ def draw_screen():
   for box in binary_boxes:
     box.draw_box()
 
-def update_enemy_position():
-  for enemy in alive_enemies:
-    pygame.draw.rect(game.screen, game.game_bg_colour, (enemy.position, (enemy_size,)*2))
-    enemy.update_position(game_position_y, play_area_height)
-    enemy.draw()
-
-def remove_enemy(enemy):
-  pygame.draw.rect(game.screen, game.game_bg_colour, (enemy.position, (enemy_size,)*2))
-
 def on_keypress(bit_index):
   binary_boxes[bit_index].flip_bit()
   binary_bar_preview.update_display(binary_boxes)
@@ -114,9 +105,9 @@ while True:
 
   for enemy in alive_enemies:
     if enemy.is_destroyed:
-      remove_enemy(enemy)
       alive_enemies.remove(enemy)
-  update_enemy_position()
+    else:
+      enemy.update_position(game_position_y, play_area_height)
 
   for event in pygame.event.get():
     match event.type:

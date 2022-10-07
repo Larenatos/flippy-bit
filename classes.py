@@ -94,6 +94,7 @@ class Enemy(HexadecimalDisplay):
   
   def update_position(self, game_position_y, play_area_height):
     # checking if the enemy has reached the bottom
+    pygame.draw.rect(self.game.screen, self.game.game_bg_colour, (self.position, (self.size,)*2))
     if self.position.y in range(game_position_y, play_area_height - 50 - self.size):
       self.position = Point(self.position.x, self.position.y + 1)
       self.draw()
