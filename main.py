@@ -1,7 +1,7 @@
-from random import randint
 import time
 import pygame
-from classes import Game, BinaryBox, Missile, Preview, Enemy, Point
+from classes import Game, BinaryBox, Missile, Preview, Point
+from functions import draw_layout, create_enemy
 
 pygame.init()
 
@@ -11,15 +11,6 @@ game = Game()
 
 bg_colour = "#004466"
 game.screen.fill(bg_colour)
-
-def draw_layout():
-  # calculating the position and dimensions based on information given above
-  pygame.draw.rect(game.screen, game.bg_colour, game.rect) # background
-  pygame.draw.rect(game.screen, game.border_colour, game.rect, game.border_width) # full border 
-  # calculating the position for the line above binary bar
-  start_position = (game.rect.x, game.play_area_height)
-  end_position = (game.rect.right, game.play_area_height)
-  pygame.draw.line(game.screen, game.border_colour, start_position, end_position, game.border_width)
 
 bar_position_x = 40
 bar_position_y = game.rect.height - 140
@@ -48,28 +39,12 @@ display_position_x = bar_position_x + 4 * whole_box_width - box_padding / 2 - pr
 display_position_y = bar_position_y + binary_box_size + 20
 binary_bar_preview = Preview((display_position_x, display_position_y), preview_size, preview_font_size, "0", game)
 
-enemy_size = 50
-enemy_font_size = 40
-
 alive_enemies = []
 
-def create_enemy():
-  integer = randint(0, 255)
-  hexadecimal =  f"{integer:X}"
-
-  position = Point(randint(game.rect.x + 10, game.rect.width - enemy_size + 10), game.rect.y + 10)
-
-  # moving the enemy to correct area
-  enemy = Enemy(position, enemy_size, enemy_font_size, hexadecimal, game)
-  enemy.draw()
-  alive_enemies.append(enemy)
-
-def draw_screen():
-  game.screen.fill(bg_colour)
-  draw_layout()
-  binary_bar_preview.draw_display()
-  for box in binary_boxes:
-    box.draw_box()
+draw_layout(game)
+binary_bar_preview.draw_display()
+for box in binary_boxes:
+  box.draw_box()
 
 def on_keypress(bit_index):
   binary_boxes[bit_index].flip_bit()
@@ -77,8 +52,6 @@ def on_keypress(bit_index):
 
 time_since_enemy_spawn = time.time()
 time_between_spawns = 5
-
-draw_screen()
 
 while True:
   clock.tick(60)
@@ -89,7 +62,7 @@ while True:
     time_since_enemy_spawn = current_time
     if time_between_spawns > 1.5:
       time_between_spawns -= 0.25
-    create_enemy()
+    alive_enemies.append(create_enemy(game))
 
   for enemy in alive_enemies:
     if enemy.is_destroyed:

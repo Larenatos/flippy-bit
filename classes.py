@@ -12,6 +12,9 @@ class Game:
     self.border_colour = "#06001a"
     self.bg_colour = "#00334d"
 
+    self.enemy_size = 50
+    self.enemy_font_size = 40
+
 class Missile:
   def __init__(self, vertices, game):
     self.bg_colour = "#06001a"
