@@ -1,4 +1,4 @@
-import time
+from time import time
 import pygame
 from classes import Game, BinaryBox, Missile, Preview, Point
 from functions import draw_layout, create_enemy
@@ -19,18 +19,21 @@ internal_box_size = 40
 box_padding = 10
 whole_box_width = binary_box_size + box_padding
 
-binary_boxes = [BinaryBox((bar_position_x + i*(whole_box_width), bar_position_y), binary_box_size, game) for i in range(8)]
-
-bit_missiles = []
+binary_boxes = []
 
 for i in range(8):
   # calculating the position and dimensions for each missile based on the location of binary bar
   vertex_1 = Point(bar_position_x + game.border_width + i * whole_box_width, bar_position_y - 30)
   vertex_2 = Point(vertex_1.x + internal_box_size, vertex_1.y)
   vertex_3 = Point(vertex_1.x + internal_box_size / 2, vertex_1.y - internal_box_size)
-  missile = Missile((vertex_1, vertex_2, vertex_3), game)
-  bit_missiles.append(missile)
-  binary_boxes[i].missile = missile
+
+  binary_boxes.append(BinaryBox(
+    (bar_position_x + i*(whole_box_width), 
+    bar_position_y), 
+    binary_box_size,
+    game, 
+    Missile((vertex_1, vertex_2, vertex_3), game)
+  ))
 
 preview_size = 70
 preview_font_size = 50
@@ -50,14 +53,14 @@ def on_keypress(bit_index):
   binary_boxes[bit_index].flip_bit()
   binary_bar_preview.update_display(binary_boxes)
 
-time_since_enemy_spawn = time.time()
+time_since_enemy_spawn = time()
 time_between_spawns = 5
 
 while True:
   clock.tick(60)
   pygame.display.flip()
 
-  current_time = time.time()
+  current_time = time()
   if current_time - time_since_enemy_spawn >= time_between_spawns:
     time_since_enemy_spawn = current_time
     if time_between_spawns > 1.5:
@@ -68,7 +71,7 @@ while True:
     if enemy.is_destroyed:
       alive_enemies.remove(enemy)
     else:
-      enemy.update_position(game.rect.y, game.play_area_height)
+      enemy.update_position(game)
 
   for event in pygame.event.get():
     match event.type:

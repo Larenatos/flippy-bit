@@ -8,7 +8,7 @@ class Game:
     self.screen = pygame.display.set_mode(size=(550, 840))
     self.rect = pygame.Rect(20, 20, 510, 800)
     self.border_width = 5
-    self.play_area_height = self.rect.height - 160
+    self.play_area_height = 640
     self.border_colour = "#06001a"
     self.bg_colour = "#00334d"
 
@@ -28,13 +28,13 @@ class Missile:
     pygame.draw.polygon(self.game.screen, self.game.bg_colour, self.vertices)
 
 class BinaryBox:
-  def __init__(self, position, size, game):
+  def __init__(self, position, size, game, missile):
     self.game = game
     self.bg_colour = "#06001a"
     self.border_colour = "#666666"
     self.text_colour = "#bfbfbf"
     self.current_bit = "0"
-    self.missile = None
+    self.missile = missile
 
     internal_box_size = size - 2 * game.border_width
     self.border_rect = pygame.Rect(position, (size,)*2)
@@ -102,10 +102,10 @@ class Enemy(HexadecimalDisplay):
     self.draw_display()
     pygame.draw.rect(self.game.screen, self.border_colour, self.border_rect, self.border_width)
   
-  def update_position(self, game_position_y, play_area_height):
+  def update_position(self, game):
     # checking if the enemy has reached the bottom
     pygame.draw.rect(self.game.screen, self.game.bg_colour, self.border_rect)
-    if self.border_rect.y in range(game_position_y, play_area_height - 50 - self.size):
+    if self.border_rect.y in range(game.rect.y, game.play_area_height - 50 - self.size):
       self.border_rect.y += 1
       self.draw()
     else:

@@ -8,7 +8,7 @@ def draw_layout(game):
   pygame.draw.rect(game.screen, game.border_colour, game.rect, game.border_width) # full border 
   # calculating the position for the line above binary bar
   start_position = (game.rect.x, game.play_area_height)
-  end_position = (game.rect.right, game.play_area_height)
+  end_position = (game.rect.right - game.border_width, game.play_area_height)
   pygame.draw.line(game.screen, game.border_colour, start_position, end_position, game.border_width)
 
 def create_enemy(game):
