@@ -71,7 +71,7 @@ while True:
     if enemy.is_destroyed:
       alive_enemies.remove(enemy)
     else:
-      enemy.update_position(game)
+      enemy.update_position()
 
   for event in pygame.event.get():
     match event.type:
