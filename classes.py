@@ -79,24 +79,23 @@ class Preview(HexadecimalDisplay):
 class Enemy(HexadecimalDisplay):
   def __init__(self, position, size, font_size, hexadecimals, game):
     HexadecimalDisplay.__init__(self, game, font_size, hexadecimals)
-    self.position = position
     self.size = size
     self.border_colour = "#850020"
     self.border_width = 5
     self.is_destroyed = False
+    self.background_rect = pygame.Rect((0, 0), (self.size,)*2)
+    self.border_rect = pygame.Rect(position, (self.size,)*2)
   
   def draw(self):
-    self.border_rect = pygame.Rect(self.position, (self.size,)*2)
-    self.background_rect = pygame.Rect((0, 0), (self.size,)*2)
     self.background_rect.center = self.border_rect.center
     self.draw_display()
     pygame.draw.rect(self.game.screen, self.border_colour, self.border_rect, self.border_width)
   
   def update_position(self, game_position_y, play_area_height):
     # checking if the enemy has reached the bottom
-    pygame.draw.rect(self.game.screen, self.game.game_bg_colour, (self.position, (self.size,)*2))
-    if self.position.y in range(game_position_y, play_area_height - 50 - self.size):
-      self.position = Point(self.position.x, self.position.y + 1)
+    pygame.draw.rect(self.game.screen, self.game.game_bg_colour, self.border_rect)
+    if self.border_rect.y in range(game_position_y, play_area_height - 50 - self.size):
+      self.border_rect.y += 1
       self.draw()
     else:
       self.is_destroyed = True
