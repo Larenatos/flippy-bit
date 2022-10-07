@@ -63,8 +63,9 @@ class BinaryBox:
     self.draw_box()
 
 class HexadecimalDisplay:
-  def __init__(self, game, font_size, hexadecimals):
+  def __init__(self, game, font_size, hexadecimals, position, size):
     self.game = game
+    self.background_rect = pygame.Rect(position, (size,)*2)
     self.bg_colour = "#06001a"
     self.text_colour = "#bfbfbf"
     self.current_hexadecimals = hexadecimals
@@ -79,8 +80,7 @@ class HexadecimalDisplay:
   
 class Preview(HexadecimalDisplay):
   def __init__(self, position, size, font_size, hexadecimals, game):
-    HexadecimalDisplay.__init__(self, game, font_size, hexadecimals)
-    self.background_rect = pygame.Rect(position, (size,)*2)
+    HexadecimalDisplay.__init__(self, game, font_size, hexadecimals, position, size,)
     self.draw_display()
 
   def update_display(self, binary_boxes):
@@ -90,12 +90,11 @@ class Preview(HexadecimalDisplay):
 
 class Enemy(HexadecimalDisplay):
   def __init__(self, position, size, font_size, hexadecimals, game):
-    HexadecimalDisplay.__init__(self, game, font_size, hexadecimals)
+    HexadecimalDisplay.__init__(self, game, font_size, hexadecimals, (0, 0), size)
     self.size = size
     self.border_colour = "#850020"
     self.border_width = 5
     self.is_destroyed = False
-    self.background_rect = pygame.Rect((0, 0), (self.size,)*2)
     self.border_rect = pygame.Rect(position, (self.size,)*2)
   
   def draw(self):
