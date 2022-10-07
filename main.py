@@ -48,10 +48,9 @@ for i in range(8):
   vertex_1 = Point(bar_position_x + game.border_width + i * whole_box_width, bar_position_y - 30)
   vertex_2 = Point(vertex_1.x + internal_box_size, vertex_1.y)
   vertex_3 = Point(vertex_1.x + internal_box_size / 2, vertex_1.y - internal_box_size)
-  bit_missiles.append(Missile((vertex_1, vertex_2, vertex_3), game))
-
-for i, box in enumerate(binary_boxes):
-  box.missile = bit_missiles[i]
+  missile = Missile((vertex_1, vertex_2, vertex_3), game)
+  bit_missiles.append(missile)
+  binary_boxes[i].missile = missile
 
 preview_size = 70
 preview_font_size = 50
