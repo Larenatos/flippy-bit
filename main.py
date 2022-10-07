@@ -28,8 +28,7 @@ for i in range(8):
   vertex_3 = Point(vertex_1.x + internal_box_size / 2, vertex_1.y - internal_box_size)
 
   binary_boxes.append(BinaryBox(
-    (bar_position_x + i*(whole_box_width), 
-    bar_position_y), 
+    (bar_position_x + i*(whole_box_width), bar_position_y), 
     binary_box_size,
     game, 
     Missile((vertex_1, vertex_2, vertex_3), game)
