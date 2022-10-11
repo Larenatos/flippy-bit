@@ -1,7 +1,7 @@
 from time import time
 import pygame
 from classes import Game, BinaryBox, Missile, Preview, Point
-from functions import draw_layout, create_enemy
+from functions import draw_layout, create_enemy, merge_missiles
 
 pygame.init()
 
@@ -20,12 +20,14 @@ box_padding = 10
 whole_box_width = binary_box_size + box_padding
 
 binary_boxes = []
+missile_locations = []
 
 for i in range(8):
   # calculating the position and dimensions for each missile based on the location of binary bar
   vertex_1 = Point(bar_position_x + game.border_width + i * whole_box_width, bar_position_y - 30)
   vertex_2 = Point(vertex_1.x + internal_box_size, vertex_1.y)
   vertex_3 = Point(vertex_1.x + internal_box_size / 2, vertex_1.y - internal_box_size)
+  missile_locations.append((vertex_1, vertex_2, vertex_3))
 
   binary_boxes.append(BinaryBox(
     (bar_position_x + i*(whole_box_width), bar_position_y), 
@@ -56,7 +58,7 @@ time_since_enemy_spawn = time()
 time_between_spawns = 5
 
 while True:
-  clock.tick(60)
+  clock.tick(1)
   pygame.display.flip()
 
   current_time = time()
@@ -71,6 +73,15 @@ while True:
       alive_enemies.remove(enemy)
     else:
       enemy.update_position()
+
+  if binary_bar_preview.current_hexadecimals == "76":
+    active_missile_locations = []
+    for i, box in enumerate(binary_boxes):
+      if box.current_bit == 1:
+        active_missile_locations.append(missile_locations[i])
+        print(i)
+        box.flip_bit()
+    merge_missiles(100, active_missile_locations, game)
 
   for event in pygame.event.get():
     match event.type:

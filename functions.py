@@ -1,6 +1,6 @@
 from random import randint
 import pygame
-from classes import Point, Enemy
+from classes import Point, Enemy, Missile
 
 def draw_layout(game):
   # calculating the position and dimensions based on information given above
@@ -21,3 +21,19 @@ def create_enemy(game):
   enemy = Enemy(position, game.enemy_size, game.enemy_font_size, hexadecimal, game)
   enemy.draw()
   return enemy
+
+def merge_missiles(destination, missile_locations, game):
+  print(missile_locations)
+  missiles = [Missile(location, game) for location in missile_locations]
+  for missile in missiles:
+    if missile.vertices[3] < destination:
+      missile.erase()
+      for vertex in missile.vertices:
+        vertex.x += 1
+      missile.draw()
+    elif missile.vertices > destination:
+      missile.erase()
+      for vertex in missile.vertices:
+        vertex.x -= 1
+      missile.draw()
+  
