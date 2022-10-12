@@ -26,14 +26,18 @@ def merge_missiles(destination, missile_locations, game):
   print(missile_locations)
   missiles = [Missile(location, game) for location in missile_locations]
   for missile in missiles:
-    if missile.vertices[3] < destination:
+    if missile.vertices[2].x < destination:
       missile.erase()
+      vertices = []
       for vertex in missile.vertices:
-        vertex.x += 1
+        vertices.append(Point(vertex.x - 1, vertex.y))
+      missile.vertices = vertices
       missile.draw()
-    elif missile.vertices > destination:
+    elif missile.vertices[2].x > destination:
       missile.erase()
+      vertices = []
       for vertex in missile.vertices:
-        vertex.x -= 1
+        vertices.append(Point(vertex.x - 1, vertex.y))
+      missile.vertices = vertices
       missile.draw()
   
