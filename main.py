@@ -58,7 +58,7 @@ time_since_enemy_spawn = time()
 time_between_spawns = 5
 
 while True:
-  clock.tick(1)
+  clock.tick(60)
   pygame.display.flip()
 
   current_time = time()
@@ -77,9 +77,8 @@ while True:
   if binary_bar_preview.current_hexadecimals == "76":
     active_missile_locations = []
     for i, box in enumerate(binary_boxes):
-      if box.current_bit == 1:
+      if box.is_flipped:
         active_missile_locations.append(missile_locations[i])
-        print(i)
         box.flip_bit()
     merge_missiles(100, active_missile_locations, game)
 
