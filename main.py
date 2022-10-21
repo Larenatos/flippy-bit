@@ -1,4 +1,5 @@
 from time import time
+from functools import reduce
 import pygame
 from classes import Game, BinaryBox, Missile, Preview, ShootingMissiles, Point
 from functions import draw_layout, create_enemy
@@ -79,16 +80,18 @@ while True:
       missiles.update_locations()
 
   for enemy in alive_enemies:
-    if binary_bar_preview.current_hexadecimals == enemy.current_hexadecimals:
-      def check_flip(box):
-        if box.is_flipped:
-          box.flip_bit()
-          return box.missile.vertices
+    if not enemy.being_destroyed:
+      if binary_bar_preview.current_hexadecimals == enemy.current_hexadecimals:
+        def check_flip(acc, box):
+          if box.is_flipped:
+            box.flip_bit()
+            return [*acc, box.missile.vertices]
+          return acc
 
-      active_missile_locations=list(filter(lambda location: not location == None, list(map(check_flip, binary_boxes))))
-      binary_bar_preview.update_display(binary_boxes)
+        active_missile_locations = reduce(check_flip, binary_boxes, [])
+        binary_bar_preview.update_display(binary_boxes)
 
-      missiles_to_shoot.append(ShootingMissiles(enemy.border_rect.centerx, active_missile_locations, game))
+        missiles_to_shoot.append(ShootingMissiles(enemy.border_rect.centerx, active_missile_locations, game))
 
   for event in pygame.event.get():
     match event.type:
