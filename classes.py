@@ -27,6 +27,26 @@ class Missile:
   def erase(self):
     pygame.draw.polygon(self.game.screen, self.game.bg_colour, self.vertices)
 
+class ShootingMissiles():
+  def __init__(self, destination, missile_locations, game):
+    self.missiles = [Missile(location, game) for location in missile_locations]
+    self.destination = destination
+    self.missiles_in_place = []
+  
+  def update_locations(self):
+    for missile in self.missiles:
+      if missile.vertices[2].x < self.destination:
+        missile.erase()
+        missile.vertices = [Point(vertex.x + 1, vertex.y) for vertex in missile.vertices]
+        missile.draw()
+      elif missile.vertices[2].x > self.destination:
+        missile.erase()
+        missile.vertices = [Point(vertex.x - 1, vertex.y) for vertex in missile.vertices]
+        missile.draw()
+      else:
+        self.missiles_in_place.append(missile)
+        self.missiles.remove(missile)
+  
 class BinaryBox:
   def __init__(self, position, size, game, missile):
     self.game = game

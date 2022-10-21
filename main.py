@@ -1,7 +1,7 @@
 from time import time
 import pygame
-from classes import Game, BinaryBox, Missile, Preview, Point
-from functions import draw_layout, create_enemy, merge_missiles
+from classes import Game, BinaryBox, Missile, Preview, ShootingMissiles, Point
+from functions import draw_layout, create_enemy
 
 pygame.init()
 
@@ -20,14 +20,12 @@ box_padding = 10
 whole_box_width = binary_box_size + box_padding
 
 binary_boxes = []
-missile_locations = []
 
 for i in range(8):
   # calculating the position and dimensions for each missile based on the location of binary bar
   vertex_1 = Point(bar_position_x + game.border_width + i * whole_box_width, bar_position_y - 30)
   vertex_2 = Point(vertex_1.x + internal_box_size, vertex_1.y)
   vertex_3 = Point(vertex_1.x + internal_box_size / 2, vertex_1.y - internal_box_size)
-  missile_locations.append((vertex_1, vertex_2, vertex_3))
 
   binary_boxes.append(BinaryBox(
     (bar_position_x + i*(whole_box_width), bar_position_y), 
@@ -57,6 +55,8 @@ def on_keypress(bit_index):
 time_since_enemy_spawn = time()
 time_between_spawns = 5
 
+missiles_to_shoot = []
+
 while True:
   clock.tick(60)
   pygame.display.flip()
@@ -74,13 +74,21 @@ while True:
     else:
       enemy.update_position()
 
+  if len(missiles_to_shoot) > 0:
+    for missiles in missiles_to_shoot:
+      missiles.update_locations()
+
   if binary_bar_preview.current_hexadecimals == "76":
-    active_missile_locations = []
-    for i, box in enumerate(binary_boxes):
+    
+    def check_flip(box):
       if box.is_flipped:
-        active_missile_locations.append(missile_locations[i])
         box.flip_bit()
-    merge_missiles(100, active_missile_locations, game)
+        return box.missile.vertices
+
+    active_missile_locations=list(filter(lambda location: not location == None, list(map(check_flip, binary_boxes))))
+    binary_bar_preview.update_display(binary_boxes)
+
+    missiles_to_shoot.append(ShootingMissiles(200, active_missile_locations, game))
 
   for event in pygame.event.get():
     match event.type:
