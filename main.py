@@ -78,17 +78,17 @@ while True:
     for missiles in missiles_to_shoot:
       missiles.update_locations()
 
-  if binary_bar_preview.current_hexadecimals == "76":
-    
-    def check_flip(box):
-      if box.is_flipped:
-        box.flip_bit()
-        return box.missile.vertices
+  for enemy in alive_enemies:
+    if binary_bar_preview.current_hexadecimals == enemy.current_hexadecimals:
+      def check_flip(box):
+        if box.is_flipped:
+          box.flip_bit()
+          return box.missile.vertices
 
-    active_missile_locations=list(filter(lambda location: not location == None, list(map(check_flip, binary_boxes))))
-    binary_bar_preview.update_display(binary_boxes)
+      active_missile_locations=list(filter(lambda location: not location == None, list(map(check_flip, binary_boxes))))
+      binary_bar_preview.update_display(binary_boxes)
 
-    missiles_to_shoot.append(ShootingMissiles(200, active_missile_locations, game))
+      missiles_to_shoot.append(ShootingMissiles(enemy.border_rect.centerx, active_missile_locations, game))
 
   for event in pygame.event.get():
     match event.type:

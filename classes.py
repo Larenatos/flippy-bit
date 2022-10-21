@@ -37,16 +37,22 @@ class ShootingMissiles():
     for missile in self.missiles:
       if missile.vertices[2].x < self.destination:
         missile.erase()
-        missile.vertices = [Point(vertex.x + 1, vertex.y) for vertex in missile.vertices]
+        if self.destination - missile.vertices[2].x < 3:
+          missile.vertices = [Point(vertex.x + 1, vertex.y) for vertex in missile.vertices]
+        else:
+          missile.vertices = [Point(vertex.x + 3, vertex.y) for vertex in missile.vertices]
         missile.draw()
       elif missile.vertices[2].x > self.destination:
         missile.erase()
-        missile.vertices = [Point(vertex.x - 1, vertex.y) for vertex in missile.vertices]
+        if missile.vertices[2].x - self.destination < 3:
+          missile.vertices = [Point(vertex.x - 1, vertex.y) for vertex in missile.vertices]
+        else:
+          missile.vertices = [Point(vertex.x - 3, vertex.y) for vertex in missile.vertices]
         missile.draw()
       else:
         self.missiles_in_place.append(missile)
         self.missiles.remove(missile)
-  
+          
 class BinaryBox:
   def __init__(self, position, size, game, missile):
     self.game = game
