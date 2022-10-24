@@ -28,30 +28,43 @@ class Missile:
     pygame.draw.polygon(self.game.screen, self.game.bg_colour, self.vertices)
 
 class ShootingMissiles:
-  def __init__(self, destination, missile_locations, game):
+  def __init__(self, destination, missile_locations, enemy, game):
     self.missiles = [Missile(location, game) for location in missile_locations]
     self.destination = destination
     self.missiles_in_place = []
+    self.enemy = enemy
+    self.is_shot = False
+    self.has_collided = False
   
   def update_locations(self):
-    for missile in self.missiles:
-      if missile.vertices[2].x < self.destination:
+    if not self.is_shot:
+      for missile in self.missiles:
+        if missile.vertices[2].x < self.destination:
+          missile.erase()
+          if self.destination - missile.vertices[2].x < 3:
+            missile.vertices = [Point(vertex.x + 1, vertex.y) for vertex in missile.vertices]
+          else:
+            missile.vertices = [Point(vertex.x + 3, vertex.y) for vertex in missile.vertices]
+          missile.draw()
+        elif missile.vertices[2].x > self.destination:
+          missile.erase()
+          if missile.vertices[2].x - self.destination < 3:
+            missile.vertices = [Point(vertex.x - 1, vertex.y) for vertex in missile.vertices]
+          else:
+            missile.vertices = [Point(vertex.x - 3, vertex.y) for vertex in missile.vertices]
+          missile.draw()
+        elif missile.vertices[2].x == self.destination:
+          if not missile in self.missiles_in_place:
+            self.missiles_in_place.append(missile)
+    else:
+      missile = self.missiles_in_place[0]
+      if pygame.Rect.collidepoint(self.enemy.border_rect, missile.vertices[2]):
         missile.erase()
-        if self.destination - missile.vertices[2].x < 3:
-          missile.vertices = [Point(vertex.x + 1, vertex.y) for vertex in missile.vertices]
-        else:
-          missile.vertices = [Point(vertex.x + 3, vertex.y) for vertex in missile.vertices]
-        missile.draw()
-      elif missile.vertices[2].x > self.destination:
-        missile.erase()
-        if missile.vertices[2].x - self.destination < 3:
-          missile.vertices = [Point(vertex.x - 1, vertex.y) for vertex in missile.vertices]
-        else:
-          missile.vertices = [Point(vertex.x - 3, vertex.y) for vertex in missile.vertices]
-        missile.draw()
+        self.has_collided = True
       else:
-        self.missiles_in_place.append(missile)
-        self.missiles.remove(missile)
+        missile.erase()
+        missile.vertices = [Point(vertex.x, vertex.y - 5) for vertex in missile.vertices]
+        missile.draw()
 
 class BinaryBox:
   def __init__(self, position, size, game, missile):
@@ -124,6 +137,7 @@ class Enemy(HexadecimalDisplay):
     self.border_colour = "#850020"
     self.border_width = 5
     self.is_destroyed = False
+    self.being_destroyed = False
     self.border_rect = pygame.Rect(position, (self.size,)*2)
   
   def draw(self):
@@ -134,8 +148,9 @@ class Enemy(HexadecimalDisplay):
   def update_position(self):
     # checking if the enemy has reached the bottom
     pygame.draw.rect(self.game.screen, self.game.bg_colour, self.border_rect)
-    if self.border_rect.y in range(self.game.rect.y, self.game.play_area_height - 50 - self.size):
-      self.border_rect.y += 1
-      self.draw()
-    else:
-      self.is_destroyed = True
+    if not self.is_destroyed:
+      if self.border_rect.y in range(self.game.rect.y, self.game.play_area_height - 50 - self.size):
+        self.border_rect.y += 1
+        self.draw()
+      else:
+        self.is_destroyed = True

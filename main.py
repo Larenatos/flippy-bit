@@ -74,9 +74,16 @@ while True:
       alive_enemies.remove(enemy)
     else:
       enemy.update_position()
-
+      
   if len(missiles_to_shoot) > 0:
     for missiles in missiles_to_shoot:
+      if missiles.has_collided:
+        missiles.enemy.is_destroyed = True
+        missiles.enemy.update_position()
+        missiles_to_shoot.remove(missiles)
+        continue
+      if len(missiles.missiles_in_place) == len(missiles.missiles):
+        missiles.is_shot = True
       missiles.update_locations()
 
   for enemy in alive_enemies:
@@ -91,7 +98,8 @@ while True:
         active_missile_locations = reduce(check_flip, binary_boxes, [])
         binary_bar_preview.update_display(binary_boxes)
 
-        missiles_to_shoot.append(ShootingMissiles(enemy.border_rect.centerx, active_missile_locations, game))
+        enemy.being_destroyed = True
+        missiles_to_shoot.append(ShootingMissiles(enemy.border_rect.centerx, active_missile_locations, enemy, game))
 
   for event in pygame.event.get():
     match event.type:
