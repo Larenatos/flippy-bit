@@ -27,17 +27,26 @@ class Missile:
   def erase(self):
     pygame.draw.polygon(self.game.screen, self.game.bg_colour, self.vertices)
 
-class ShootingMissiles:
+class MissilesMergeAndShoot:
   def __init__(self, destination, missile_locations, enemy, game):
     self.missiles = [Missile(location, game) for location in missile_locations]
     self.destination = destination
     self.missiles_in_place = []
     self.enemy = enemy
-    self.is_shot = False
+    self.moving_up = False
     self.has_collided = False
   
   def update_locations(self):
-    if not self.is_shot:
+    if self.moving_up:
+      missile = self.missiles_in_place[0]
+      if pygame.Rect.collidepoint(self.enemy.border_rect, missile.vertices[2]):
+        missile.erase()
+        self.has_collided = True
+      else:
+        missile.erase()
+        missile.vertices = [Point(vertex.x, vertex.y - 5) for vertex in missile.vertices]
+        missile.draw()
+    else:
       for missile in self.missiles:
         if missile.vertices[2].x < self.destination:
           missile.erase()
@@ -56,15 +65,6 @@ class ShootingMissiles:
         elif missile.vertices[2].x == self.destination:
           if not missile in self.missiles_in_place:
             self.missiles_in_place.append(missile)
-    else:
-      missile = self.missiles_in_place[0]
-      if pygame.Rect.collidepoint(self.enemy.border_rect, missile.vertices[2]):
-        missile.erase()
-        self.has_collided = True
-      else:
-        missile.erase()
-        missile.vertices = [Point(vertex.x, vertex.y - 5) for vertex in missile.vertices]
-        missile.draw()
 
 class BinaryBox:
   def __init__(self, position, size, game, missile):

@@ -82,8 +82,9 @@ while True:
         missiles.enemy.update_position()
         missiles_to_shoot.remove(missiles)
         continue
-      if len(missiles.missiles_in_place) == len(missiles.missiles):
-        missiles.is_shot = True
+      if not missiles.moving_up:
+        if len(missiles.missiles_in_place) == len(missiles.missiles):
+          missiles.moving_up = True
       missiles.update_locations()
 
   for enemy in alive_enemies:
