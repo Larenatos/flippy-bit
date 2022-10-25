@@ -56,10 +56,20 @@ class MissilesMergeAndShoot:
         vertices = missile.vertices
         if missile.vertices.top.x < self.destination:
           missile.erase()
-          if self.destination - missile.vertices.top.x < 3:
-            vertex_1 = Point(vertices.left.x - 1, vertices.left.y)
-            vertex_2 = Point(vertices.right.x - 2, vertices.right.y)
-            vertex_3 = Point(vertices.top.x - 1, vertices.top.y)
+          if self.destination - vertices.top.x < 3:
+            vertex_1 = Point(vertices.left.x + 1, vertices.left.y)
+            vertex_2 = Point(vertices.right.x + 1, vertices.right.y)
+            vertex_3 = Point(vertices.top.x + 1, vertices.top.y)
+            missile.vertices = Triangle(vertex_1, vertex_2, vertex_3)
+          elif self.destination - vertices.top.x < 6:
+            vertex_1 = Point(vertices.left.x + 3, vertices.left.y)
+            vertex_2 = Point(vertices.right.x + 3, vertices.right.y)
+            vertex_3 = Point(vertices.top.x + 3, vertices.top.y)
+            missile.vertices = Triangle(vertex_1, vertex_2, vertex_3)
+          elif self.destination - vertices.top.x > 50:
+            vertex_1 = Point(vertices.left.x + 6, vertices.left.y)
+            vertex_2 = Point(vertices.right.x + 6, vertices.right.y)
+            vertex_3 = Point(vertices.top.x + 6, vertices.top.y)
             missile.vertices = Triangle(vertex_1, vertex_2, vertex_3)
           else:
             vertex_1 = Point(vertices.left.x + 3, vertices.left.y)
@@ -67,12 +77,22 @@ class MissilesMergeAndShoot:
             vertex_3 = Point(vertices.top.x + 3, vertices.top.y)
             missile.vertices = Triangle(vertex_1, vertex_2, vertex_3)
           missile.draw()
-        elif missile.vertices.top.x > self.destination:
+        elif vertices.top.x > self.destination:
           missile.erase()
-          if missile.vertices.top.x - self.destination < 3:
+          if vertices.top.x - self.destination < 3:
             vertex_1 = Point(vertices.left.x - 1, vertices.left.y)
             vertex_2 = Point(vertices.right.x - 1, vertices.right.y)
             vertex_3 = Point(vertices.top.x - 1, vertices.top.y)
+            missile.vertices = Triangle(vertex_1, vertex_2, vertex_3)
+          elif vertices.top.x - self.destination < 6:
+            vertex_1 = Point(vertices.left.x - 3, vertices.left.y)
+            vertex_2 = Point(vertices.right.x - 3, vertices.right.y)
+            vertex_3 = Point(vertices.top.x - 3, vertices.top.y)
+            missile.vertices = Triangle(vertex_1, vertex_2, vertex_3)
+          elif vertices.top.x - self.destination > 50:
+            vertex_1 = Point(vertices.left.x - 6, vertices.left.y)
+            vertex_2 = Point(vertices.right.x - 6, vertices.right.y)
+            vertex_3 = Point(vertices.top.x - 6, vertices.top.y)
             missile.vertices = Triangle(vertex_1, vertex_2, vertex_3)
           else:
             vertex_1 = Point(vertices.left.x - 3, vertices.left.y)
@@ -80,7 +100,7 @@ class MissilesMergeAndShoot:
             vertex_3 = Point(vertices.top.x - 3, vertices.top.y)
             missile.vertices = Triangle(vertex_1, vertex_2, vertex_3)
           missile.draw()
-        elif missile.vertices.top.x == self.destination:
+        elif vertices.top.x == self.destination:
           if not missile in self.missiles_in_place:
             self.missiles_in_place.append(missile)
 
