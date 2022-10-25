@@ -1,4 +1,5 @@
 from random import randint
+from math import ceil
 import pygame
 from classes import Point, Triangle, Enemy
 
@@ -28,40 +29,21 @@ def update_merge_animation(merge_information):
   for missile in merge_information.missiles:
     vertices = missile.vertices
 
-    if missile.vertices.top.x < merge_information.destination:
-      missile.erase()
-      if destination - vertices.top.x < 3:
-        new_vertices = (Point(vertex.x + 1, vertex.y) for vertex in vertices)
-        missile.vertices = Triangle(*new_vertices)
-      elif destination - vertices.top.x < 6:
-        new_vertices = (Point(vertex.x + 2, vertex.y) for vertex in vertices)
-        missile.vertices = Triangle(*new_vertices)
-      elif destination - vertices.top.x > 50:
-        new_vertices = (Point(vertex.x + 6, vertex.y) for vertex in vertices)
-        missile.vertices = Triangle(*new_vertices)
-      else:
-        new_vertices = (Point(vertex.x + 3, vertex.y) for vertex in vertices)
-        missile.vertices = Triangle(*new_vertices)
-      missile.draw()
-
-    elif vertices.top.x > destination:
-      missile.erase()
-      if vertices.top.x - destination < 3:
-        new_vertices = (Point(vertex.x +- 1, vertex.y) for vertex in vertices)
-        missile.vertices = Triangle(*new_vertices)
-      elif vertices.top.x - destination < 6:
-        new_vertices = (Point(vertex.x - 2, vertex.y) for vertex in vertices)
-        missile.vertices = Triangle(*new_vertices)
-      elif vertices.top.x - destination > 50:
-        new_vertices = (Point(vertex.x - 6, vertex.y) for vertex in vertices)
-        missile.vertices = Triangle(*new_vertices)
-      else:
-        new_vertices = (Point(vertex.x - 3, vertex.y) for vertex in vertices)
-        missile.vertices = Triangle(*new_vertices)
-      missile.draw()
+    missile.erase()
+    distance = destination - vertices.top.x
+    if distance <= 10 and distance > 0: step = 1
+    elif distance >= -10 and distance < 0: step = -1
+    else: step = round(0.1*distance)
+    missile.vertices = Triangle(*(Point(vertex.x + step, vertex.y) for vertex in vertices))
+    missile.draw()
       
     if not vertices.top.x == destination:
       new_missiles.append(missile)
   
-  merge_information.missiles = new_missiles
+  if not len(new_missiles):
+    merge_information.missiles = [merge_information.missiles[0]]
+    merge_information.is_shot = True
+  else:
+    merge_information.missiles = new_missiles
+
   return merge_information

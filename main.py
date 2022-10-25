@@ -72,11 +72,12 @@ while True:
   for enemy in alive_enemies:
     if enemy.is_destroyed:
       alive_enemies.remove(enemy)
+      continue
     elif not enemy.is_being_destroyed:
       if binary_bar_preview.current_hexadecimals == enemy.current_hexadecimals:
 
         def check_state(acc, box):
-          if box.current_bit == "1":
+          if box.current_bit:
             box.flip_bit()
             return [*acc, box.missile.vertices]
           return acc
@@ -90,7 +91,17 @@ while True:
     enemy.update_position()
 
   for i, merge_information in enumerate(merging_informations):
-    merging_informations[i] = update_merge_animation(merge_information)
+    if merge_information.is_shot:
+      if pygame.Rect.collidepoint(merge_information.enemy.border_rect, merge_information.missiles[0].vertices.top):
+        merge_information.missiles[0].erase()
+        merge_information.enemy.is_destroyed = True
+        merge_information.enemy.erase()
+        merging_informations.remove(merge_information)
+      else:
+        merge_information.missiles[0].shoot()
+    else:
+      merging_informations[i] = update_merge_animation(merge_information)
+
 
   for event in pygame.event.get():
     match event.type:

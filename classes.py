@@ -1,4 +1,5 @@
 from collections import namedtuple
+from functools import reduce
 import pygame
 
 Point = namedtuple("Point", "x y")
@@ -27,12 +28,19 @@ class Missile:
   
   def erase(self):
     pygame.draw.polygon(self.game.screen, self.game.bg_colour, self.vertices)
+  
+  def shoot(self):
+    self.erase()
+    new_vertices = (Point(vertex.x, vertex.y - 7) for vertex in self.vertices)
+    self.vertices = Triangle(*new_vertices)
+    self.draw()
 
 class MergeInformation:
   def __init__(self, missiles, destination, enemy):
     self.missiles = missiles
     self.destination = destination
     self.enemy = enemy
+    self.is_shot = False
 
 class BinaryBox:
   def __init__(self, position, size, game, missile):
@@ -40,7 +48,7 @@ class BinaryBox:
     self.bg_colour = "#06001a"
     self.border_colour = "#666666"
     self.text_colour = "#bfbfbf"
-    self.current_bit = "0"
+    self.current_bit = False
     self.missile = missile
 
     internal_box_size = size - 2 * game.border_width
@@ -54,18 +62,21 @@ class BinaryBox:
     pygame.draw.rect(self.game.screen, self.border_colour, self.border_rect, self.game.border_width)
     pygame.draw.rect(self.game.screen, self.bg_colour, self.background_rect)
     
-    binary_box_text = self.font.render(self.current_bit, True, self.text_colour)
+    if self.current_bit: current_bit = "1"
+    else: current_bit = "0"
+
+    binary_box_text = self.font.render(current_bit, True, self.text_colour)
     binary_box_text_rect = binary_box_text.get_rect()
     binary_box_text_rect.center = self.background_rect.center
     self.game.screen.blit(binary_box_text, binary_box_text_rect)
   
   def flip_bit(self):
-    if self.current_bit == "0":
-      self.current_bit = "1"
-      self.missile.draw()
-    else:
-      self.current_bit = "0"
+    if self.current_bit:
+      self.current_bit = False
       self.missile.erase()
+    else:
+      self.current_bit = True
+      self.missile.draw()
     self.bg_colour, self.text_colour = self.text_colour, self.bg_colour
     self.draw_box()
 
@@ -91,7 +102,7 @@ class Preview(HexadecimalDisplay):
     self.draw_display()
 
   def update_display(self, binary_boxes):
-    binary = "".join(binary_box.current_bit for binary_box in binary_boxes)
+    binary = reduce(lambda string, box: string + str(int(box.current_bit)), binary_boxes, "")
     self.current_hexadecimals =  f"{int(binary, 2):X}"
     self.draw_display()
 
@@ -110,11 +121,14 @@ class Enemy(HexadecimalDisplay):
     self.draw_display()
     pygame.draw.rect(self.game.screen, self.border_colour, self.border_rect, self.border_width)
   
-  def update_position(self):
-    # checking if the enemy has reached the bottom
+  def erase(self):
     pygame.draw.rect(self.game.screen, self.game.bg_colour, self.border_rect)
+  
+  def update_position(self):
     if self.border_rect.y in range(self.game.rect.y, self.game.play_area_height - 50 - self.size):
+      self.erase()
       self.border_rect.y += 1
       self.draw()
     else:
       self.is_destroyed = True
+      self.erase()
