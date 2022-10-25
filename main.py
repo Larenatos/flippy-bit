@@ -102,6 +102,9 @@ while True:
     else:
       merging_informations[i] = update_merge_animation(merge_information)
 
+  for box in binary_boxes:
+    if box.current_bit:
+      box.missile.draw()
 
   for event in pygame.event.get():
     match event.type:
