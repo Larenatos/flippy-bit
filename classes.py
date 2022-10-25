@@ -72,7 +72,6 @@ class BinaryBox:
     self.bg_colour = "#06001a"
     self.border_colour = "#666666"
     self.text_colour = "#bfbfbf"
-    self.is_flipped = False
     self.current_bit = "0"
     self.missile = missile
 
@@ -93,12 +92,10 @@ class BinaryBox:
     self.game.screen.blit(binary_box_text, binary_box_text_rect)
   
   def flip_bit(self):
-    if not self.is_flipped:
-      self.is_flipped = True
+    if self.current_bit == "0":
       self.current_bit = "1"
       self.missile.draw()
     else:
-      self.is_flipped = False
       self.current_bit = "0"
       self.missile.erase()
     self.bg_colour, self.text_colour = self.text_colour, self.bg_colour

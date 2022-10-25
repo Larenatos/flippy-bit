@@ -1,7 +1,7 @@
 from time import time
 from functools import reduce
 import pygame
-from classes import Game, BinaryBox, Missile, Preview, ShootingMissiles, Point
+from classes import Game, BinaryBox, Missile, Preview, MissilesMergeAndShoot, Point
 from functions import draw_layout, create_enemy
 
 pygame.init()
@@ -74,6 +74,10 @@ while True:
       alive_enemies.remove(enemy)
     else:
       enemy.update_position()
+    
+  for box in binary_boxes:
+    if box.current_bit == "1": 
+        box.missile.draw()
       
   if len(missiles_to_shoot) > 0:
     for missiles in missiles_to_shoot:
@@ -91,7 +95,7 @@ while True:
     if not enemy.being_destroyed:
       if binary_bar_preview.current_hexadecimals == enemy.current_hexadecimals:
         def check_flip(acc, box):
-          if box.is_flipped:
+          if box.current_bit == "1":
             box.flip_bit()
             return [*acc, box.missile.vertices]
           return acc
@@ -100,7 +104,7 @@ while True:
         binary_bar_preview.update_display(binary_boxes)
 
         enemy.being_destroyed = True
-        missiles_to_shoot.append(ShootingMissiles(enemy.border_rect.centerx, active_missile_locations, enemy, game))
+        missiles_to_shoot.append(MissilesMergeAndShoot(enemy.border_rect.centerx, active_missile_locations, enemy, game))
 
   for event in pygame.event.get():
     match event.type:
