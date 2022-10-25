@@ -2,6 +2,7 @@ from collections import namedtuple
 import pygame
 
 Point = namedtuple("Point", "x y")
+Triangle = namedtuple("Triangle", "left right top")
 
 class Game:
   def __init__(self):
@@ -44,25 +45,42 @@ class MissilesMergeAndShoot:
         self.has_collided = True
       else:
         missile.erase()
-        missile.vertices = [Point(vertex.x, vertex.y - 5) for vertex in missile.vertices]
+        vertices = missile.vertices
+        vertex_1 = Point(vertices.left.x, vertices.left.y - 5)
+        vertex_2 = Point(vertices.right.x, vertices.right.y - 5)
+        vertex_3 = Point(vertices.top.x, vertices.top.y - 5)
+        missile.vertices = Triangle(vertex_1, vertex_2, vertex_3)
         missile.draw()
     else:
       for missile in self.missiles:
-        if missile.vertices[2].x < self.destination:
+        vertices = missile.vertices
+        if missile.vertices.top.x < self.destination:
           missile.erase()
-          if self.destination - missile.vertices[2].x < 3:
-            missile.vertices = [Point(vertex.x + 1, vertex.y) for vertex in missile.vertices]
+          if self.destination - missile.vertices.top.x < 3:
+            vertex_1 = Point(vertices.left.x - 1, vertices.left.y)
+            vertex_2 = Point(vertices.right.x - 2, vertices.right.y)
+            vertex_3 = Point(vertices.top.x - 1, vertices.top.y)
+            missile.vertices = Triangle(vertex_1, vertex_2, vertex_3)
           else:
-            missile.vertices = [Point(vertex.x + 3, vertex.y) for vertex in missile.vertices]
+            vertex_1 = Point(vertices.left.x + 3, vertices.left.y)
+            vertex_2 = Point(vertices.right.x + 3, vertices.right.y)
+            vertex_3 = Point(vertices.top.x + 3, vertices.top.y)
+            missile.vertices = Triangle(vertex_1, vertex_2, vertex_3)
           missile.draw()
-        elif missile.vertices[2].x > self.destination:
+        elif missile.vertices.top.x > self.destination:
           missile.erase()
-          if missile.vertices[2].x - self.destination < 3:
-            missile.vertices = [Point(vertex.x - 1, vertex.y) for vertex in missile.vertices]
+          if missile.vertices.top.x - self.destination < 3:
+            vertex_1 = Point(vertices.left.x - 1, vertices.left.y)
+            vertex_2 = Point(vertices.right.x - 1, vertices.right.y)
+            vertex_3 = Point(vertices.top.x - 1, vertices.top.y)
+            missile.vertices = Triangle(vertex_1, vertex_2, vertex_3)
           else:
-            missile.vertices = [Point(vertex.x - 3, vertex.y) for vertex in missile.vertices]
+            vertex_1 = Point(vertices.left.x - 3, vertices.left.y)
+            vertex_2 = Point(vertices.right.x - 3, vertices.right.y)
+            vertex_3 = Point(vertices.top.x - 3, vertices.top.y)
+            missile.vertices = Triangle(vertex_1, vertex_2, vertex_3)
           missile.draw()
-        elif missile.vertices[2].x == self.destination:
+        elif missile.vertices.top.x == self.destination:
           if not missile in self.missiles_in_place:
             self.missiles_in_place.append(missile)
 

@@ -1,7 +1,7 @@
 from time import time
 from functools import reduce
 import pygame
-from classes import Game, BinaryBox, Missile, Preview, MissilesMergeAndShoot, Point
+from classes import Game, BinaryBox, Missile, Preview, MissilesMergeAndShoot, Point, Triangle
 from functions import draw_layout, create_enemy
 
 pygame.init()
@@ -32,7 +32,7 @@ for i in range(8):
     (bar_position_x + i*(whole_box_width), bar_position_y), 
     binary_box_size,
     game, 
-    Missile((vertex_1, vertex_2, vertex_3), game)
+    Missile(Triangle(vertex_1, vertex_2, vertex_3), game)
   ))
 
 preview_size = 70
