@@ -172,7 +172,7 @@ class Enemy(HexadecimalDisplay):
     self.border_colour = "#850020"
     self.border_width = 5
     self.is_destroyed = False
-    self.being_destroyed = False
+    self.is_being_destroyed = False
     self.border_rect = pygame.Rect(position, (self.size,)*2)
   
   def draw(self):

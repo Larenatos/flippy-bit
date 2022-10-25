@@ -72,6 +72,19 @@ while True:
   for enemy in alive_enemies:
     if enemy.is_destroyed:
       alive_enemies.remove(enemy)
+    elif not enemy.is_being_destroyed:
+      if binary_bar_preview.current_hexadecimals == enemy.current_hexadecimals:
+        def check_state(acc, box):
+          if box.current_bit == "1":
+            box.flip_bit()
+            return [*acc, box.missile.vertices]
+          return acc
+
+        active_missile_locations = reduce(check_state, binary_boxes, [])
+        binary_bar_preview.update_display(binary_boxes)
+
+        enemy.is_being_destroyed = True
+        missiles_to_shoot.append(MissilesMergeAndShoot(enemy.border_rect.centerx, active_missile_locations, enemy, game))
     else:
       enemy.update_position()
     
@@ -90,21 +103,6 @@ while True:
         if len(missiles.missiles_in_place) == len(missiles.missiles):
           missiles.moving_up = True
       missiles.update_locations()
-
-  for enemy in alive_enemies:
-    if not enemy.being_destroyed:
-      if binary_bar_preview.current_hexadecimals == enemy.current_hexadecimals:
-        def check_flip(acc, box):
-          if box.current_bit == "1":
-            box.flip_bit()
-            return [*acc, box.missile.vertices]
-          return acc
-
-        active_missile_locations = reduce(check_flip, binary_boxes, [])
-        binary_bar_preview.update_display(binary_boxes)
-
-        enemy.being_destroyed = True
-        missiles_to_shoot.append(MissilesMergeAndShoot(enemy.border_rect.centerx, active_missile_locations, enemy, game))
 
   for event in pygame.event.get():
     match event.type:
