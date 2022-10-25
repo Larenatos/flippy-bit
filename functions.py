@@ -31,13 +31,19 @@ def update_merge_animation(merge_information):
 
     missile.erase()
     distance = destination - vertices.top.x
-    if distance <= 10 and distance > 0: step = 1
-    elif distance >= -10 and distance < 0: step = -1
-    else: step = round(0.1*distance)
-    missile.vertices = Triangle(*(Point(vertex.x + step, vertex.y) for vertex in vertices))
-    missile.draw()
+    if distance < 0:
+      step = -round((0.01 * distance - 1)**2)
+    elif distance > 0:
+      step = round((0.01 * distance + 1)**2)
+
+    if vertices.top.x in range(destination - 2, destination + 2):
+      missile.vertices = Triangle(Point(destination - 20, vertices.left.y), Point(destination + 20, vertices.right.y), Point(destination, vertices.top.y))
+    else:
+      missile.vertices = Triangle(*(Point(vertex.x + step, vertex.y) for vertex in vertices))
       
-    if not vertices.top.x == destination:
+    missile.draw()
+
+    if not missile.vertices.top.x == destination:
       new_missiles.append(missile)
   
   if not len(new_missiles):
