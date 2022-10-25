@@ -2,6 +2,7 @@ from collections import namedtuple
 import pygame
 
 Point = namedtuple("Point", "x y")
+Triangle = namedtuple("Triangle", "left right top")
 
 class Game:
   def __init__(self):
@@ -26,6 +27,12 @@ class Missile:
   
   def erase(self):
     pygame.draw.polygon(self.game.screen, self.game.bg_colour, self.vertices)
+
+class MergeInformation:
+  def __init__(self, missiles, destination, enemy):
+    self.missiles = missiles
+    self.destination = destination
+    self.enemy = enemy
 
 class BinaryBox:
   def __init__(self, position, size, game, missile):
@@ -95,6 +102,7 @@ class Enemy(HexadecimalDisplay):
     self.border_colour = "#850020"
     self.border_width = 5
     self.is_destroyed = False
+    self.is_being_destroyed = False
     self.border_rect = pygame.Rect(position, (self.size,)*2)
   
   def draw(self):

@@ -1,7 +1,8 @@
 from time import time
+from functools import reduce
 import pygame
-from classes import Game, BinaryBox, Missile, Preview, Point
-from functions import draw_layout, create_enemy
+from classes import Game, BinaryBox, Missile, Preview, MergeInformation, Point, Triangle
+from functions import draw_layout, create_enemy, update_merge_animation
 
 pygame.init()
 
@@ -31,7 +32,7 @@ for i in range(8):
     (bar_position_x + i*(whole_box_width), bar_position_y), 
     binary_box_size,
     game, 
-    Missile((vertex_1, vertex_2, vertex_3), game)
+    Missile(Triangle(vertex_1, vertex_2, vertex_3), game)
   ))
 
 preview_size = 70
@@ -55,6 +56,8 @@ def on_keypress(bit_index):
 time_since_enemy_spawn = time()
 time_between_spawns = 5
 
+merging_informations = []
+
 while True:
   clock.tick(60)
   pygame.display.flip()
@@ -69,8 +72,25 @@ while True:
   for enemy in alive_enemies:
     if enemy.is_destroyed:
       alive_enemies.remove(enemy)
-    else:
-      enemy.update_position()
+    elif not enemy.is_being_destroyed:
+      if binary_bar_preview.current_hexadecimals == enemy.current_hexadecimals:
+
+        def check_state(acc, box):
+          if box.current_bit == "1":
+            box.flip_bit()
+            return [*acc, box.missile.vertices]
+          return acc
+
+        active_missiles = [Missile(locations, game) for locations in reduce(check_state, binary_boxes, [])]
+        binary_bar_preview.update_display(binary_boxes)
+
+        enemy.is_being_destroyed = True
+        merging_informations.append(MergeInformation(active_missiles, enemy.border_rect.centerx, enemy))
+    
+    enemy.update_position()
+
+  for i, merge_information in enumerate(merging_informations):
+    merging_informations[i] = update_merge_animation(merge_information)
 
   for event in pygame.event.get():
     match event.type:
