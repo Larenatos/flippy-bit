@@ -1,6 +1,6 @@
 from time import time
 import pygame
-from classes import Game, BinaryBox, Missile, Preview, Point
+from classes import Game, BinaryBox, Missile, Preview, Display, Point
 from functions import draw_layout, create_enemy
 
 pygame.init()
@@ -41,12 +41,15 @@ display_position_x = bar_position_x + 4 * whole_box_width - box_padding / 2 - pr
 display_position_y = bar_position_y + binary_box_size + 20
 binary_bar_preview = Preview((display_position_x, display_position_y), preview_size, preview_font_size, "0", game)
 
+score_display = Display(0, (130, display_position_y), 60, game)
+
 alive_enemies = []
 
 draw_layout(game)
 binary_bar_preview.draw_display()
 for box in binary_boxes:
   box.draw_box()
+score_display.draw()
 
 def on_keypress(bit_index):
   binary_boxes[bit_index].flip_bit()

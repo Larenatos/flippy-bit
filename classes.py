@@ -117,16 +117,14 @@ class Display():
   def __init__(self, text, position, size, game):
     self.text = text
     self.game = game
-    self.border_colour = "#666666"
     self.bg_colour = "#06001a"
     self.text_colour = "#bfbfbf"
     self.border_width = 5
     self.border_rect = pygame.Rect(position, (size,)*2)
-    self.font = pygame.font.SysFont(None, 20)
+    self.font = pygame.font.SysFont(None, 50)
   
   def draw(self):
     pygame.draw.rect(self.game.screen, self.bg_colour, self.border_rect)
-    pygame.draw.rect(self.game.screen, self.border_colour, self.border_rect, self.border_width)
     if type(self.text) == int:
       display_text = self.font.render(str(self.text), True, self.text_colour)
     else:
