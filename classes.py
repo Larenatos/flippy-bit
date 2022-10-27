@@ -42,14 +42,13 @@ class BinaryBox:
     self.border_rect = pygame.Rect(position, (size,)*2)
     self.background_rect = pygame.Rect((0, 0), (internal_box_size,)*2)
     self.background_rect.center = self.border_rect.center
-    self.font = pygame.font.SysFont(None, 40)
     self.draw_box()
 
   def draw_box(self):
     pygame.draw.rect(self.game.screen, self.border_colour, self.border_rect, self.game.border_width)
     pygame.draw.rect(self.game.screen, self.bg_colour, self.background_rect)
     
-    binary_box_text = self.font.render(self.current_bit, True, self.text_colour)
+    binary_box_text = self.game.font.render(self.current_bit, True, self.text_colour)
     binary_box_text_rect = binary_box_text.get_rect()
     binary_box_text_rect.center = self.background_rect.center
     self.game.screen.blit(binary_box_text, binary_box_text_rect)
@@ -122,9 +121,9 @@ class Display():
     self.border_width = 5
     self.border_rect = pygame.Rect(position, (size,)*2)
     self.font = pygame.font.SysFont(None, 50)
+    pygame.draw.rect(self.game.screen, self.bg_colour, self.border_rect)
   
   def draw(self):
-    pygame.draw.rect(self.game.screen, self.bg_colour, self.border_rect)
     if type(self.text) == int:
       display_text = self.font.render(str(self.text), True, self.text_colour)
     else:

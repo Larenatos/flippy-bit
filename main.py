@@ -71,6 +71,7 @@ while True:
 
   for enemy in alive_enemies:
     if enemy.is_destroyed:
+      score_display.update()
       alive_enemies.remove(enemy)
     else:
       enemy.update_position()
