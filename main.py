@@ -1,7 +1,7 @@
 from time import time
 from functools import reduce
 import pygame
-from classes import Game, BinaryBox, Missile, Preview, MergeInformation, Point, Triangle
+from classes import Game, BinaryBox, Missile, Preview, Merge, Point, Triangle
 from functions import draw_layout, create_enemy, update_merge_animation
 
 pygame.init()
@@ -42,8 +42,6 @@ display_position_x = bar_position_x + 4 * whole_box_width - box_padding / 2 - pr
 display_position_y = bar_position_y + binary_box_size + 20
 binary_bar_preview = Preview((display_position_x, display_position_y), preview_size, preview_font_size, "0", game)
 
-alive_enemies = []
-
 draw_layout(game)
 binary_bar_preview.draw_display()
 for box in binary_boxes:
@@ -56,7 +54,8 @@ def on_keypress(bit_index):
 time_since_enemy_spawn = time()
 time_between_spawns = 5
 
-merging_informations = []
+merges = []
+merges_to_remove = []
 
 while True:
   clock.tick(60)
@@ -67,40 +66,42 @@ while True:
     time_since_enemy_spawn = current_time
     if time_between_spawns > 1.5:
       time_between_spawns -= 0.25
-    alive_enemies.append(create_enemy(game))
+    game.alive_enemies.append(create_enemy(game))
 
-  for enemy in alive_enemies:
-    if enemy.is_destroyed:
-      alive_enemies.remove(enemy)
-      continue
-    elif not enemy.is_being_destroyed:
+  for enemy in game.alive_enemies:
+    if not enemy.is_being_destroyed:
       if binary_bar_preview.current_hexadecimals == enemy.current_hexadecimals:
 
         def check_state(acc, box):
           if box.current_bit:
             box.flip_bit()
-            return [*acc, box.missile.vertices]
+            return [*acc, Missile(box.missile.vertices, game)]
           return acc
 
-        active_missiles = [Missile(locations, game) for locations in reduce(check_state, binary_boxes, [])]
+        active_missiles = reduce(check_state, binary_boxes, [])
         binary_bar_preview.update_display(binary_boxes)
 
         enemy.is_being_destroyed = True
-        merging_informations.append(MergeInformation(active_missiles, enemy.border_rect.centerx, enemy))
+        merges.append(Merge(active_missiles, enemy.border_rect.centerx, enemy))
     
     enemy.update_position()
 
-  for i, merge_information in enumerate(merging_informations):
-    if merge_information.is_shot:
-      if pygame.Rect.collidepoint(merge_information.enemy.border_rect, merge_information.missiles[0].vertices.top):
-        merge_information.missiles[0].erase()
-        merge_information.enemy.is_destroyed = True
-        merge_information.enemy.erase()
-        merging_informations.remove(merge_information)
+  for i, merge in enumerate(merges):
+    if merge.done:
+      if pygame.Rect.collidepoint(merge.enemy.border_rect, merge.missiles[0].vertices.top):
+        merge.missiles[0].erase()
+        merge.enemy.destroy()
+        merges_to_remove.append(i)
       else:
-        merge_information.missiles[0].shoot()
+        merge.missiles[0].shoot()
     else:
-      merging_informations[i] = update_merge_animation(merge_information)
+      merges[i] = update_merge_animation(merge)
+
+  offset = 0
+  for index in merges_to_remove:
+    merges.pop(index-offset)
+    offset += 1
+  merges_to_remove = []
 
   for box in binary_boxes:
     if box.current_bit:

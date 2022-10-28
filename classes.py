@@ -18,6 +18,8 @@ class Game:
     self.enemy_size = 50
     self.enemy_font_size = 40
 
+    self.alive_enemies = []
+
 class Missile:
   def __init__(self, vertices, game):
     self.bg_colour = "#06001a"
@@ -39,12 +41,12 @@ class Missile:
     self.vertices = Triangle(*(Point(vertex.x + x, vertex.y + y) for vertex in self.vertices))
     self.draw()
 
-class MergeInformation:
+class Merge:
   def __init__(self, missiles, destination, enemy):
     self.missiles = missiles
     self.destination = destination
     self.enemy = enemy
-    self.is_shot = False
+    self.done = False
 
 class BinaryBox:
   def __init__(self, position, size, game, missile):
@@ -116,7 +118,6 @@ class Enemy(HexadecimalDisplay):
     self.size = size
     self.border_colour = "#850020"
     self.border_width = 5
-    self.is_destroyed = False
     self.is_being_destroyed = False
     self.border_rect = pygame.Rect(position, (self.size,)*2)
   
@@ -134,5 +135,8 @@ class Enemy(HexadecimalDisplay):
       self.border_rect.y += 1
       self.draw()
     else:
-      self.is_destroyed = True
-      self.erase()
+      self.destroy()
+  
+  def destroy(self):
+    self.erase()
+    self.game.alive_enemies.remove(self)
