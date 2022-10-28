@@ -113,26 +113,21 @@ class Enemy(HexadecimalDisplay):
       self.is_destroyed = True
 
 class Display():
-  def __init__(self, text, position, size, game):
-    self.text = text
+  def __init__(self, value, position, size, game):
+    self.value = value
     self.game = game
     self.bg_colour = "#06001a"
     self.text_colour = "#bfbfbf"
     self.border_width = 5
     self.border_rect = pygame.Rect(position, (size,)*2)
     self.font = pygame.font.SysFont(None, 50)
-    pygame.draw.rect(self.game.screen, self.bg_colour, self.border_rect)
   
   def draw(self):
-    if type(self.text) == int:
-      display_text = self.font.render(str(self.text), True, self.text_colour)
-    else:
-      display_text = self.font.render(self.text, True, self.text_colour)
+    pygame.draw.rect(self.game.screen, self.bg_colour, self.border_rect)
+    display_text = self.font.render(str(self.value), True, self.text_colour)
     display_text_rect = display_text.get_rect()
     display_text_rect.center = self.border_rect.center
     self.game.screen.blit(display_text, display_text_rect)
   
   def update(self):
-    if type(self.text) == int:
-      self.text += 1
-    self.draw()
+    self.value += 1
