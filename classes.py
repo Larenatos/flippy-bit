@@ -34,6 +34,16 @@ class Missile:
     new_vertices = (Point(vertex.x, vertex.y - 7) for vertex in self.vertices)
     self.vertices = Triangle(*new_vertices)
     self.draw()
+  
+  def move(self, destination):
+    self.erase()
+    vertex_1 = Point(destination - 20, self.vertices.left.y)
+    vertex_2 = Point(destination + 20, self.vertices.right.y)
+    vertex_3 = Point(destination, self.vertices.top.y)
+
+    self.vertices = Triangle(vertex_1, vertex_2, vertex_3)
+    self.draw()
+    
 
 class MergeInformation:
   def __init__(self, missiles, destination, enemy):

@@ -29,22 +29,16 @@ def update_merge_animation(merge_information):
   for missile in merge_information.missiles:
     vertices = missile.vertices
 
-    missile.erase()
+    if destination - 2 < vertices.top.x < destination + 2:
+      missile.move(destination)
+      continue
+
     distance = destination - vertices.top.x
-    if distance < 0:
-      step = -round((0.01 * distance - 1)**2)
-    elif distance > 0:
-      step = round((0.01 * distance + 1)**2)
+    step = ceil((0.01 * abs(distance) + 1)**2)
+    if distance < 0: step = -step
+    missile.move(destination - distance + step)
 
-    if vertices.top.x in range(destination - 2, destination + 2):
-      missile.vertices = Triangle(Point(destination - 20, vertices.left.y), Point(destination + 20, vertices.right.y), Point(destination, vertices.top.y))
-    else:
-      missile.vertices = Triangle(*(Point(vertex.x + step, vertex.y) for vertex in vertices))
-      
-    missile.draw()
-
-    if not missile.vertices.top.x == destination:
-      new_missiles.append(missile)
+    new_missiles.append(missile)
   
   if not len(new_missiles):
     merge_information.missiles = [merge_information.missiles[0]]
