@@ -1,5 +1,6 @@
 from collections import namedtuple
 from functools import reduce
+from math import ceil
 import pygame
 
 Point = namedtuple("Point", "x y")
@@ -22,28 +23,21 @@ class Missile:
     self.bg_colour = "#06001a"
     self.vertices = vertices
     self.game = game
-  
+
   def draw(self):
     pygame.draw.polygon(self.game.screen, self.bg_colour, self.vertices)
-  
+
   def erase(self):
     pygame.draw.polygon(self.game.screen, self.game.bg_colour, self.vertices)
-  
-  def shoot(self):
-    self.erase()
-    new_vertices = (Point(vertex.x, vertex.y - 7) for vertex in self.vertices)
-    self.vertices = Triangle(*new_vertices)
-    self.draw()
-  
-  def move(self, destination):
-    self.erase()
-    vertex_1 = Point(destination - 20, self.vertices.left.y)
-    vertex_2 = Point(destination + 20, self.vertices.right.y)
-    vertex_3 = Point(destination, self.vertices.top.y)
 
-    self.vertices = Triangle(vertex_1, vertex_2, vertex_3)
+  def shoot(self):
+    step = -ceil((0.01 * self.vertices.top.y - 8)**2)
+    self.move(y=step)
+
+  def move(self, x=0, y=0):
+    self.erase()
+    self.vertices = Triangle(*(Point(vertex.x + x, vertex.y + y) for vertex in self.vertices))
     self.draw()
-    
 
 class MergeInformation:
   def __init__(self, missiles, destination, enemy):

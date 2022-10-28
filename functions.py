@@ -29,14 +29,15 @@ def update_merge_animation(merge_information):
   for missile in merge_information.missiles:
     vertices = missile.vertices
 
-    if destination - 2 < vertices.top.x < destination + 2:
-      missile.move(destination)
+    distance = destination - vertices.top.x
+
+    if -2 < distance < 2:
+      missile.move(x=distance)
       continue
 
-    distance = destination - vertices.top.x
     step = ceil((0.01 * abs(distance) + 1)**2)
     if distance < 0: step = -step
-    missile.move(destination - distance + step)
+    missile.move(x=step)
 
     new_missiles.append(missile)
   
