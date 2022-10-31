@@ -95,7 +95,7 @@ while True:
       else:
         merge.missiles[0].shoot()
     else:
-      merges[i] = update_merge_animation(merge)
+      merges[i].update_merge()
 
   offset = 0
   for index in merges_to_remove:

@@ -47,6 +47,29 @@ class Merge:
     self.destination = destination
     self.enemy = enemy
     self.done = False
+  
+  def update_merge(self):
+    new_missiles = []
+    for missile in self.missiles:
+      vertices = missile.vertices
+
+      distance = self.destination - vertices.top.x
+
+      if -2 < distance < 2:
+        missile.move(x=distance)
+        continue
+
+      step = ceil((0.01 * abs(distance) + 1)**2)
+      if distance < 0: step = -step
+      missile.move(x=step)
+
+      new_missiles.append(missile)
+    
+    if not len(new_missiles):
+      self.missiles = [self.missiles[0]]
+      self.done = True
+    else:
+      self.missiles = new_missiles
 
 class BinaryBox:
   def __init__(self, position, size, game, missile):
