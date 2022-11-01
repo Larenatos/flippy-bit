@@ -25,6 +25,7 @@ class Missile:
     self.bg_colour = "#06001a"
     self.vertices = vertices
     self.game = game
+    self.target = None
 
   def draw(self):
     pygame.draw.polygon(self.game.screen, self.bg_colour, self.vertices)
@@ -40,15 +41,22 @@ class Missile:
     self.erase()
     self.vertices = Triangle(*(Point(vertex.x + x, vertex.y + y) for vertex in self.vertices))
     self.draw()
+  
+  def has_collided(self):
+    if pygame.Rect.collidepoint(self.target.border_rect, self.missiles[0].vertices.top):
+        self.missiles[0].erase()
+        self.target.destroy()
+        return True
+    return False
 
-class Merge:
-  def __init__(self, missiles, destination, enemy):
+class MissileMerger:
+  def __init__(self, missiles, destination, target):
     self.missiles = missiles
     self.destination = destination
-    self.enemy = enemy
+    self.target = target
     self.done = False
   
-  def update_merge(self):
+  def step_animation(self):
     new_missiles = []
     for missile in self.missiles:
       vertices = missile.vertices
@@ -70,6 +78,11 @@ class Merge:
       self.done = True
     else:
       self.missiles = new_missiles
+      
+  def get_final_missile(self):
+    missile = self.missiles[0]
+    missile.target = self.target
+    return missile
 
 class BinaryBox:
   def __init__(self, position, size, game, missile):
