@@ -1,7 +1,7 @@
 from time import time
 from functools import reduce
 import pygame
-from classes import Game, BinaryBox, Missile, Preview, Merge, Point, Triangle
+from classes import Game, BinaryBox, Missile, Preview, Point, Triangle
 from functions import draw_layout, create_enemy, update_merge_animation
 
 pygame.init()
@@ -54,8 +54,8 @@ def on_keypress(bit_index):
 time_since_enemy_spawn = time()
 time_between_spawns = 5
 
-merges = []
-merges_to_remove = []
+mergers = {}
+shot_missiles = {}
 
 while True:
   clock.tick(60)
@@ -82,26 +82,27 @@ while True:
         binary_bar_preview.update_display(binary_boxes)
 
         enemy.is_being_destroyed = True
-        merges.append(Merge(active_missiles, enemy.border_rect.centerx, enemy))
-    
+        mergers[enemy] = {
+          "missiles": active_missiles,
+          "destination": enemy.border_rect.centerx,
+          "enemy": enemy,
+          "done": False
+          }
     enemy.update_position()
 
-  for i, merge in enumerate(merges):
-    if merge.done:
-      if pygame.Rect.collidepoint(merge.enemy.border_rect, merge.missiles[0].vertices.top):
-        merge.missiles[0].erase()
-        merge.enemy.destroy()
-        merges_to_remove.append(i)
-      else:
-        merge.missiles[0].shoot()
+  for target, merger in mergers.items():
+    if merger["done"]:
+      shot_missiles[target] = merger["missiles"][0]
+      shot_missiles[target].enemy = target
+      del mergers[target]
     else:
-      merges[i] = update_merge_animation(merge)
+      mergers[target] = update_merge_animation(merger)
 
-  offset = 0
-  for index in merges_to_remove:
-    merges.pop(index-offset)
-    offset += 1
-  merges_to_remove = []
+  for target, missile in shot_missiles.items():
+    if missile.has_collided():
+      del shot_missiles[target]
+    else:
+      missile.shoot()
 
   for box in binary_boxes:
     if box.current_bit:

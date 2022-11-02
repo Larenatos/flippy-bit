@@ -23,10 +23,10 @@ def create_enemy(game):
   enemy.draw()
   return enemy
 
-def update_merge_animation(merge):
-  destination = merge.destination
+def update_merge_animation(merger):
+  destination = merger["destination"]
   new_missiles = []
-  for missile in merge.missiles:
+  for missile in merger["missiles"]:
     vertices = missile.vertices
 
     distance = destination - vertices.top.x
@@ -42,9 +42,8 @@ def update_merge_animation(merge):
     new_missiles.append(missile)
   
   if not len(new_missiles):
-    merge.missiles = [merge.missiles[0]]
-    merge.done = True
+    merger["done"] = True
   else:
-    merge.missiles = new_missiles
+    merger["missiles"] = new_missiles
 
-  return merge
+  return merger
