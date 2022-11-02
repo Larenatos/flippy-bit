@@ -71,7 +71,6 @@ while True:
   for enemy in game.alive_enemies:
     if not enemy.is_being_destroyed:
       if binary_bar_preview.current_hexadecimals == enemy.current_hexadecimals:
-
         def check_state(acc, box):
           if box.current_bit:
             box.flip_bit()
@@ -92,8 +91,9 @@ while True:
 
   for target, merger in mergers.copy().items():
     if merger["done"]:
-      shot_missiles[target] = merger["missiles"][0]
-      shot_missiles[target].enemy = target
+      final_missile = merger["missiles"][0]
+      final_missile.enemy = target
+      shot_missiles[target] = final_missile
       del mergers[target]
     else:
       mergers[target] = update_merge_animation(merger)
