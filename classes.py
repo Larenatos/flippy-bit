@@ -43,8 +43,8 @@ class Missile:
     self.draw()
   
   def has_collided(self):
-    if pygame.Rect.collidepoint(self.target.border_rect, self.missiles[0].vertices.top):
-        self.missiles[0].erase()
+    if pygame.Rect.collidepoint(self.target.border_rect, self.vertices.top):
+        self.erase()
         self.target.destroy()
         return True
     return False

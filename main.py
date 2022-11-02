@@ -86,14 +86,14 @@ while True:
 
     enemy.update_position()
 
-  for target, merger in mergers.items():
+  for target, merger in mergers.copy().items():
     if merger.done:
       shot_missiles[target] = merger.get_final_missile()
       del mergers[target]
     else:
       merger.step_animation()
 
-  for target, missile in shot_missiles.items():
+  for target, missile in shot_missiles.copy().items():
     if missile.has_collided():
       del shot_missiles[target]
     else:
