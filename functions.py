@@ -1,7 +1,6 @@
 from random import randint
-from math import ceil
 import pygame
-from classes import Point, Triangle, Enemy
+from classes import Point, Enemy
 
 def draw_layout(game):
   # calculating the position and dimensions based on information given above

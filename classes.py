@@ -33,7 +33,7 @@ class Missile:
   def erase(self):
     pygame.draw.polygon(self.game.screen, self.game.bg_colour, self.vertices)
 
-  def shoot(self):
+  def step_shoot_animation(self):
     step = -ceil((0.01 * self.vertices.top.y - 8)**2)
     self.move(y=step)
 
@@ -50,14 +50,15 @@ class Missile:
     return False
 
 class MissileMerger:
-  def __init__(self, missiles, destination, target):
+  def __init__(self, missiles, target):
+    self.destination_missile = None
     self.missiles = missiles
-    self.destination = destination
+    self.destination = target.border_rect.centerx
     self.target = target
     self.done = False
   
   def step_animation(self):
-    new_missiles = []
+    not_merged_missiles = []
     for missile in self.missiles:
       vertices = missile.vertices
 
@@ -65,24 +66,32 @@ class MissileMerger:
 
       if -2 < distance < 2:
         missile.move(x=distance)
+        if not self.destination_missile:
+          self.destination_missile = missile
         continue
 
       step = ceil((0.01 * abs(distance) + 1)**2)
       if distance < 0: step = -step
       missile.move(x=step)
 
-      new_missiles.append(missile)
+      not_merged_missiles.append(missile)
     
-    if not len(new_missiles):
+    if not bool(not_merged_missiles):
       self.missiles = [self.missiles[0]]
       self.done = True
     else:
-      self.missiles = new_missiles
+      self.missiles = not_merged_missiles
       
   def get_final_missile(self):
     missile = self.missiles[0]
     missile.target = self.target
     return missile
+
+  def remove(self):
+    for missile in self.missiles:
+      missile.erase()
+    if self.destination_missile:
+      self.destination_missile.erase()
 
 class BinaryBox:
   def __init__(self, position, size, game, missile):
@@ -104,8 +113,7 @@ class BinaryBox:
     pygame.draw.rect(self.game.screen, self.border_colour, self.border_rect, self.game.border_width)
     pygame.draw.rect(self.game.screen, self.bg_colour, self.background_rect)
     
-    if self.current_bit: current_bit = "1"
-    else: current_bit = "0"
+    current_bit = "1" if self.current_bit else "0"
 
     binary_box_text = self.font.render(current_bit, True, self.text_colour)
     binary_box_text_rect = binary_box_text.get_rect()

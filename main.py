@@ -51,6 +51,12 @@ def on_keypress(bit_index):
   binary_boxes[bit_index].flip_bit()
   binary_bar_preview.update_display(binary_boxes)
 
+def check_box_state(acc, box):
+  if box.current_bit:
+    box.flip_bit()
+    acc.append(Missile(box.missile.vertices, game))
+  return acc
+
 time_since_enemy_spawn = time()
 time_between_spawns = 5
 
@@ -72,21 +78,20 @@ while True:
     if not enemy.is_being_destroyed:
       if binary_bar_preview.current_hexadecimals == enemy.current_hexadecimals:
 
-        def check_state(acc, box):
-          if box.current_bit:
-            box.flip_bit()
-            return [*acc, Missile(box.missile.vertices, game)]
-          return acc
-
-        active_missiles = reduce(check_state, binary_boxes, [])
+        active_missiles = reduce(check_box_state, binary_boxes, [])
         binary_bar_preview.update_display(binary_boxes)
 
         enemy.is_being_destroyed = True
-        mergers[enemy] = MissileMerger(active_missiles, enemy.border_rect.centerx, enemy)
+        mergers[enemy] = MissileMerger(active_missiles, enemy)
 
     enemy.update_position()
 
   for target, merger in mergers.copy().items():
+    if not target in game.alive_enemies:
+      merger.remove()
+      del mergers[target]
+      continue
+
     if merger.done:
       shot_missiles[target] = merger.get_final_missile()
       del mergers[target]
@@ -97,7 +102,7 @@ while True:
     if missile.has_collided():
       del shot_missiles[target]
     else:
-      missile.shoot()
+      missile.step_shoot_animation()
 
   for box in binary_boxes:
     if box.current_bit:
