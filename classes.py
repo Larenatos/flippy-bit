@@ -76,7 +76,7 @@ class MissileMerger:
 
       not_merged_missiles.append(missile)
     
-    if not bool(not_merged_missiles):
+    if not not_merged_missiles:
       self.missiles = [self.missiles[0]]
       self.done = True
     else:
