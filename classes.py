@@ -77,11 +77,10 @@ class MissileMerger:
 
       remaining_missiles.append(missile)
     
-    if not remaining_missiles:
-      self.missiles = [self.missiles[0]]
-      self.done = True
-    else:
+    if remaining_missiles:
       self.missiles = remaining_missiles
+    else:
+      self.done = True
       
   def get_final_missile(self):
     missile = self.missiles[0]
