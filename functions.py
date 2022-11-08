@@ -1,6 +1,6 @@
 from random import randint
 import pygame
-from classes import Point, Enemy
+from classes import Point, Enemy, Missile
 
 def draw_layout(game):
   # calculating the position and dimensions based on information given above
@@ -21,3 +21,9 @@ def create_enemy(game):
   enemy = Enemy(position, game.enemy_size, game.enemy_font_size, hexadecimal, game)
   enemy.draw()
   return enemy
+
+def active_box_missile(acc, box):
+  if box.current_bit:
+    box.flip_bit()
+    acc.append(Missile(box.missile.vertices, box.game))
+  return acc
