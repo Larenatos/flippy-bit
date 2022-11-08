@@ -1,7 +1,8 @@
 from time import time
+from functools import reduce
 import pygame
-from classes import Game, BinaryBox, Missile, Preview, Display, Point
-from functions import draw_layout, create_enemy
+from classes import Game, BinaryBox, Missile, Preview, MissileMerger, Display, Point, Triangle
+from functions import draw_layout, create_enemy, active_box_missile
 
 pygame.init()
 
@@ -31,7 +32,7 @@ for i in range(8):
     (bar_position_x + i*(whole_box_width), bar_position_y), 
     binary_box_size,
     game, 
-    Missile((vertex_1, vertex_2, vertex_3), game)
+    Missile(Triangle(vertex_1, vertex_2, vertex_3), game)
   ))
 
 preview_size = 70
@@ -58,6 +59,9 @@ def on_keypress(bit_index):
 time_since_enemy_spawn = time()
 time_between_spawns = 5
 
+mergers = {}
+shot_missiles = {}
+
 while True:
   clock.tick(60)
   pygame.display.flip()
@@ -67,14 +71,42 @@ while True:
     time_since_enemy_spawn = current_time
     if time_between_spawns > 1.5:
       time_between_spawns -= 0.25
-    alive_enemies.append(create_enemy(game))
+    game.alive_enemies.append(create_enemy(game))
 
-  for enemy in alive_enemies:
-    if enemy.is_destroyed:
-      score_display.update()
-      alive_enemies.remove(enemy)
+  for enemy in game.alive_enemies:
+    if not enemy.is_being_destroyed:
+      if binary_bar_preview.current_hexadecimals == enemy.current_hexadecimals:
+
+        active_missiles = reduce(active_box_missile, binary_boxes, [])
+        binary_bar_preview.update_display(binary_boxes)
+
+        enemy.is_being_destroyed = True
+        mergers[enemy] = MissileMerger(active_missiles, enemy)
+
+    enemy.update_position()
+
+  for target, merger in mergers.copy().items():
+    if not target in game.alive_enemies:
+      merger.remove()
+      del mergers[target]
+      continue
+
+    if merger.done:
+      shot_missiles[target] = merger.final_missile
+      del mergers[target]
     else:
-      enemy.update_position()
+      merger.step_animation()
+
+  for target, missile in shot_missiles.copy().items():
+    if missile.has_collided():
+      score_display.update()
+      del shot_missiles[target]
+    else:
+      missile.step_shoot_animation()
+
+  for box in binary_boxes:
+    if box.current_bit:
+      box.missile.draw()
 
   for event in pygame.event.get():
     match event.type:
