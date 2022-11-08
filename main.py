@@ -2,7 +2,7 @@ from time import time
 from functools import reduce
 import pygame
 from classes import Game, BinaryBox, Missile, Preview, MissileMerger, Point, Triangle
-from functions import draw_layout, create_enemy
+from functions import draw_layout, create_enemy, active_box_missile
 
 pygame.init()
 
@@ -51,12 +51,6 @@ def on_keypress(bit_index):
   binary_boxes[bit_index].flip_bit()
   binary_bar_preview.update_display(binary_boxes)
 
-def check_box_state(acc, box):
-  if box.current_bit:
-    box.flip_bit()
-    acc.append(Missile(box.missile.vertices, game))
-  return acc
-
 time_since_enemy_spawn = time()
 time_between_spawns = 5
 
@@ -78,7 +72,7 @@ while True:
     if not enemy.is_being_destroyed:
       if binary_bar_preview.current_hexadecimals == enemy.current_hexadecimals:
 
-        active_missiles = reduce(check_box_state, binary_boxes, [])
+        active_missiles = reduce(active_box_missile, binary_boxes, [])
         binary_bar_preview.update_display(binary_boxes)
 
         enemy.is_being_destroyed = True
@@ -93,7 +87,7 @@ while True:
       continue
 
     if merger.done:
-      shot_missiles[target] = merger.get_final_missile()
+      shot_missiles[target] = merger.final_missile
       del mergers[target]
     else:
       merger.step_animation()

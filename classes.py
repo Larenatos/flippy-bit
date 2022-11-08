@@ -51,14 +51,14 @@ class Missile:
 
 class MissileMerger:
   def __init__(self, missiles, target):
-    self.destination_missile = None
+    self.final_missile = None
     self.missiles = missiles
     self.destination = target.border_rect.centerx
     self.target = target
     self.done = False
   
   def step_animation(self):
-    not_merged_missiles = []
+    remaining_missiles = []
     for missile in self.missiles:
       vertices = missile.vertices
 
@@ -66,21 +66,22 @@ class MissileMerger:
 
       if -2 < distance < 2:
         missile.move(x=distance)
-        if not self.destination_missile:
-          self.destination_missile = missile
+        if not self.final_missile:
+          missile.target = self.target
+          self.final_missile = missile
         continue
 
       step = ceil((0.01 * abs(distance) + 1)**2)
       if distance < 0: step = -step
       missile.move(x=step)
 
-      not_merged_missiles.append(missile)
+      remaining_missiles.append(missile)
     
-    if not not_merged_missiles:
+    if not remaining_missiles:
       self.missiles = [self.missiles[0]]
       self.done = True
     else:
-      self.missiles = not_merged_missiles
+      self.missiles = remaining_missiles
       
   def get_final_missile(self):
     missile = self.missiles[0]
@@ -90,8 +91,8 @@ class MissileMerger:
   def remove(self):
     for missile in self.missiles:
       missile.erase()
-    if self.destination_missile:
-      self.destination_missile.erase()
+    if self.final_missile:
+      self.final_missile.erase()
 
 class BinaryBox:
   def __init__(self, position, size, game, missile):
