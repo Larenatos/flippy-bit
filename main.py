@@ -44,8 +44,6 @@ binary_bar_preview = Preview((display_position_x, display_position_y), preview_s
 
 score_display = Display(0, (130, display_position_y), 60, game)
 
-alive_enemies = []
-
 draw_layout(game)
 binary_bar_preview.draw_display()
 for box in binary_boxes:
