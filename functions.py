@@ -22,7 +22,7 @@ def create_enemy(game):
   position = Point(randint(game.rect.x + 10, game.rect.width - game.enemy_size + 10), game.rect.y + 10)
 
   # moving the enemy to correct area
-  enemy = Enemy(position, game.enemy_size, game.enemy_font_size, hexadecimal, game)
+  enemy = Enemy(position, game.enemy_size, hexadecimal, game)
   enemy.draw()
   return enemy
 

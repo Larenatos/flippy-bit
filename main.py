@@ -1,7 +1,7 @@
 from time import time
 from functools import reduce
 import pygame
-from classes import Game, BinaryBox, Missile, Preview, MissileMerger, Display, Point, Triangle
+from classes import Game, BinaryBox, Missile, Preview, MissileMerger, ScoreDisplay, Point, Triangle
 from functions import draw_layout, create_enemy, active_box_missile
 
 pygame.init()
@@ -42,13 +42,13 @@ display_position_x = bar_position_x + 4 * whole_box_width - box_padding / 2 - pr
 display_position_y = bar_position_y + binary_box_size + 20
 binary_bar_preview = Preview((display_position_x, display_position_y), preview_size, preview_font_size, "0", game)
 
-score_display = Display(0, (130, display_position_y), 60, game)
+score_display = ScoreDisplay("0", (130, display_position_y), 60, game)
 
 draw_layout(game)
 binary_bar_preview.draw_display()
 for box in binary_boxes:
   box.draw_box()
-score_display.draw()
+score_display.draw_display()
 
 def on_keypress(bit_index):
   binary_boxes[bit_index].flip_bit()
@@ -73,7 +73,7 @@ while True:
 
   for enemy in game.alive_enemies:
     if not enemy.is_being_destroyed:
-      if binary_bar_preview.current_hexadecimals == enemy.current_hexadecimals:
+      if binary_bar_preview.current_hexadecimals == enemy.text_content:
 
         active_missiles = reduce(active_box_missile, binary_boxes, [])
         binary_bar_preview.update_display(binary_boxes)
