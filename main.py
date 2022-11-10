@@ -13,6 +13,8 @@ game = Game()
 bg_colour = "#004466"
 game.screen.fill(bg_colour)
 
+draw_layout(game)
+
 bar_position_x = 40
 bar_position_y = game.rect.height - 140
 binary_box_size = 50
@@ -44,12 +46,6 @@ binary_bar_preview = Preview((display_position_x, display_position_y), preview_s
 
 score_display = ScoreDisplay("0", (130, display_position_y), 60, game)
 
-draw_layout(game)
-binary_bar_preview.draw_display()
-for box in binary_boxes:
-  box.draw_box()
-score_display.draw_display()
-
 def on_keypress(bit_index):
   binary_boxes[bit_index].flip_bit()
   binary_bar_preview.update_display(binary_boxes)
@@ -73,7 +69,7 @@ while True:
 
   for enemy in game.alive_enemies:
     if not enemy.is_being_destroyed:
-      if binary_bar_preview.current_hexadecimals == enemy.text_content:
+      if binary_bar_preview.text_content == enemy.text_content:
 
         active_missiles = reduce(active_box_missile, binary_boxes, [])
         binary_bar_preview.update_display(binary_boxes)
