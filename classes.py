@@ -99,13 +99,13 @@ class Display:
     self.game = game
     self.background_rect = pygame.Rect(position, (size,)*2)
     self.bg_colour = "#06001a"
-    self.text_colour = "#bfbfbf"
+    self.text_colour = game.text_colour
     self.text_content = text
     self.font = pygame.font.SysFont(None, font_size)
 
   def draw_display(self):
     pygame.draw.rect(self.game.screen, self.bg_colour, self.background_rect)
-    display_text = self.font.render(self.text_content, True, self.game.text_colour)
+    display_text = self.font.render(self.text_content, True, self.text_colour)
     display_text_rect = display_text.get_rect()
     display_text_rect.center = self.background_rect.center
     self.game.screen.blit(display_text, display_text_rect)
@@ -114,7 +114,6 @@ class BinaryBox(Display):
   def __init__(self, position, size, game, missile):
     Display.__init__(self, game, 40, None, position, size)
     self.game = game
-    self.bg_colour = "#06001a"
     self.border_colour = "#666666"
     self.current_bit = False
     self.missile = missile
@@ -135,12 +134,12 @@ class BinaryBox(Display):
       self.current_bit = True
       self.missile.draw()
 
-    self.bg_colour, self.text_colour = self.game.text_colour, self.bg_colour
+    self.bg_colour, self.text_colour = self.text_colour, self.bg_colour
     self.draw_box()
 
 class Preview(Display):
-  def __init__(self, position, size, font_size, hexadecimals, game):
-    Display.__init__(self, game, font_size, hexadecimals, position, size,)
+  def __init__(self, position, size, hexadecimals, game):
+    Display.__init__(self, game, 50, hexadecimals, position, size,)
     self.draw_display()
 
   def update_display(self, binary_boxes):

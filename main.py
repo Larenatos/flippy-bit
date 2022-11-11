@@ -38,11 +38,10 @@ for i in range(8):
   ))
 
 preview_size = 70
-preview_font_size = 50
 # center the display relative to the binary bar
 display_position_x = bar_position_x + 4 * whole_box_width - box_padding / 2 - preview_size / 2
 display_position_y = bar_position_y + binary_box_size + 20
-binary_bar_preview = Preview((display_position_x, display_position_y), preview_size, preview_font_size, "0", game)
+binary_bar_preview = Preview((display_position_x, display_position_y), preview_size, "0", game)
 
 score_display = ScoreDisplay("0", (130, display_position_y), 60, game)
 
