@@ -66,19 +66,18 @@ while True:
           pygame.quit()
           exit()
         case pygame.KEYDOWN:
-          match event.key:
-            case pygame.K_SPACE:
-              game.state_of_game = True
-              draw_layout(game, binary_boxes, binary_bar_preview, score_display)
-              # resetting values to default
-              time_between_spawns = 5
-              mergers = {}
-              shot_missiles = {}
-              game.alive_enemies = []
-              score_display.text_content = "0"
-              for box in binary_boxes:
-                if box.current_bit: 
-                  box.flip_bit()
+          if event.key == pygame.K_SPACE:
+            game.state_of_game = True
+            draw_layout(game, binary_boxes, binary_bar_preview, score_display)
+            # resetting values to default
+            time_between_spawns = 5
+            mergers = {}
+            shot_missiles = {}
+            game.alive_enemies = []
+            score_display.text_content = "0"
+            for box in binary_boxes:
+              if box.current_bit: 
+                box.flip_bit()
     continue
 
   current_time = time()
