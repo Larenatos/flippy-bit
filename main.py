@@ -13,8 +13,6 @@ game = Game()
 bg_colour = "#004466"
 game.screen.fill(bg_colour)
 
-draw_layout(game)
-
 bar_position_x = 40
 bar_position_y = game.rect.height - 100
 binary_box_size = 50
@@ -44,6 +42,7 @@ display_position_y = bar_position_y + binary_box_size + 20
 binary_bar_preview = Preview((display_position_x, display_position_y), preview_size, "0", game)
 
 score_display = ScoreDisplay("0", (130, display_position_y), 60, game)
+game.score_display = score_display
 
 def on_keypress(bit_index):
   binary_boxes[bit_index].flip_bit()
@@ -58,6 +57,25 @@ shot_missiles = {}
 while True:
   clock.tick(60)
   pygame.display.flip()
+
+  if not game.state_of_game:
+    draw_layout(game, binary_boxes, binary_bar_preview, score_display)
+    for event in pygame.event.get():
+      match event.type:
+        case pygame.QUIT:
+          pygame.quit()
+          exit()
+        case pygame.KEYDOWN:
+          match event.key:
+            case pygame.K_SPACE:
+              game.state_of_game = True
+              draw_layout(game, binary_boxes, binary_bar_preview, score_display)
+              time_between_spawns = 5
+              mergers = {}
+              shot_missiles = {}
+              game.alive_enemies = []
+
+    continue
 
   current_time = time()
   if current_time - time_since_enemy_spawn >= time_between_spawns:

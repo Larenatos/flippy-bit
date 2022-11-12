@@ -1,6 +1,7 @@
 from collections import namedtuple
 from functools import reduce
 from math import ceil
+import json
 import pygame
 
 Point = namedtuple("Point", "x y")
@@ -22,9 +23,27 @@ class Game:
     self.alive_enemies = []
     self.state_of_game = False # False = waiting for user to start game, True = shooting down enemies
 
-    score_text = self.font.render("Score:", True, self.text_colour)
-    score_text_rect = score_text.get_rect()
-    score_text_rect.center = pygame.Rect(40, 770, 80, 40).center
+    with open("highscore.json", "r") as file:
+      highscore = json.load(file)
+    self.highscore = highscore["highscore"]
+
+    self.score_text = self.font.render("Score:", True, self.text_colour)
+    self.score_text_rect = self.score_text.get_rect()
+    self.score_text_rect.center = pygame.Rect(40, 770, 80, 40).center
+
+    self.start_text = self.font.render("Press space to start!", True, self.text_colour)
+    self.start_text_rect = self.start_text.get_rect()
+    self.start_text_rect.center = pygame.Rect(0, 400, 550, 50).center
+
+    self.score_display = None
+
+  def check_highscore(self):
+    score = int(self.score_display.text_content)
+    if score > self.highscore:
+      highscore = {"highscore": score}
+      with open("highscore.json", "w") as file:
+        json.dump(highscore, file)
+      self.highscore = score
 
 class Missile:
   def __init__(self, vertices, game):
@@ -124,7 +143,6 @@ class BinaryBox(Display):
     self.missile = missile
 
     self.border_rect = pygame.Rect(position, (size,)*2)
-    self.draw_box()
 
   def draw_box(self):
     self.text_content = "1" if self.current_bit else "0"
@@ -150,7 +168,6 @@ class Preview(Display):
   def update_display(self, binary_boxes):
     binary = reduce(lambda string, box: string + str(int(box.current_bit)), binary_boxes, "")
     self.text_content =  f"{int(binary, 2):X}"
-    self.draw_display()
 
 class Enemy(Display):
   def __init__(self, position, size, hexadecimals, game):
@@ -175,8 +192,9 @@ class Enemy(Display):
       self.border_rect.y += 1
       self.draw()
     else:
-      self.destroy()
-  
+      self.game.state_of_game = False
+      self.game.check_highscore()
+
   def destroy(self):
     self.erase()
     self.game.alive_enemies.remove(self)
@@ -184,7 +202,6 @@ class Enemy(Display):
 class ScoreDisplay(Display):
   def __init__(self, value, position, size, game):
     Display.__init__(self, game, 50, value, position, size)
-    self.draw_display()
   
   def update(self):
     self.text_content = str(int(self.text_content) + 1)
