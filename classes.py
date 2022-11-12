@@ -23,9 +23,12 @@ class Game:
     self.alive_enemies = []
     self.state_of_game = False # False = waiting for user to start game, True = shooting down enemies
 
-    with open("highscore.json", "r") as file:
-      highscore = json.load(file)
-    self.highscore = highscore["highscore"]
+    try:
+      with open("highscore.json", "r") as file:
+        highscore = json.load(file)
+        self.highscore = highscore["highscore"]
+    except FileNotFoundError:
+      self.highscore = 0
 
     self.score_text = self.font.render("Score:", True, self.text_colour)
     self.score_text_rect = self.score_text.get_rect()
@@ -37,7 +40,7 @@ class Game:
 
     self.score_display = None
 
-  def check_highscore(self):
+  def update_highscore(self):
     score = int(self.score_display.text_content)
     if score > self.highscore:
       highscore = {"highscore": score}
@@ -194,7 +197,7 @@ class Enemy(Display):
       self.draw()
     else:
       self.game.state_of_game = False
-      self.game.check_highscore()
+      self.game.update_highscore()
 
   def destroy(self):
     self.erase()

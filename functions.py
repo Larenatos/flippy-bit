@@ -1,5 +1,4 @@
 from random import randint
-import json
 import pygame
 from classes import Point, Enemy, Missile
 
