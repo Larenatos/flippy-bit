@@ -16,7 +16,7 @@ game.screen.fill(bg_colour)
 draw_layout(game)
 
 bar_position_x = 40
-bar_position_y = game.rect.height - 140
+bar_position_y = game.rect.height - 100
 binary_box_size = 50
 internal_box_size = 40
 box_padding = 10

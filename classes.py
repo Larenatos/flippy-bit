@@ -8,10 +8,10 @@ Triangle = namedtuple("Triangle", "left right top")
 
 class Game:
   def __init__(self):
-    self.screen = pygame.display.set_mode(size=(550, 840))
-    self.rect = pygame.Rect(20, 20, 510, 800)
+    self.screen = pygame.display.set_mode(size=(550, 880))
+    self.rect = pygame.Rect(20, 60, 510, 800)
     self.border_width = 5
-    self.play_area_height = 640
+    self.play_area_height = 680
     self.border_colour = "#06001a"
     self.bg_colour = "#00334d"
     self.text_colour = "#bfbfbf"
@@ -20,6 +20,11 @@ class Game:
     self.enemy_size = 50
 
     self.alive_enemies = []
+    self.state_of_game = False # False = waiting for user to start game, True = shooting down enemies
+
+    score_text = self.font.render("Score:", True, self.text_colour)
+    score_text_rect = score_text.get_rect()
+    score_text_rect.center = pygame.Rect(40, 770, 80, 40).center
 
 class Missile:
   def __init__(self, vertices, game):
