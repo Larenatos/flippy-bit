@@ -75,6 +75,7 @@ while True:
             mergers = {}
             shot_missiles = {}
             game.alive_enemies = []
+            game.score = 0
             score_display.text_content = "0"
             score_display.draw_display()
             for box in binary_boxes:

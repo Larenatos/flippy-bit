@@ -38,15 +38,14 @@ class Game:
     self.start_text_rect = self.start_text.get_rect()
     self.start_text_rect.center = pygame.Rect(0, 400, 550, 50).center
 
-    self.score_display = None
+    self.score = 0
 
   def update_highscore(self):
-    score = int(self.score_display.text_content)
-    if score > self.highscore:
-      highscore = {"highscore": score}
+    if self.score > self.highscore:
+      highscore = {"highscore": self.score}
       with open("highscore.json", "w") as file:
         json.dump(highscore, file)
-      self.highscore = score
+      self.highscore = self.score
 
 class Missile:
   def __init__(self, vertices, game):
@@ -208,5 +207,6 @@ class ScoreDisplay(Display):
     Display.__init__(self, game, 50, value, position, size)
   
   def update(self):
-    self.text_content = str(int(self.text_content) + 1)
+    self.game.score += 1
+    self.text_content = str(self.game.score)
     self.draw_display()
