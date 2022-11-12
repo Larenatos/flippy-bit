@@ -168,6 +168,7 @@ class Preview(Display):
   def update_display(self, binary_boxes):
     binary = reduce(lambda string, box: string + str(int(box.current_bit)), binary_boxes, "")
     self.text_content =  f"{int(binary, 2):X}"
+    self.draw_display()
 
 class Enemy(Display):
   def __init__(self, position, size, hexadecimals, game):
