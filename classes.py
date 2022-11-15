@@ -139,7 +139,6 @@ class Display:
 class BinaryBox(Display):
   def __init__(self, position, size, game, missile):
     Display.__init__(self, game, 40, None, position, size)
-    self.game = game
     self.border_colour = "#666666"
     self.current_bit = False
     self.missile = missile
