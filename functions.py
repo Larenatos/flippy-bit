@@ -2,7 +2,7 @@ from random import randint
 import pygame
 from classes import Point, Enemy, Missile
 
-def draw_layout(game, binary_boxes, preview, score_display):
+def draw_layout(game):
   # calculating the position and dimensions based on information given above
   pygame.draw.rect(game.screen, game.bg_colour, game.rect) # background
   pygame.draw.rect(game.screen, game.border_colour, game.rect, game.border_width) # full border 
@@ -19,14 +19,18 @@ def draw_layout(game, binary_boxes, preview, score_display):
   game.screen.blit(highscore_text, highscore_text_rect)
   game.screen.blit(game.score_text, game.score_text_rect)
 
-  if not game.state_of_game:
+  if not game.game_running:
     pygame.draw.rect(game.screen, "#06001a", (70, 380, 410, 90))
     game.screen.blit(game.start_text, game.start_text_rect)
   
-  for box in binary_boxes:
+  for box in game.binary_boxes:
     box.draw_box()
-  preview.draw_display()
-  score_display.draw_display()
+  game.binary_bar_preview.draw_display()
+  game.score_display.draw_display()
+
+def on_keypress(bit_index, game):
+  game.binary_boxes[bit_index].flip_bit()
+  game.binary_bar_preview.update_display()
 
 def create_enemy(game):
   integer = randint(0, 255)
