@@ -18,10 +18,6 @@ def draw_layout(game):
 
   game.screen.blit(highscore_text, highscore_text_rect)
   game.screen.blit(game.score_text, game.score_text_rect)
-
-  if not game.game_running:
-    pygame.draw.rect(game.screen, "#06001a", (70, 380, 410, 90))
-    game.screen.blit(game.start_text, game.start_text_rect)
   
   for box in game.binary_boxes:
     box.draw_box()
@@ -48,3 +44,10 @@ def active_box_missile(acc, box):
     box.flip_bit()
     acc.append(Missile(box.missile.vertices, box.game))
   return acc
+
+def toggle_start_message(game):
+  if game.running:  
+    pygame.draw.rect(game.screen, game.bg_colour, game.start_message_rect)
+  else:
+    pygame.draw.rect(game.screen, "#06001a", game.start_message_rect)
+    game.screen.blit(game.start_text, game.start_text_rect)

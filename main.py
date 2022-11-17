@@ -2,7 +2,7 @@ from functools import reduce
 from time import time
 import pygame
 from classes import Game, MissileMerger
-from functions import draw_layout, create_enemy, active_box_missile, on_keypress
+from functions import draw_layout, create_enemy, active_box_missile, on_keypress, toggle_start_message
 
 pygame.init()
 
@@ -13,12 +13,14 @@ game = Game()
 bg_colour = "#004466"
 game.screen.fill(bg_colour)
 
+draw_layout(game)
+
 while True:
   clock.tick(60)
   pygame.display.flip()
 
-  if not game.game_running:
-    draw_layout(game)
+  if not game.running:
+    toggle_start_message(game)
     for event in pygame.event.get():
       match event.type:
         case pygame.QUIT:
@@ -26,13 +28,13 @@ while True:
           exit()
         case pygame.KEYDOWN:
           if event.key == pygame.K_SPACE:
-            game.state_of_game = True
-            draw_layout(game)
+            game.running = True
+            toggle_start_message(game)
     continue
 
   current_time = time()
-  if current_time - time_since_enemy_spawn >= game.time_between_spawns:
-    time_since_enemy_spawn = current_time
+  if current_time - game.time_since_enemy_spawn >= game.time_between_spawns:
+    game.time_since_enemy_spawn = current_time
     if game.time_between_spawns > 1.5:
       game.time_between_spawns -= 0.25
     game.alive_enemies.append(create_enemy(game))
@@ -51,7 +53,7 @@ while True:
 
   for target, merger in game.mergers.copy().items():
     if not target in game.alive_enemies:
-      merger.remove()
+      merger.erase()
       del game.mergers[target]
       continue
 

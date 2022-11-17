@@ -31,18 +31,19 @@ class Game:
     except FileNotFoundError:
       self.highscore = 0
     
-    self.create_binary_preview_area()
+    self.create_binary_bar()
 
     self.score_text = self.font.render("Score:", True, self.text_colour)
     self.score_text_rect = self.score_text.get_rect()
     self.score_text_rect.center = pygame.Rect(40, 770, 80, 40).center
 
+    self.start_message_rect = pygame.Rect(70, 380, 410, 90)
     self.start_text = self.font.render("Press space to start!", True, self.text_colour)
     self.start_text_rect = self.start_text.get_rect()
     self.start_text_rect.center = pygame.Rect(0, 400, 550, 50).center
 
     self.score = 0 
-    self.score_display = ScoreDisplay("0", (130, 700), 60, self)
+    self.score_display = ScoreDisplay("0", (130, self.display_position_y), 60, self)
 
     self.time_since_enemy_spawn = time()
     self.time_between_spawns = 5
@@ -50,7 +51,7 @@ class Game:
     self.mergers = {}
     self.shot_missiles = {}
 
-  def create_binary_preview_area(self):
+  def create_binary_bar(self):
     bar_position_x = 40
     bar_position_y = self.rect.height - 100
     binary_box_size = 50
@@ -76,8 +77,8 @@ class Game:
     preview_size = 70
     # center the display relative to the binary bar
     display_position_x = bar_position_x + 4 * whole_box_width - box_padding / 2 - preview_size / 2
-    display_position_y = bar_position_y + binary_box_size + 20
-    self.binary_bar_preview = Preview((display_position_x, display_position_y), preview_size, "0", self)
+    self.display_position_y = bar_position_y + binary_box_size + 20
+    self.binary_bar_preview = Preview((display_position_x, self.display_position_y), preview_size, "0", self)
   
   def reset_game_variables(self):
     self.time_since_enemy_spawn = time()
@@ -166,7 +167,7 @@ class MissileMerger:
     missile.target = self.target
     return missile
 
-  def remove(self):
+  def erase(self):
     for missile in self.missiles:
       missile.erase()
     if self.final_missile:
