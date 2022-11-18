@@ -19,10 +19,12 @@ class Game:
     self.text_colour = "#bfbfbf"
     self.font = pygame.font.SysFont(None, 40)
 
-    self.enemy_size = 50
+    self.play_area_rect = pygame.Rect(25, 65, 500, 613)
 
+    self.enemy_size = 50
     self.alive_enemies = []
-    self.running = False # False = waiting for user to start game, True = shooting down enemies
+
+    self.is_running = False
 
     try:
       with open("highscore.json", "r") as file:
@@ -30,108 +32,42 @@ class Game:
         self.highscore = highscore["highscore"]
     except FileNotFoundError:
       self.highscore = 0
-    
-    self.create_binary_bar()
 
     self.score_text = self.font.render("Score:", True, self.text_colour)
     self.score_text_rect = self.score_text.get_rect()
     self.score_text_rect.center = pygame.Rect(40, 770, 80, 40).center
 
-    self.start_message_rect = pygame.Rect(70, 380, 410, 90)
+    self.start_message_rect = pygame.Rect(0, 0, 410, 70)
+    self.start_message_rect.center = (275, 440)
     self.start_text = self.font.render("Press space to start!", True, self.text_colour)
     self.start_text_rect = self.start_text.get_rect()
-    self.start_text_rect.center = pygame.Rect(0, 400, 550, 50).center
+    self.start_text_rect.center = (275, 440)
 
-    # variables for drawing the layout
-    self.start_position = (self.rect.x, self.play_area_height)
-    self.end_position = (self.rect.right - self.border_width, self.play_area_height)
+    self.end_message_rect = pygame.Rect(70, 250, 410, 70)
+    self.end_text = self.font.render("Game over. You suck!", True, self.text_colour)
+    self.end_text_rect = self.end_text.get_rect()
+    self.end_text_rect.top = 270
+    self.end_text_rect.centerx = 275
 
     self.highscore_text = self.font.render(f"Highscore: {self.highscore}", True, self.text_colour)
     self.highscore_text_rect = self.highscore_text.get_rect()
-    self.highscore_text_rect.center = pygame.Rect(0, 10, 550, 50).center
+    self.highscore_text_rect.topleft = (30, 20)
 
     self.score = 0 
-    self.score_display = ScoreDisplay("0", (130, self.display_position_y), 60, self)
 
     self.time_since_enemy_spawn = time()
     self.time_between_spawns = 5
 
     self.mergers = {}
     self.shot_missiles = {}
-
-  def create_binary_bar(self):
-    bar_position_x = 40
-    bar_position_y = self.rect.height - 100
-    binary_box_size = 50
-    internal_box_size = 40
-    box_padding = 10
-    whole_box_width = binary_box_size + box_padding
-
-    self.binary_boxes = []
-
-    for i in range(8):
-      # calculating the position and dimensions for each missile based on the location of binary bar
-      vertex_1 = Point(bar_position_x + self.border_width + i * whole_box_width, bar_position_y - 30)
-      vertex_2 = Point(vertex_1.x + internal_box_size, vertex_1.y)
-      vertex_3 = Point(vertex_1.x + internal_box_size / 2, vertex_1.y - internal_box_size)
-
-      self.binary_boxes.append(BinaryBox(
-        (bar_position_x + i*(whole_box_width), bar_position_y), 
-        binary_box_size,
-        self, 
-        Missile(Triangle(vertex_1, vertex_2, vertex_3), self)
-      ))
-    
-    preview_size = 70
-    # center the display relative to the binary bar
-    display_position_x = bar_position_x + 4 * whole_box_width - box_padding / 2 - preview_size / 2
-    self.display_position_y = bar_position_y + binary_box_size + 20
-    self.binary_bar_preview = Preview((display_position_x, self.display_position_y), preview_size, "0", self)
-  
-  def reset_game_variables(self):
-    self.time_since_enemy_spawn = time()
-    self.time_between_spawns = 5
-    self.mergers = {}
-    self.shot_missiles = {}
-    self.alive_enemies = []
-    self.score = 0
-    self.score_display.text_content = "0"
-    self.score_display.draw_display()
-    for box in self.binary_boxes:
-      if box.current_bit: 
-        box.flip_bit()
-
-  def update_highscore(self):
-    if self.score > self.highscore:
-      highscore = {"highscore": self.score}
-      with open("highscore.json", "w") as file:
-        json.dump(highscore, file)
-      self.highscore = self.score
   
   def draw_layout(self):
-    # calculating the position and dimensions based on information given above
     pygame.draw.rect(self.screen, self.bg_colour, self.rect) # background
     pygame.draw.rect(self.screen, self.border_colour, self.rect, self.border_width) # full border 
-    pygame.draw.line(self.screen, self.border_colour, self.start_position, self.end_position, self.border_width)
-
-    pygame.draw.rect(self.screen, "#004466", pygame.Rect(0, 10, 550, 50))
+    pygame.draw.line(self.screen, self.border_colour, (self.rect.x, self.play_area_height), (self.rect.right - self.border_width, self.play_area_height), self.border_width)
 
     self.screen.blit(self.highscore_text, self.highscore_text_rect)
     self.screen.blit(self.score_text, self.score_text_rect)
-
-    self.toggle_start_message()
-    
-    for box in self.binary_boxes:
-      box.draw_box()
-    self.binary_bar_preview.draw_display()
-    self.score_display.draw_display()
-  
-  def toggle_start_message(self):
-    if self.running:
-      pygame.draw.rect(self.screen, self.bg_colour, self.start_message_rect)
-    else:
-      pygame.draw.rect(self.screen, "#06001a", self.start_message_rect)
-      self.screen.blit(self.start_text, self.start_text_rect)
 
 class Missile:
   def __init__(self, vertices, game):
@@ -230,6 +166,7 @@ class BinaryBox(Display):
     self.missile = missile
 
     self.border_rect = pygame.Rect(position, (size,)*2)
+    self.draw_box()
 
   def draw_box(self):
     self.text_content = "1" if self.current_bit else "0"
@@ -265,24 +202,19 @@ class Enemy(Display):
     self.border_width = 5
     self.is_being_destroyed = False
     self.border_rect = pygame.Rect(position, (self.size,)*2)
-  
+
   def draw(self):
     self.background_rect.center = self.border_rect.center
     self.draw_display()
     pygame.draw.rect(self.game.screen, self.border_colour, self.border_rect, self.border_width)
-  
+
   def erase(self):
     pygame.draw.rect(self.game.screen, self.game.bg_colour, self.border_rect)
   
   def update_position(self):
-    if self.border_rect.y in range(self.game.rect.y, self.game.play_area_height - 50 - self.size):
-      self.erase()
-      self.border_rect.y += 1
-      self.draw()
-    else:
-      self.game.running = False
-      self.game.update_highscore()
-      self.game.draw_layout()
+    self.erase()
+    self.border_rect.y += 1
+    self.draw()
 
   def destroy(self):
     self.erase()
@@ -291,6 +223,7 @@ class Enemy(Display):
 class ScoreDisplay(Display):
   def __init__(self, value, position, size, game):
     Display.__init__(self, game, 50, value, position, size)
+    self.draw_display()
   
   def update(self):
     self.game.score += 1

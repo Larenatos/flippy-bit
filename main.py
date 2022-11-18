@@ -1,8 +1,18 @@
 from functools import reduce
 from time import time
 import pygame
-from classes import Game, MissileMerger
-from functions import create_enemy, active_box_missile, on_keypress
+from classes import Game, MissileMerger, Preview, ScoreDisplay
+from functions import (
+  create_enemy, 
+  active_box_missile, 
+  on_keypress, 
+  create_binary_bar, 
+  draw_start_message, 
+  draw_end_message, 
+  erase_start_and_end_message, 
+  reset_game_variables,
+  update_highscore
+)
 
 pygame.init()
 
@@ -14,12 +24,17 @@ bg_colour = "#004466"
 game.screen.fill(bg_colour)
 
 game.draw_layout()
+draw_start_message(game)
+
+create_binary_bar(game)
+game.binary_bar_preview = Preview((240, 770), 70, "0", game)
+game.score_display = ScoreDisplay("0", (130, 770), 60, game)
 
 while True:
   clock.tick(60)
   pygame.display.flip()
 
-  if not game.running:
+  if not game.is_running:
     for event in pygame.event.get():
       match event.type:
         case pygame.QUIT:
@@ -27,9 +42,9 @@ while True:
           exit()
         case pygame.KEYDOWN:
           if event.key == pygame.K_SPACE:
-            game.running = True
-            game.reset_game_variables()
-            game.draw_layout()
+            game.is_running = True
+            reset_game_variables(game)
+            erase_start_and_end_message(game)
     continue
 
   current_time = time()
@@ -39,7 +54,17 @@ while True:
       game.time_between_spawns -= 0.25
     game.alive_enemies.append(create_enemy(game))
 
+  is_enemy_through = False
   for enemy in game.alive_enemies:
+    if enemy.border_rect.y in range(game.rect.y, game.play_area_height - 50 - enemy.size):
+      enemy.update_position()
+    else:
+      game.is_running = False
+      update_highscore(game)
+      draw_end_message(game, draw_start_message)
+      is_enemy_through = True
+      break
+  
     if not enemy.is_being_destroyed:
       if game.binary_bar_preview.text_content == enemy.text_content:
 
@@ -49,7 +74,7 @@ while True:
         enemy.is_being_destroyed = True
         game.mergers[enemy] = MissileMerger(active_missiles, enemy)
 
-    enemy.update_position()
+  if is_enemy_through: continue
 
   for target, merger in game.mergers.copy().items():
     if not target in game.alive_enemies:

@@ -1,6 +1,31 @@
 from random import randint
+from time import time
 import pygame
-from classes import Point, Enemy, Missile
+import json
+from classes import Point, Triangle, Enemy, Missile, BinaryBox
+
+def create_binary_bar(game):
+  bar_position_x = 40
+  bar_position_y = game.rect.height - 100
+  binary_box_size = 50
+  internal_box_size = 40
+  box_padding = 10
+  whole_box_width = binary_box_size + box_padding
+
+  game.binary_boxes = []
+
+  for i in range(8):
+    # calculating the position and dimensions for each missile based on the location of binary bar
+    vertex_1 = Point(bar_position_x + game.border_width + i * whole_box_width, bar_position_y - 30)
+    vertex_2 = Point(vertex_1.x + internal_box_size, vertex_1.y)
+    vertex_3 = Point(vertex_1.x + internal_box_size / 2, vertex_1.y - internal_box_size)
+
+    game.binary_boxes.append(BinaryBox(
+      (bar_position_x + i*(whole_box_width), bar_position_y), 
+      binary_box_size,
+      game, 
+      Missile(Triangle(vertex_1, vertex_2, vertex_3), game)
+    ))
 
 def on_keypress(bit_index, game):
   game.binary_boxes[bit_index].flip_bit()
@@ -22,3 +47,36 @@ def active_box_missile(acc, box):
     box.flip_bit()
     acc.append(Missile(box.missile.vertices, box.game))
   return acc
+
+def draw_start_message(game):
+  pygame.draw.rect(game.screen, "#06001a", game.start_message_rect)
+  game.screen.blit(game.start_text, game.start_text_rect)
+
+def erase_start_and_end_message(game):
+  pygame.draw.rect(game.screen, game.bg_colour, game.start_message_rect)
+
+def draw_end_message(game, draw_start_message):
+  draw_start_message(game)
+  pygame.draw.rect(game.screen, "#06001a", game.end_message_rect)
+  game.screen.blit(game.end_text, game.end_text_rect)
+
+def reset_game_variables(game):
+  game.time_since_enemy_spawn = time()
+  game.time_between_spawns = 5
+  game.mergers = {}
+  game.shot_missiles = {}
+  game.alive_enemies = []
+  game.score = 0
+  game.score_display.text_content = "0"
+  game.score_display.draw_display()
+  for box in game.binary_boxes:
+    if box.current_bit: 
+      box.flip_bit()
+
+def update_highscore(game):
+  if game.score > game.highscore:
+    highscore = {"highscore": game.score}
+    with open("highscore.json", "w") as file:
+      json.dump(highscore, file)
+    game.highscore = game.score
+    pygame.draw.rect(game.screen, "#004466", (180, 20, 100, 30))
