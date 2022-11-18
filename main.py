@@ -2,7 +2,7 @@ from functools import reduce
 from time import time
 import pygame
 from classes import Game, MissileMerger
-from functions import draw_layout, create_enemy, active_box_missile, on_keypress, toggle_start_message
+from functions import create_enemy, active_box_missile, on_keypress
 
 pygame.init()
 
@@ -13,14 +13,13 @@ game = Game()
 bg_colour = "#004466"
 game.screen.fill(bg_colour)
 
-draw_layout(game)
+game.draw_layout()
 
 while True:
   clock.tick(60)
   pygame.display.flip()
 
   if not game.running:
-    toggle_start_message(game)
     for event in pygame.event.get():
       match event.type:
         case pygame.QUIT:
@@ -29,7 +28,8 @@ while True:
         case pygame.KEYDOWN:
           if event.key == pygame.K_SPACE:
             game.running = True
-            toggle_start_message(game)
+            game.reset_game_variables()
+            game.draw_layout()
     continue
 
   current_time = time()

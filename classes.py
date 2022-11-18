@@ -42,6 +42,14 @@ class Game:
     self.start_text_rect = self.start_text.get_rect()
     self.start_text_rect.center = pygame.Rect(0, 400, 550, 50).center
 
+    # variables for drawing the layout
+    self.start_position = (self.rect.x, self.play_area_height)
+    self.end_position = (self.rect.right - self.border_width, self.play_area_height)
+
+    self.highscore_text = self.font.render(f"Highscore: {self.highscore}", True, self.text_colour)
+    self.highscore_text_rect = self.highscore_text.get_rect()
+    self.highscore_text_rect.center = pygame.Rect(0, 10, 550, 50).center
+
     self.score = 0 
     self.score_display = ScoreDisplay("0", (130, self.display_position_y), 60, self)
 
@@ -99,6 +107,31 @@ class Game:
       with open("highscore.json", "w") as file:
         json.dump(highscore, file)
       self.highscore = self.score
+  
+  def draw_layout(self):
+    # calculating the position and dimensions based on information given above
+    pygame.draw.rect(self.screen, self.bg_colour, self.rect) # background
+    pygame.draw.rect(self.screen, self.border_colour, self.rect, self.border_width) # full border 
+    pygame.draw.line(self.screen, self.border_colour, self.start_position, self.end_position, self.border_width)
+
+    pygame.draw.rect(self.screen, "#004466", pygame.Rect(0, 10, 550, 50))
+
+    self.screen.blit(self.highscore_text, self.highscore_text_rect)
+    self.screen.blit(self.score_text, self.score_text_rect)
+
+    self.toggle_start_message()
+    
+    for box in self.binary_boxes:
+      box.draw_box()
+    self.binary_bar_preview.draw_display()
+    self.score_display.draw_display()
+  
+  def toggle_start_message(self):
+    if self.running:
+      pygame.draw.rect(self.screen, self.bg_colour, self.start_message_rect)
+    else:
+      pygame.draw.rect(self.screen, "#06001a", self.start_message_rect)
+      self.screen.blit(self.start_text, self.start_text_rect)
 
 class Missile:
   def __init__(self, vertices, game):
@@ -247,8 +280,9 @@ class Enemy(Display):
       self.border_rect.y += 1
       self.draw()
     else:
-      self.game.state_of_game = False
+      self.game.running = False
       self.game.update_highscore()
+      self.game.draw_layout()
 
   def destroy(self):
     self.erase()
