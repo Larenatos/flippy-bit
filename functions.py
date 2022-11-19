@@ -49,10 +49,17 @@ def active_box_missile(acc, box):
   return acc
 
 def draw_start_message(game):
+  game.shadow_surface.set_alpha(100)
+  game.shadow_surface.fill("#002233")
+  game.screen.blit(game.shadow_surface, (25, 65))
+
   pygame.draw.rect(game.screen, "#06001a", game.start_message_rect)
   game.screen.blit(game.start_text, game.start_text_rect)
 
 def erase_start_and_end_message(game):
+  game.shadow_surface.set_alpha(255)
+  game.shadow_surface.fill(game.bg_colour)
+  game.screen.blit(game.shadow_surface, (25, 65))
   pygame.draw.rect(game.screen, game.bg_colour, game.start_message_rect)
 
 def draw_end_message(game, draw_start_message):

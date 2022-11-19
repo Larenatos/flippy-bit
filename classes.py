@@ -19,7 +19,7 @@ class Game:
     self.text_colour = "#bfbfbf"
     self.font = pygame.font.SysFont(None, 40)
 
-    self.play_area_rect = pygame.Rect(25, 65, 500, 613)
+    self.shadow_surface = pygame.Surface((500, 613))
 
     self.enemy_size = 50
     self.alive_enemies = []
