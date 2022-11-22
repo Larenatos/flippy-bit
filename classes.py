@@ -27,9 +27,8 @@ class Game:
     self.is_running = False
 
     try:
-      with open("highscore.json", "r") as file:
-        highscore = json.load(file)
-        self.highscore = highscore["highscore"]
+      with open("highscore", "r") as file:
+        self.highscore = int(file.readline())
     except FileNotFoundError:
       self.highscore = 0
 
@@ -53,7 +52,7 @@ class Game:
     self.highscore_text_rect = self.highscore_text.get_rect()
     self.highscore_text_rect.topleft = (30, 20)
 
-    self.score = 0 
+    self.score = 0
 
     self.time_since_enemy_spawn = time()
     self.time_between_spawns = 5

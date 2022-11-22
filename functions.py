@@ -82,8 +82,10 @@ def reset_game_variables(game):
 
 def update_highscore(game):
   if game.score > game.highscore:
-    highscore = {"highscore": game.score}
-    with open("highscore.json", "w") as file:
-      json.dump(highscore, file)
+    with open("highscore", "w") as file:
+      file.write(str(game.score))
     game.highscore = game.score
+
     pygame.draw.rect(game.screen, "#004466", (180, 20, 100, 30))
+    game.highscore_text = game.font.render(f"Highscore: {game.highscore}", True, game.text_colour)
+    game.screen.blit(game.highscore_text, game.highscore_text_rect)
