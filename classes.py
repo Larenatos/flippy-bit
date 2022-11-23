@@ -2,7 +2,6 @@ from collections import namedtuple
 from functools import reduce
 from math import ceil
 from time import time
-import json
 import pygame
 
 Point = namedtuple("Point", "x y")
@@ -185,7 +184,7 @@ class BinaryBox(Display):
 
 class Preview(Display):
   def __init__(self, position, size, hexadecimals, game):
-    Display.__init__(self, game, 50, hexadecimals, position, size,)
+    Display.__init__(self, game, 50, hexadecimals, position, size)
     self.draw_display()
 
   def update_display(self):

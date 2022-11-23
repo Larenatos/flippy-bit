@@ -1,7 +1,6 @@
 from random import randint
 from time import time
 import pygame
-import json
 from classes import Point, Triangle, Enemy, Missile, BinaryBox
 
 def create_binary_bar(game):
