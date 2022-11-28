@@ -13,6 +13,7 @@ class Game:
     self.rect = pygame.Rect(20, 60, 510, 800)
     self.border_width = 5
     self.play_area_height = 680
+    self.death_line = self.play_area_height - 100
     self.border_colour = "#06001a"
     self.bg_colour = "#00334d"
     self.text_colour = "#bfbfbf"
@@ -56,6 +57,7 @@ class Game:
     self.time_since_enemy_spawn = time()
     self.time_between_spawns = 5
 
+    self.binary_boxes = []
     self.mergers = {}
     self.shot_missiles = {}
   

@@ -3,7 +3,7 @@ from time import time
 import pygame
 from classes import Game, MissileMerger, Preview, ScoreDisplay
 from functions import (
-  create_enemy, 
+  spawn_enemy, 
   active_box_missile, 
   on_keypress, 
   create_binary_bar, 
@@ -52,16 +52,16 @@ while True:
     game.time_since_enemy_spawn = current_time
     if game.time_between_spawns > 1.5:
       game.time_between_spawns -= 0.25
-    game.alive_enemies.append(create_enemy(game))
+    spawn_enemy(game)
 
   is_enemy_through = False
   for enemy in game.alive_enemies:
-    if enemy.border_rect.y in range(game.rect.y, game.play_area_height - 50 - enemy.size):
+    if enemy.border_rect.y in range(game.rect.y, game.death_line):
       enemy.update_position()
     else:
       game.is_running = False
       update_highscore(game)
-      draw_end_message(game, draw_start_message)
+      draw_end_message(game)
       is_enemy_through = True
       break
   

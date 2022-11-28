@@ -11,8 +11,6 @@ def create_binary_bar(game):
   box_padding = 10
   whole_box_width = binary_box_size + box_padding
 
-  game.binary_boxes = []
-
   for i in range(8):
     # calculating the position and dimensions for each missile based on the location of binary bar
     vertex_1 = Point(bar_position_x + game.border_width + i * whole_box_width, bar_position_y - 30)
@@ -30,7 +28,7 @@ def on_keypress(bit_index, game):
   game.binary_boxes[bit_index].flip_bit()
   game.binary_bar_preview.update_display()
 
-def create_enemy(game):
+def spawn_enemy(game):
   integer = randint(0, 255)
   hexadecimal =  f"{integer:X}"
 
@@ -39,7 +37,7 @@ def create_enemy(game):
   # moving the enemy to correct area
   enemy = Enemy(position, game.enemy_size, hexadecimal, game)
   enemy.draw()
-  return enemy
+  game.alive_enemies.append(enemy)
 
 def active_box_missile(acc, box):
   if box.current_bit:
@@ -61,7 +59,7 @@ def erase_start_and_end_message(game):
   game.screen.blit(game.shadow_surface, (25, 65))
   pygame.draw.rect(game.screen, game.bg_colour, game.start_message_rect)
 
-def draw_end_message(game, draw_start_message):
+def draw_end_message(game):
   draw_start_message(game)
   pygame.draw.rect(game.screen, "#06001a", game.end_message_rect)
   game.screen.blit(game.end_text, game.end_text_rect)
