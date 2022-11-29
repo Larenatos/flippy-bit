@@ -1,6 +1,7 @@
 from collections import namedtuple
 from functools import reduce
 from math import ceil
+from time import time
 import pygame
 
 Point = namedtuple("Point", "x y")
@@ -8,18 +9,65 @@ Triangle = namedtuple("Triangle", "left right top")
 
 class Game:
   def __init__(self):
-    self.screen = pygame.display.set_mode(size=(550, 840))
-    self.rect = pygame.Rect(20, 20, 510, 800)
+    self.screen = pygame.display.set_mode(size=(550, 880))
+    self.rect = pygame.Rect(20, 60, 510, 800)
     self.border_width = 5
-    self.play_area_height = 640
+    self.play_area_height = 680
+    self.death_line = self.play_area_height - 100
     self.border_colour = "#06001a"
     self.bg_colour = "#00334d"
     self.text_colour = "#bfbfbf"
     self.font = pygame.font.SysFont(None, 40)
 
-    self.enemy_size = 50
+    self.shadow_surface = pygame.Surface((500, 613))
 
+    self.enemy_size = 50
     self.alive_enemies = []
+
+    self.is_running = False
+
+    try:
+      with open("highscore", "r") as file:
+        self.highscore = int(file.readline())
+    except FileNotFoundError:
+      self.highscore = 0
+
+    self.score_text = self.font.render("Score:", True, self.text_colour)
+    self.score_text_rect = self.score_text.get_rect()
+    self.score_text_rect.center = pygame.Rect(40, 770, 80, 40).center
+
+    self.start_message_rect = pygame.Rect(0, 0, 410, 70)
+    self.start_message_rect.center = (275, 440)
+    self.start_text = self.font.render("Press space to start!", True, self.text_colour)
+    self.start_text_rect = self.start_text.get_rect()
+    self.start_text_rect.center = (275, 440)
+
+    self.end_message_rect = pygame.Rect(70, 250, 410, 70)
+    self.end_text = self.font.render("Game over. You suck!", True, self.text_colour)
+    self.end_text_rect = self.end_text.get_rect()
+    self.end_text_rect.top = 270
+    self.end_text_rect.centerx = 275
+
+    self.highscore_text = self.font.render(f"Highscore: {self.highscore}", True, self.text_colour)
+    self.highscore_text_rect = self.highscore_text.get_rect()
+    self.highscore_text_rect.topleft = (30, 20)
+
+    self.score = 0
+
+    self.time_since_enemy_spawn = time()
+    self.time_between_spawns = 5
+
+    self.binary_boxes = []
+    self.mergers = {}
+    self.shot_missiles = {}
+  
+  def draw_layout(self):
+    pygame.draw.rect(self.screen, self.bg_colour, self.rect) # background
+    pygame.draw.rect(self.screen, self.border_colour, self.rect, self.border_width) # full border 
+    pygame.draw.line(self.screen, self.border_colour, (self.rect.x, self.play_area_height), (self.rect.right - self.border_width, self.play_area_height), self.border_width)
+
+    self.screen.blit(self.highscore_text, self.highscore_text_rect)
+    self.screen.blit(self.score_text, self.score_text_rect)
 
 class Missile:
   def __init__(self, vertices, game):
@@ -88,7 +136,7 @@ class MissileMerger:
     missile.target = self.target
     return missile
 
-  def remove(self):
+  def erase(self):
     for missile in self.missiles:
       missile.erase()
     if self.final_missile:
@@ -113,7 +161,6 @@ class Display:
 class BinaryBox(Display):
   def __init__(self, position, size, game, missile):
     Display.__init__(self, game, 40, None, position, size)
-    self.game = game
     self.border_colour = "#666666"
     self.current_bit = False
     self.missile = missile
@@ -139,11 +186,11 @@ class BinaryBox(Display):
 
 class Preview(Display):
   def __init__(self, position, size, hexadecimals, game):
-    Display.__init__(self, game, 50, hexadecimals, position, size,)
+    Display.__init__(self, game, 50, hexadecimals, position, size)
     self.draw_display()
 
-  def update_display(self, binary_boxes):
-    binary = reduce(lambda string, box: string + str(int(box.current_bit)), binary_boxes, "")
+  def update_display(self):
+    binary = reduce(lambda string, box: string + str(int(box.current_bit)), self.game.binary_boxes, "")
     self.text_content =  f"{int(binary, 2):X}"
     self.draw_display()
 
@@ -155,23 +202,20 @@ class Enemy(Display):
     self.border_width = 5
     self.is_being_destroyed = False
     self.border_rect = pygame.Rect(position, (self.size,)*2)
-  
+
   def draw(self):
     self.background_rect.center = self.border_rect.center
     self.draw_display()
     pygame.draw.rect(self.game.screen, self.border_colour, self.border_rect, self.border_width)
-  
+
   def erase(self):
     pygame.draw.rect(self.game.screen, self.game.bg_colour, self.border_rect)
   
   def update_position(self):
-    if self.border_rect.y in range(self.game.rect.y, self.game.play_area_height - 50 - self.size):
-      self.erase()
-      self.border_rect.y += 1
-      self.draw()
-    else:
-      self.destroy()
-  
+    self.erase()
+    self.border_rect.y += 1
+    self.draw()
+
   def destroy(self):
     self.erase()
     self.game.alive_enemies.remove(self)
@@ -182,5 +226,6 @@ class ScoreDisplay(Display):
     self.draw_display()
   
   def update(self):
-    self.text_content = str(int(self.text_content) + 1)
+    self.game.score += 1
+    self.text_content = str(self.game.score)
     self.draw_display()
