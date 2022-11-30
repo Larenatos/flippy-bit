@@ -56,6 +56,7 @@ class Game:
     for box in self.binary_boxes:
       if box.current_bit: 
         box.flip_bit()
+    self.binary_bar_preview.update_display()
   
   def draw_layout(self):
     pygame.draw.rect(self.screen, self.bg_colour, self.rect)
