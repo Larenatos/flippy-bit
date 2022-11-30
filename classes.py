@@ -55,7 +55,7 @@ class Game:
     self.score_display.text_content = "0"
     self.score_display.draw_display()
     for box in self.binary_boxes:
-      if box.current_bit: 
+      if box.is_active: 
         box.flip_bit()
     self.binary_bar_preview.update_display()
   
@@ -173,23 +173,23 @@ class BinaryBox(Display):
   def __init__(self, game, position, size, missile):
     Display.__init__(self, game, position, size, 40, None)
     self.border_colour = "#666666"
-    self.current_bit = False
+    self.is_active = False
     self.missile = missile
 
     self.border_rect = pygame.Rect(position, (size,)*2)
     self.draw_box()
 
   def draw_box(self):
-    self.text_content = "1" if self.current_bit else "0"
+    self.text_content = "1" if self.is_active else "0"
     self.draw_display()
     pygame.draw.rect(self.game.screen, self.border_colour, self.border_rect, self.game.border_width)
   
   def flip_bit(self):
-    if self.current_bit:
-      self.current_bit = False
+    if self.is_active:
+      self.is_active = False
       self.missile.erase()
     else:
-      self.current_bit = True
+      self.is_active = True
       self.missile.draw()
 
     self.bg_colour, self.text_colour = self.text_colour, self.bg_colour
@@ -202,7 +202,7 @@ class Preview(Display):
 
   def update_display(self):
     binary = reduce(
-      lambda string, box: string + str(int(box.current_bit)), 
+      lambda string, box: string + str(int(box.is_active)), 
       self.game.binary_boxes, 
       ""
     )

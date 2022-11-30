@@ -43,7 +43,7 @@ def spawn_enemy(game):
   game.alive_enemies.append(enemy)
 
 def active_box_missile(acc, box):
-  if box.current_bit:
+  if box.is_active:
     box.flip_bit()
     acc.append(Missile(box.game, box.missile.vertices))
   return acc

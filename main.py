@@ -55,7 +55,7 @@ while True:
   shot_missile_updater(game)
 
   for box in game.binary_boxes:
-    if box.current_bit:
+    if box.is_active:
       box.missile.draw()
 
   for event in pygame.event.get():
