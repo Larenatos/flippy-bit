@@ -61,6 +61,19 @@ class Game:
     self.mergers = {}
     self.shot_missiles = {}
   
+  def setup_game_variables(self):
+    self.time_since_enemy_spawn = time()
+    self.time_between_spawns = 5
+    self.mergers = {}
+    self.shot_missiles = {}
+    self.alive_enemies = []
+    self.score = 0
+    self.score_display.text_content = "0"
+    self.score_display.draw_display()
+    for box in self.binary_boxes:
+      if box.current_bit: 
+        box.flip_bit()
+  
   def draw_layout(self):
     pygame.draw.rect(self.screen, self.bg_colour, self.rect)
     pygame.draw.rect(self.screen, self.border_colour, self.rect, self.border_width)

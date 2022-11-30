@@ -1,5 +1,5 @@
 import pygame
-from classes import Game, MissileMerger, Preview, ScoreDisplay
+from classes import Game, Preview, ScoreDisplay
 from functions import (
   create_binary_bar, 
   draw_start_message, 
@@ -9,7 +9,6 @@ from functions import (
   merger_updater,
   shot_missile_updater,
   event_key_check,
-  reset_game_variables
 )
 
 
@@ -27,7 +26,9 @@ draw_start_message(game)
 
 create_binary_bar(game)
 game.binary_bar_preview = Preview((240, 770), 70, "0", game)
-game.score_display = ScoreDisplay("0", (130, 770), 60, game)
+game.score_display = ScoreDisplay("0", (130, 770), 60, game) 
+
+game.setup_game_variables()
 
 while True:
   clock.tick(60)
@@ -42,7 +43,7 @@ while True:
         case pygame.KEYDOWN:
           if event.key == pygame.K_SPACE:
             game.is_running = True
-            reset_game_variables(game)
+            game.setup_game_variables(game)
             erase_start_and_end_message(game)
     continue
 

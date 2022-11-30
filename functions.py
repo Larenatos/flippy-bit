@@ -64,19 +64,6 @@ def draw_end_message(game):
   pygame.draw.rect(game.screen, "#06001a", game.end_message_rect)
   game.screen.blit(game.end_text, game.end_text_rect)
 
-def reset_game_variables(game):
-  game.time_since_enemy_spawn = time()
-  game.time_between_spawns = 5
-  game.mergers = {}
-  game.shot_missiles = {}
-  game.alive_enemies = []
-  game.score = 0
-  game.score_display.text_content = "0"
-  game.score_display.draw_display()
-  for box in game.binary_boxes:
-    if box.current_bit: 
-      box.flip_bit()
-
 def update_highscore(game):
   if game.score > game.highscore:
     with open("highscore", "w") as file:
