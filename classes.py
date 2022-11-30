@@ -21,7 +21,6 @@ class Game:
 
     self.shadow_surface = pygame.Surface((500, 613))
 
-    self.enemy_size = 50
     self.alive_enemies = []
 
     self.is_running = False
@@ -31,10 +30,6 @@ class Game:
         self.highscore = int(file.readline())
     except FileNotFoundError:
       self.highscore = 0
-
-    self.score_text = self.font.render("Score:", True, self.text_colour)
-    self.score_text_rect = self.score_text.get_rect()
-    self.score_text_rect.center = pygame.Rect(40, 770, 80, 40).center
 
     self.start_message_rect = pygame.Rect(0, 0, 410, 70)
     self.start_message_rect.center = (275, 440)
@@ -48,18 +43,6 @@ class Game:
     self.end_text_rect.top = 270
     self.end_text_rect.centerx = 275
 
-    self.highscore_text = self.font.render(f"Highscore: {self.highscore}", True, self.text_colour)
-    self.highscore_text_rect = self.highscore_text.get_rect()
-    self.highscore_text_rect.topleft = (30, 20)
-
-    self.score = 0
-
-    self.time_since_enemy_spawn = time()
-    self.time_between_spawns = 5
-
-    self.binary_boxes = []
-    self.mergers = {}
-    self.shot_missiles = {}
   
   def setup_game_variables(self):
     self.time_since_enemy_spawn = time()
@@ -79,8 +62,15 @@ class Game:
     pygame.draw.rect(self.screen, self.border_colour, self.rect, self.border_width)
     pygame.draw.line(self.screen, self.border_colour, (self.rect.x, self.play_area_height), (self.rect.right - self.border_width, self.play_area_height), self.border_width)
 
-    self.screen.blit(self.highscore_text, self.highscore_text_rect)
-    self.screen.blit(self.score_text, self.score_text_rect)
+    highscore_text = self.font.render(f"Highscore: {self.highscore}", True, self.text_colour)
+    highscore_text_rect = highscore_text.get_rect()
+    highscore_text_rect.topleft = (30, 20)
+    self.screen.blit(highscore_text, highscore_text_rect)
+
+    score_text = self.font.render("Score:", True, self.text_colour)
+    score_text_rect = score_text.get_rect()
+    score_text_rect.center = pygame.Rect(40, 770, 80, 40).center
+    self.screen.blit(score_text, score_text_rect)
 
 class Missile:
   def __init__(self, vertices, game):

@@ -3,6 +3,7 @@ from time import time
 from functools import reduce
 import pygame
 from classes import Point, Triangle, Enemy, Missile, BinaryBox, MissileMerger
+
 def create_binary_bar(game):
   bar_position_x = 40
   bar_position_y = game.rect.height - 100
@@ -10,6 +11,8 @@ def create_binary_bar(game):
   internal_box_size = 40
   box_padding = 10
   whole_box_width = binary_box_size + box_padding
+
+  game.binary_boxes = []
 
   for i in range(8):
     # calculating the position and dimensions for each missile based on the location of binary bar
@@ -33,9 +36,9 @@ def spawn_enemy(game):
   hexadecimal =  f"{integer:X}"
 
   # moving the enemy to correct area
-  position = Point(randint(game.rect.x + 10, game.rect.width - game.enemy_size + 10), game.rect.y + 10)
+  position = Point(randint(game.rect.x + 10, game.rect.width - 50 + 10), game.rect.y + 10)
 
-  enemy = Enemy(position, game.enemy_size, hexadecimal, game)
+  enemy = Enemy(position, 50, hexadecimal, game)
   enemy.draw()
   game.alive_enemies.append(enemy)
 

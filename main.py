@@ -43,7 +43,7 @@ while True:
         case pygame.KEYDOWN:
           if event.key == pygame.K_SPACE:
             game.is_running = True
-            game.setup_game_variables(game)
+            game.setup_game_variables()
             erase_start_and_end_message(game)
     continue
 
