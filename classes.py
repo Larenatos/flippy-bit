@@ -16,6 +16,7 @@ class Game:
     self.death_line = self.play_area_height - 100
     self.border_colour = "#06001a"
     self.bg_colour = "#00334d"
+    self.screen_bg_colour = "#004466"
     self.text_colour = "#bfbfbf"
     self.font = pygame.font.SysFont(None, 40)
 

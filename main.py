@@ -11,15 +11,13 @@ from functions import (
   event_key_check,
 )
 
-
 pygame.init()
 
 clock = pygame.time.Clock()
 
 game = Game()
 
-bg_colour = "#004466"
-game.screen.fill(bg_colour)
+game.screen.fill(game.screen_bg_colour)
 
 game.draw_layout()
 draw_start_message(game)

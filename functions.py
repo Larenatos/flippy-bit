@@ -73,7 +73,7 @@ def update_highscore(game):
       file.write(str(game.score))
     game.highscore = game.score
 
-    pygame.draw.rect(game.screen, "#004466", (180, 20, 100, 30))
+    pygame.draw.rect(game.screen, game.screen_bg_colour, (180, 20, 100, 30))
     game.highscore_text = game.font.render(f"Highscore: {game.highscore}", True, game.text_colour)
     game.screen.blit(game.highscore_text, game.highscore_text_rect)
 
