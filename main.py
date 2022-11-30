@@ -25,8 +25,8 @@ game.draw_layout()
 draw_start_message(game)
 
 create_binary_bar(game)
-game.binary_bar_preview = Preview((240, 770), 70, "0", game)
-game.score_display = ScoreDisplay("0", (130, 770), 60, game) 
+game.binary_bar_preview = Preview(game, (240, 770), 70, "0")
+game.score_display = ScoreDisplay(game, (130, 770), 60, "0",) 
 
 game.setup_game_variables()
 

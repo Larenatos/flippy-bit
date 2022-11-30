@@ -73,7 +73,7 @@ class Game:
     self.screen.blit(score_text, score_text_rect)
 
 class Missile:
-  def __init__(self, vertices, game):
+  def __init__(self, game, vertices):
     self.bg_colour = "#06001a"
     self.vertices = vertices
     self.game = game
@@ -146,7 +146,7 @@ class MissileMerger:
       self.final_missile.erase()
 
 class Display:
-  def __init__(self, game, font_size, text, position, size):
+  def __init__(self, game, position, size, font_size, text):
     self.game = game
     self.background_rect = pygame.Rect(position, (size,)*2)
     self.bg_colour = "#06001a"
@@ -162,8 +162,8 @@ class Display:
     self.game.screen.blit(display_text, display_text_rect)
 
 class BinaryBox(Display):
-  def __init__(self, position, size, game, missile):
-    Display.__init__(self, game, 40, None, position, size)
+  def __init__(self, game, position, size, missile):
+    Display.__init__(self, game, position, size, 40, None)
     self.border_colour = "#666666"
     self.current_bit = False
     self.missile = missile
@@ -188,8 +188,8 @@ class BinaryBox(Display):
     self.draw_box()
 
 class Preview(Display):
-  def __init__(self, position, size, hexadecimals, game):
-    Display.__init__(self, game, 50, hexadecimals, position, size)
+  def __init__(self, game, position, size, hexadecimals):
+    Display.__init__(self, game, position, size, 50, hexadecimals)
     self.draw_display()
 
   def update_display(self):
@@ -198,8 +198,8 @@ class Preview(Display):
     self.draw_display()
 
 class Enemy(Display):
-  def __init__(self, position, size, hexadecimals, game):
-    Display.__init__(self, game, 40, hexadecimals, (0, 0), size)
+  def __init__(self, game, position, size, hexadecimals):
+    Display.__init__(self, game, (0, 0), size, 40, hexadecimals)
     self.size = size
     self.border_colour = "#850020"
     self.border_width = 5
@@ -224,8 +224,8 @@ class Enemy(Display):
     self.game.alive_enemies.remove(self)
 
 class ScoreDisplay(Display):
-  def __init__(self, value, position, size, game):
-    Display.__init__(self, game, 50, value, position, size)
+  def __init__(self, game, position, size, value):
+    Display.__init__(self, game, position, size, 50, value)
     self.draw_display()
   
   def update(self):

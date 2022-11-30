@@ -21,10 +21,10 @@ def create_binary_bar(game):
     vertex_3 = Point(vertex_1.x + internal_box_size / 2, vertex_1.y - internal_box_size)
 
     game.binary_boxes.append(BinaryBox(
+      game,
       (bar_position_x + i*(whole_box_width), bar_position_y), 
       binary_box_size,
-      game, 
-      Missile(Triangle(vertex_1, vertex_2, vertex_3), game)
+      Missile(game, Triangle(vertex_1, vertex_2, vertex_3))
     ))
 
 def on_keypress(bit_index, game):
@@ -38,14 +38,14 @@ def spawn_enemy(game):
   # moving the enemy to correct area
   position = Point(randint(game.rect.x + 10, game.rect.width - 50 + 10), game.rect.y + 10)
 
-  enemy = Enemy(position, 50, hexadecimal, game)
+  enemy = Enemy(game, position, 50, hexadecimal)
   enemy.draw()
   game.alive_enemies.append(enemy)
 
 def active_box_missile(acc, box):
   if box.current_bit:
     box.flip_bit()
-    acc.append(Missile(box.missile.vertices, box.game))
+    acc.append(Missile(box.game, box.missile.vertices))
   return acc
 
 def draw_start_message(game):
