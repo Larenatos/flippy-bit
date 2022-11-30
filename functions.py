@@ -74,8 +74,10 @@ def update_highscore(game):
     game.highscore = game.score
 
     pygame.draw.rect(game.screen, game.screen_bg_colour, (180, 20, 100, 30))
-    game.highscore_text = game.font.render(f"Highscore: {game.highscore}", True, game.text_colour)
-    game.screen.blit(game.highscore_text, game.highscore_text_rect)
+    highscore_text = game.font.render(str(game.highscore), True, game.text_colour)
+    highscore_text_rect = highscore_text.get_rect()
+    highscore_text_rect.topleft = (180, 20)
+    game.screen.blit(highscore_text, highscore_text_rect)
 
 def enemy_creation_check(game):
   current_time = time()

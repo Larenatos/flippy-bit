@@ -80,6 +80,7 @@ class Game:
     score_text_rect.center = pygame.Rect(40, 770, 80, 40).center
     self.screen.blit(score_text, score_text_rect)
 
+
 class Missile:
   def __init__(self, game, vertices):
     self.bg_colour = "#06001a"
