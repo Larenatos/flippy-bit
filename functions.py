@@ -32,9 +32,9 @@ def spawn_enemy(game):
   integer = randint(0, 255)
   hexadecimal =  f"{integer:X}"
 
+  # moving the enemy to correct area
   position = Point(randint(game.rect.x + 10, game.rect.width - game.enemy_size + 10), game.rect.y + 10)
 
-  # moving the enemy to correct area
   enemy = Enemy(position, game.enemy_size, hexadecimal, game)
   enemy.draw()
   game.alive_enemies.append(enemy)

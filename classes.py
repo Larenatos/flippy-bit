@@ -62,8 +62,8 @@ class Game:
     self.shot_missiles = {}
   
   def draw_layout(self):
-    pygame.draw.rect(self.screen, self.bg_colour, self.rect) # background
-    pygame.draw.rect(self.screen, self.border_colour, self.rect, self.border_width) # full border 
+    pygame.draw.rect(self.screen, self.bg_colour, self.rect)
+    pygame.draw.rect(self.screen, self.border_colour, self.rect, self.border_width)
     pygame.draw.line(self.screen, self.border_colour, (self.rect.x, self.play_area_height), (self.rect.right - self.border_width, self.play_area_height), self.border_width)
 
     self.screen.blit(self.highscore_text, self.highscore_text_rect)
