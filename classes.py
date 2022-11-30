@@ -62,7 +62,13 @@ class Game:
   def draw_layout(self):
     pygame.draw.rect(self.screen, self.bg_colour, self.rect)
     pygame.draw.rect(self.screen, self.border_colour, self.rect, self.border_width)
-    pygame.draw.line(self.screen, self.border_colour, (self.rect.x, self.play_area_height), (self.rect.right - self.border_width, self.play_area_height), self.border_width)
+    pygame.draw.line(
+      self.screen, 
+      self.border_colour, 
+      (self.rect.x, self.play_area_height), 
+      (self.rect.right - self.border_width, self.play_area_height), 
+      self.border_width
+    )
 
     highscore_text = self.font.render(f"Highscore: {self.highscore}", True, self.text_colour)
     highscore_text_rect = highscore_text.get_rect()
@@ -195,7 +201,11 @@ class Preview(Display):
     self.draw_display()
 
   def update_display(self):
-    binary = reduce(lambda string, box: string + str(int(box.current_bit)), self.game.binary_boxes, "")
+    binary = reduce(
+      lambda string, box: string + str(int(box.current_bit)), 
+      self.game.binary_boxes, 
+      ""
+    )
     self.text_content =  f"{int(binary, 2):X}"
     self.draw_display()
 
