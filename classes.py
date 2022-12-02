@@ -44,8 +44,7 @@ class Game:
     self.end_text_rect.top = 270
     self.end_text_rect.centerx = 275
 
-  
-  def setup_game_variables(self):
+  def setup(self):
     self.time_since_enemy_spawn = time()
     self.time_between_spawns = 5
     self.mergers = {}

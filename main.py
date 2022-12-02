@@ -3,30 +3,26 @@ from classes import Game, Preview, ScoreDisplay
 from functions import (
   create_binary_bar, 
   draw_start_message, 
-  erase_start_and_end_message, 
-  enemy_creation_check,
+  erase_messages, 
+  should_enemy_spawn,
+  spawn_enemy,
   update_enemies,
-  merger_updater,
-  shot_missile_updater,
-  event_key_check,
+  update_missile_mergers,
+  update_shot_missiles,
+  on_keydown,
 )
 
 pygame.init()
-
 clock = pygame.time.Clock()
-
 game = Game()
 
 game.screen.fill(game.screen_bg_colour)
-
 game.draw_layout()
 draw_start_message(game)
 
 create_binary_bar(game)
 game.binary_bar_preview = Preview(game, (240, 770), 70, "0")
 game.score_display = ScoreDisplay(game, (130, 770), 60, "0",) 
-
-game.setup_game_variables()
 
 while True:
   clock.tick(60)
@@ -41,18 +37,14 @@ while True:
         case pygame.KEYDOWN:
           if event.key == pygame.K_SPACE:
             game.is_running = True
-            game.setup_game_variables()
-            erase_start_and_end_message(game)
+            game.setup()
+            erase_messages(game)
     continue
 
-  enemy_creation_check(game)
-
-  is_enemy_through = update_enemies(game)
-  if is_enemy_through: continue
-
-  merger_updater(game)
-
-  shot_missile_updater(game)
+  if should_enemy_spawn(game): spawn_enemy(game)
+  update_enemies(game)
+  update_missile_mergers(game)
+  update_shot_missiles(game)
 
   for box in game.binary_boxes:
     if box.is_active:
@@ -64,4 +56,4 @@ while True:
         pygame.quit()
         exit()
       case pygame.KEYDOWN:
-        event_key_check(game, event.key)
+        on_keydown(game, event.key)

@@ -27,10 +27,6 @@ def create_binary_bar(game):
       Missile(game, Triangle(vertex_1, vertex_2, vertex_3))
     ))
 
-def on_keypress(bit_index, game):
-  game.binary_boxes[bit_index].flip_bit()
-  game.binary_bar_preview.update_display()
-
 def spawn_enemy(game):
   integer = randint(0, 255)
   hexadecimal =  f"{integer:X}"
@@ -56,7 +52,7 @@ def draw_start_message(game):
   pygame.draw.rect(game.screen, "#06001a", game.start_message_rect)
   game.screen.blit(game.start_text, game.start_text_rect)
 
-def erase_start_and_end_message(game):
+def erase_messages(game):
   game.shadow_surface.set_alpha(255)
   game.shadow_surface.fill(game.bg_colour)
   game.screen.blit(game.shadow_surface, (25, 65))
@@ -79,13 +75,14 @@ def update_highscore(game):
     highscore_text_rect.topleft = (180, 20)
     game.screen.blit(highscore_text, highscore_text_rect)
 
-def enemy_creation_check(game):
+def should_enemy_spawn(game):
   current_time = time()
   if current_time - game.time_since_enemy_spawn >= game.time_between_spawns:
     game.time_since_enemy_spawn = current_time
     if game.time_between_spawns > 1.5:
       game.time_between_spawns -= 0.25
-    spawn_enemy(game)
+      return True
+  return False
 
 def update_enemies(game):
   for enemy in game.alive_enemies:
@@ -107,7 +104,7 @@ def update_enemies(game):
         game.mergers[enemy] = MissileMerger(active_missiles, enemy)
   return False
 
-def merger_updater(game):
+def update_missile_mergers(game):
   for target, merger in game.mergers.copy().items():
     if not target in game.alive_enemies:
       merger.erase()
@@ -120,7 +117,7 @@ def merger_updater(game):
     else:
       merger.step_animation()
 
-def shot_missile_updater(game):
+def update_shot_missiles(game):
   for target, missile in game.shot_missiles.copy().items():
     if missile.has_collided():
       game.score_display.update()
@@ -128,21 +125,25 @@ def shot_missile_updater(game):
     else:
       missile.step_shoot_animation()
 
-def event_key_check(game, key):
+def update_bit(bit_index, game):
+  game.binary_boxes[bit_index].flip_bit()
+  game.binary_bar_preview.update_display()
+
+def on_keydown(game, key):
   match key:
     case pygame.K_z | pygame.K_a | pygame.K_q | pygame.K_1:
-      on_keypress(0, game)
+      update_bit(0, game)
     case pygame.K_x | pygame.K_s | pygame.K_w | pygame.K_2:
-      on_keypress(1, game)
+      update_bit(1, game)
     case pygame.K_c | pygame.K_d | pygame.K_e | pygame.K_3:
-      on_keypress(2, game)
+      update_bit(2, game)
     case pygame.K_v | pygame.K_f | pygame.K_r | pygame.K_4:
-      on_keypress(3, game)
+      update_bit(3, game)
     case pygame.K_b | pygame.K_g | pygame.K_t | pygame.K_5:
-      on_keypress(4, game)
+      update_bit(4, game)
     case pygame.K_n | pygame.K_h | pygame.K_y | pygame.K_6:
-      on_keypress(5, game)
+      update_bit(5, game)
     case pygame.K_m | pygame.K_j | pygame.K_u | pygame.K_7:
-      on_keypress(6, game)
+      update_bit(6, game)
     case pygame.K_COMMA | pygame.K_k | pygame.K_i | pygame.K_8:
-      on_keypress(7, game)
+      update_bit(7, game)
