@@ -14,15 +14,16 @@ class Game:
     self.border_width = 5
     self.play_area_height = 680
     self.death_line = self.play_area_height - 100
-    self.border_colour = "#06001a"
+    self.secondary_colour = "#06001a"
     self.bg_colour = "#00334d"
+    self.screen_bg_colour = "#004466"
     self.text_colour = "#bfbfbf"
     self.font = pygame.font.SysFont(None, 40)
 
-    self.shadow_surface = pygame.Surface((500, 613))
+    self.shadow_surface = pygame.Surface((500, 790))
 
-    self.enemy_size = 50
     self.alive_enemies = []
+    self.binary_boxes = []
 
     self.is_running = False
 
@@ -31,10 +32,6 @@ class Game:
         self.highscore = int(file.readline())
     except FileNotFoundError:
       self.highscore = 0
-
-    self.score_text = self.font.render("Score:", True, self.text_colour)
-    self.score_text_rect = self.score_text.get_rect()
-    self.score_text_rect.center = pygame.Rect(40, 770, 80, 40).center
 
     self.start_message_rect = pygame.Rect(0, 0, 410, 70)
     self.start_message_rect.center = (275, 440)
@@ -48,36 +45,53 @@ class Game:
     self.end_text_rect.top = 270
     self.end_text_rect.centerx = 275
 
-    self.highscore_text = self.font.render(f"Highscore: {self.highscore}", True, self.text_colour)
-    self.highscore_text_rect = self.highscore_text.get_rect()
-    self.highscore_text_rect.topleft = (30, 20)
-
-    self.score = 0
-
+  def setup(self):
     self.time_since_enemy_spawn = time()
     self.time_between_spawns = 5
-
-    self.binary_boxes = []
     self.mergers = {}
     self.shot_missiles = {}
-  
-  def draw_layout(self):
-    pygame.draw.rect(self.screen, self.bg_colour, self.rect) # background
-    pygame.draw.rect(self.screen, self.border_colour, self.rect, self.border_width) # full border 
-    pygame.draw.line(self.screen, self.border_colour, (self.rect.x, self.play_area_height), (self.rect.right - self.border_width, self.play_area_height), self.border_width)
+    self.alive_enemies = []
+    self.score = 0
+    self.score_display.text_content = "0"
 
-    self.screen.blit(self.highscore_text, self.highscore_text_rect)
-    self.screen.blit(self.score_text, self.score_text_rect)
+    self.draw_layout()
+    for box in self.binary_boxes:
+      box.draw()
+      if box.is_active: 
+        box.flip_bit()
+    self.score_display.draw_display()
+    self.binary_bar_preview.update_display()
+
+  def draw_layout(self):
+    pygame.draw.rect(self.screen, self.bg_colour, self.rect)
+    pygame.draw.rect(self.screen, self.secondary_colour, self.rect, self.border_width)
+    pygame.draw.line(
+      self.screen, 
+      self.secondary_colour, 
+      (self.rect.x, self.play_area_height), 
+      (self.rect.right - self.border_width, self.play_area_height), 
+      self.border_width
+    )
+
+    highscore_text = self.font.render(f"Highscore: {self.highscore}", True, self.text_colour)
+    highscore_text_rect = highscore_text.get_rect()
+    highscore_text_rect.topleft = (30, 20)
+    self.screen.blit(highscore_text, highscore_text_rect)
+
+    score_text = self.font.render("Score:", True, self.text_colour)
+    score_text_rect = score_text.get_rect()
+    score_text_rect.center = pygame.Rect(40, 770, 80, 40).center
+    self.screen.blit(score_text, score_text_rect)
+
 
 class Missile:
-  def __init__(self, vertices, game):
-    self.bg_colour = "#06001a"
+  def __init__(self, game, vertices):
     self.vertices = vertices
     self.game = game
     self.target = None
 
   def draw(self):
-    pygame.draw.polygon(self.game.screen, self.bg_colour, self.vertices)
+    pygame.draw.polygon(self.game.screen, self.game.secondary_colour, self.vertices)
 
   def erase(self):
     pygame.draw.polygon(self.game.screen, self.game.bg_colour, self.vertices)
@@ -143,11 +157,11 @@ class MissileMerger:
       self.final_missile.erase()
 
 class Display:
-  def __init__(self, game, font_size, text, position, size):
+  def __init__(self, game, position, size, font_size, text):
     self.game = game
     self.background_rect = pygame.Rect(position, (size,)*2)
-    self.bg_colour = "#06001a"
     self.text_colour = game.text_colour
+    self.bg_colour = game.secondary_colour
     self.text_content = text
     self.font = pygame.font.SysFont(None, font_size)
 
@@ -159,44 +173,48 @@ class Display:
     self.game.screen.blit(display_text, display_text_rect)
 
 class BinaryBox(Display):
-  def __init__(self, position, size, game, missile):
-    Display.__init__(self, game, 40, None, position, size)
+  def __init__(self, game, position, size, missile):
+    Display.__init__(self, game, position, size, 40, None)
     self.border_colour = "#666666"
-    self.current_bit = False
+    self.is_active = False
     self.missile = missile
 
     self.border_rect = pygame.Rect(position, (size,)*2)
-    self.draw_box()
+    self.draw()
 
-  def draw_box(self):
-    self.text_content = "1" if self.current_bit else "0"
+  def draw(self):
+    self.text_content = "1" if self.is_active else "0"
     self.draw_display()
     pygame.draw.rect(self.game.screen, self.border_colour, self.border_rect, self.game.border_width)
   
   def flip_bit(self):
-    if self.current_bit:
-      self.current_bit = False
+    if self.is_active:
+      self.is_active = False
       self.missile.erase()
     else:
-      self.current_bit = True
+      self.is_active = True
       self.missile.draw()
 
     self.bg_colour, self.text_colour = self.text_colour, self.bg_colour
-    self.draw_box()
+    self.draw()
 
 class Preview(Display):
-  def __init__(self, position, size, hexadecimals, game):
-    Display.__init__(self, game, 50, hexadecimals, position, size)
+  def __init__(self, game, position, size, hexadecimals):
+    Display.__init__(self, game, position, size, 50, hexadecimals)
     self.draw_display()
 
   def update_display(self):
-    binary = reduce(lambda string, box: string + str(int(box.current_bit)), self.game.binary_boxes, "")
+    binary = reduce(
+      lambda string, box: string + str(int(box.is_active)), 
+      self.game.binary_boxes, 
+      ""
+    )
     self.text_content =  f"{int(binary, 2):X}"
     self.draw_display()
 
 class Enemy(Display):
-  def __init__(self, position, size, hexadecimals, game):
-    Display.__init__(self, game, 40, hexadecimals, (0, 0), size)
+  def __init__(self, game, position, size, hexadecimals):
+    Display.__init__(self, game, (0, 0), size, 40, hexadecimals)
     self.size = size
     self.border_colour = "#850020"
     self.border_width = 5
@@ -221,8 +239,8 @@ class Enemy(Display):
     self.game.alive_enemies.remove(self)
 
 class ScoreDisplay(Display):
-  def __init__(self, value, position, size, game):
-    Display.__init__(self, game, 50, value, position, size)
+  def __init__(self, game, position, size, value):
+    Display.__init__(self, game, position, size, 50, value)
     self.draw_display()
   
   def update(self):
