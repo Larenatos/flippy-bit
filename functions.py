@@ -1,8 +1,16 @@
 import pygame
+import os
+import sys
 from random import randint
 from time import time
 from functools import reduce
 from classes import Point, Triangle, Enemy, Missile, BinaryBox, MissileMerger
+
+def resource_path(path_name):
+  if getattr( sys, 'frozen', False ):
+    return(os.path.join(sys._MEIPASS, path_name))
+  else:
+    return path_name
 
 def create_binary_bar(game):
   bar_position_x = 40

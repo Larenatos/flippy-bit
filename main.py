@@ -1,4 +1,5 @@
 import pygame
+from sys import exit
 from classes import Game, Preview, ScoreDisplay
 from functions import (
   create_binary_bar, 
@@ -10,6 +11,7 @@ from functions import (
   update_missile_mergers,
   update_shot_missiles,
   on_keydown,
+  resource_path
 )
 
 pygame.init()
@@ -18,7 +20,7 @@ game = Game()
 
 game.screen.fill(game.screen_bg_colour)
 pygame.display.set_caption("Flippy Bit")
-icon = pygame.image.load("icon.png")
+icon = pygame.image.load(resource_path("icon.png"))
 pygame.display.set_icon(icon)
 game.draw_layout()
 
