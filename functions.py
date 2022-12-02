@@ -1,7 +1,7 @@
+import pygame
 from random import randint
 from time import time
 from functools import reduce
-import pygame
 from classes import Point, Triangle, Enemy, Missile, BinaryBox, MissileMerger
 
 def create_binary_bar(game):
@@ -12,10 +12,8 @@ def create_binary_bar(game):
   box_padding = 10
   whole_box_width = binary_box_size + box_padding
 
-  game.binary_boxes = []
-
   for i in range(8):
-    # calculating the position and dimensions for each missile based on the location of binary bar
+    # calculating the position and dimensions for each missile based on the location of the binary bar
     vertex_1 = Point(bar_position_x + game.border_width + i * whole_box_width, bar_position_y - 30)
     vertex_2 = Point(vertex_1.x + internal_box_size, vertex_1.y)
     vertex_3 = Point(vertex_1.x + internal_box_size / 2, vertex_1.y - internal_box_size)
@@ -31,7 +29,6 @@ def spawn_enemy(game):
   integer = randint(0, 255)
   hexadecimal =  f"{integer:X}"
 
-  # moving the enemy to correct area
   position = Point(randint(game.rect.x + 10, game.rect.width - 50 + 10), game.rect.y + 10)
 
   enemy = Enemy(game, position, 50, hexadecimal)
@@ -46,22 +43,22 @@ def active_box_missile(acc, box):
 
 def draw_start_message(game):
   game.shadow_surface.set_alpha(100)
-  game.shadow_surface.fill("#002233")
+  game.shadow_surface.fill("#000000")
   game.screen.blit(game.shadow_surface, (25, 65))
 
-  pygame.draw.rect(game.screen, "#06001a", game.start_message_rect)
+  pygame.draw.rect(game.screen, game.secondary_colour, game.start_message_rect)
   game.screen.blit(game.start_text, game.start_text_rect)
+
+def draw_end_message(game):
+  draw_start_message(game)
+  pygame.draw.rect(game.screen, game.secondary_colour, game.end_message_rect)
+  game.screen.blit(game.end_text, game.end_text_rect)
 
 def erase_messages(game):
   game.shadow_surface.set_alpha(255)
   game.shadow_surface.fill(game.bg_colour)
   game.screen.blit(game.shadow_surface, (25, 65))
   pygame.draw.rect(game.screen, game.bg_colour, game.start_message_rect)
-
-def draw_end_message(game):
-  draw_start_message(game)
-  pygame.draw.rect(game.screen, "#06001a", game.end_message_rect)
-  game.screen.blit(game.end_text, game.end_text_rect)
 
 def update_highscore(game):
   if game.score > game.highscore:
@@ -92,7 +89,7 @@ def update_enemies(game):
       game.is_running = False
       update_highscore(game)
       draw_end_message(game)
-      return True
+      return
   
     if not enemy.is_being_destroyed:
       if game.binary_bar_preview.text_content == enemy.text_content:
@@ -102,7 +99,6 @@ def update_enemies(game):
 
         enemy.is_being_destroyed = True
         game.mergers[enemy] = MissileMerger(active_missiles, enemy)
-  return False
 
 def update_missile_mergers(game):
   for target, merger in game.mergers.copy().items():

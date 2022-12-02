@@ -18,11 +18,11 @@ game = Game()
 
 game.screen.fill(game.screen_bg_colour)
 game.draw_layout()
-draw_start_message(game)
 
 create_binary_bar(game)
 game.binary_bar_preview = Preview(game, (240, 770), 70, "0")
-game.score_display = ScoreDisplay(game, (130, 770), 60, "0",) 
+game.score_display = ScoreDisplay(game, (130, 770), 60, "0")
+draw_start_message(game)
 
 while True:
   clock.tick(60)
@@ -37,14 +37,14 @@ while True:
         case pygame.KEYDOWN:
           if event.key == pygame.K_SPACE:
             game.is_running = True
-            game.setup()
             erase_messages(game)
+            game.setup()
     continue
 
   if should_enemy_spawn(game): spawn_enemy(game)
-  update_enemies(game)
   update_missile_mergers(game)
   update_shot_missiles(game)
+  update_enemies(game)
 
   for box in game.binary_boxes:
     if box.is_active:

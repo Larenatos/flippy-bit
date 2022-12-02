@@ -14,15 +14,16 @@ class Game:
     self.border_width = 5
     self.play_area_height = 680
     self.death_line = self.play_area_height - 100
-    self.border_colour = "#06001a"
+    self.secondary_colour = "#06001a"
     self.bg_colour = "#00334d"
     self.screen_bg_colour = "#004466"
     self.text_colour = "#bfbfbf"
     self.font = pygame.font.SysFont(None, 40)
 
-    self.shadow_surface = pygame.Surface((500, 613))
+    self.shadow_surface = pygame.Surface((500, 790))
 
     self.alive_enemies = []
+    self.binary_boxes = []
 
     self.is_running = False
 
@@ -53,17 +54,21 @@ class Game:
     self.score = 0
     self.score_display.text_content = "0"
     self.score_display.draw_display()
+
+    self.draw_layout()
     for box in self.binary_boxes:
+      box.draw()
       if box.is_active: 
         box.flip_bit()
+    self.score_display.draw_display()
     self.binary_bar_preview.update_display()
-  
+
   def draw_layout(self):
     pygame.draw.rect(self.screen, self.bg_colour, self.rect)
-    pygame.draw.rect(self.screen, self.border_colour, self.rect, self.border_width)
+    pygame.draw.rect(self.screen, self.secondary_colour, self.rect, self.border_width)
     pygame.draw.line(
       self.screen, 
-      self.border_colour, 
+      self.secondary_colour, 
       (self.rect.x, self.play_area_height), 
       (self.rect.right - self.border_width, self.play_area_height), 
       self.border_width
@@ -82,13 +87,12 @@ class Game:
 
 class Missile:
   def __init__(self, game, vertices):
-    self.bg_colour = "#06001a"
     self.vertices = vertices
     self.game = game
     self.target = None
 
   def draw(self):
-    pygame.draw.polygon(self.game.screen, self.bg_colour, self.vertices)
+    pygame.draw.polygon(self.game.screen, self.game.secondary_colour, self.vertices)
 
   def erase(self):
     pygame.draw.polygon(self.game.screen, self.game.bg_colour, self.vertices)
@@ -157,8 +161,8 @@ class Display:
   def __init__(self, game, position, size, font_size, text):
     self.game = game
     self.background_rect = pygame.Rect(position, (size,)*2)
-    self.bg_colour = "#06001a"
     self.text_colour = game.text_colour
+    self.bg_colour = game.secondary_colour
     self.text_content = text
     self.font = pygame.font.SysFont(None, font_size)
 
@@ -177,9 +181,9 @@ class BinaryBox(Display):
     self.missile = missile
 
     self.border_rect = pygame.Rect(position, (size,)*2)
-    self.draw_box()
+    self.draw()
 
-  def draw_box(self):
+  def draw(self):
     self.text_content = "1" if self.is_active else "0"
     self.draw_display()
     pygame.draw.rect(self.game.screen, self.border_colour, self.border_rect, self.game.border_width)
@@ -193,7 +197,7 @@ class BinaryBox(Display):
       self.missile.draw()
 
     self.bg_colour, self.text_colour = self.text_colour, self.bg_colour
-    self.draw_box()
+    self.draw()
 
 class Preview(Display):
   def __init__(self, game, position, size, hexadecimals):
