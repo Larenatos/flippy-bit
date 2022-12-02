@@ -17,6 +17,9 @@ clock = pygame.time.Clock()
 game = Game()
 
 game.screen.fill(game.screen_bg_colour)
+pygame.display.set_caption("Flippy Bit")
+icon = pygame.image.load("icon.png")
+pygame.display.set_icon(icon)
 game.draw_layout()
 
 create_binary_bar(game)
