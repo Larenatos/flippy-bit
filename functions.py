@@ -83,7 +83,7 @@ def should_enemy_spawn(game):
 
 def update_enemies(game):
   for enemy in game.alive_enemies:
-    if enemy.border_rect.y in range(game.rect.y, game.death_line):
+    if enemy.border_rect.y < game.death_line:
       enemy.update_position()
     else:
       game.is_running = False

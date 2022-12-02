@@ -53,7 +53,6 @@ class Game:
     self.alive_enemies = []
     self.score = 0
     self.score_display.text_content = "0"
-    self.score_display.draw_display()
 
     self.draw_layout()
     for box in self.binary_boxes:
