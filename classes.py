@@ -73,6 +73,7 @@ class Game:
       self.border_width
     )
 
+    pygame.draw.rect(self.screen, self.screen_bg_colour, (30, 20, 200, 30))
     highscore_text = self.font.render(f"Highscore: {self.highscore}", True, self.text_colour)
     highscore_text_rect = highscore_text.get_rect()
     highscore_text_rect.topleft = (30, 20)

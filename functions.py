@@ -7,7 +7,7 @@ from functools import reduce
 from classes import Point, Triangle, Enemy, Missile, BinaryBox, MissileMerger
 
 def resource_path(path_name):
-  if getattr( sys, 'frozen', False ):
+  if getattr(sys, 'frozen', False):
     return(os.path.join(sys._MEIPASS, path_name))
   else:
     return path_name
@@ -73,12 +73,6 @@ def update_highscore(game):
     with open("highscore", "w") as file:
       file.write(str(game.score))
     game.highscore = game.score
-
-    pygame.draw.rect(game.screen, game.screen_bg_colour, (180, 20, 100, 30))
-    highscore_text = game.font.render(str(game.highscore), True, game.text_colour)
-    highscore_text_rect = highscore_text.get_rect()
-    highscore_text_rect.topleft = (180, 20)
-    game.screen.blit(highscore_text, highscore_text_rect)
 
 def should_enemy_spawn(game):
   current_time = time()
