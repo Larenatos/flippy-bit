@@ -80,7 +80,7 @@ def should_enemy_spawn(game):
     game.time_since_enemy_spawn = current_time
     if game.time_between_spawns > 1.5:
       game.time_between_spawns -= 0.25
-      return True
+    return True
   return False
 
 def update_enemies(game):

@@ -108,9 +108,9 @@ class Missile:
   
   def has_collided(self):
     if pygame.Rect.collidepoint(self.target.border_rect, self.vertices.top):
-        self.erase()
-        self.target.destroy()
-        return True
+      self.erase()
+      self.target.destroy()
+      return True
     return False
 
 class MissileMerger:
