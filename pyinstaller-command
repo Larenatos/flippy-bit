@@ -1,0 +1,1 @@
+pyinstaller --onefile --windowed --icon="favicon.ico" --name="Flippy-bit" --add-data="icon.png;." main.py
