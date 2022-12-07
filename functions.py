@@ -70,7 +70,7 @@ def erase_messages(game):
 
 def update_highscore(game):
   if game.score > game.highscore:
-    with open("highscore", "w") as file:
+    with open(f"{os.getcwd()}\highscore", "w") as file:
       file.write(str(game.score))
     game.highscore = game.score
 
