@@ -34,7 +34,7 @@ def create_binary_bar(game):
     ))
 
 def spawn_enemy(game):
-  integer = randint(0, 255)
+  integer = randint(1, 255)
   hexadecimal =  f"{integer:X}"
 
   position = Point(randint(game.rect.x + 10, game.rect.width - 50 + 10), game.rect.y + 10)
