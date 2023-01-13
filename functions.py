@@ -84,6 +84,9 @@ def should_enemy_spawn(game):
   return False
 
 def update_enemies(game):
+  if not len(game.alive_enemies):
+    spawn_enemy(game)
+
   for enemy in game.alive_enemies:
     if enemy.border_rect.y < game.death_line:
       enemy.update_position()
@@ -119,7 +122,6 @@ def update_shot_missiles(game):
   for target, missile in game.shot_missiles.copy().items():
     if missile.has_collided():
       game.score_display.update()
-      spawn_enemy(game)
       del game.shot_missiles[target]
     else:
       missile.step_shoot_animation()

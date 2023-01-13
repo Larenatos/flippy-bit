@@ -5,7 +5,6 @@ from functions import (
   create_binary_bar, 
   draw_start_message, 
   erase_messages, 
-  should_enemy_spawn,
   spawn_enemy,
   update_enemies,
   update_missile_mergers,
@@ -19,7 +18,7 @@ clock = pygame.time.Clock()
 game = Game()
 
 game.screen.fill(game.screen_bg_colour)
-pygame.display.set_caption("Flippy Bit")
+pygame.display.set_caption("Flippy Bit practice")
 icon = pygame.image.load(resource_path("icon.png"))
 pygame.display.set_icon(icon)
 game.draw_layout()
@@ -43,13 +42,12 @@ while True:
           if event.key == pygame.K_SPACE:
             game.is_running = True
             erase_messages(game)
-            spawn_enemy(game)
             game.setup()
     continue
 
+  update_enemies(game)
   update_missile_mergers(game)
   update_shot_missiles(game)
-  update_enemies(game)
 
   for box in game.binary_boxes:
     if box.is_active:
