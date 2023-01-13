@@ -119,6 +119,7 @@ def update_shot_missiles(game):
   for target, missile in game.shot_missiles.copy().items():
     if missile.has_collided():
       game.score_display.update()
+      spawn_enemy(game)
       del game.shot_missiles[target]
     else:
       missile.step_shoot_animation()

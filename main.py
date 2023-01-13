@@ -43,10 +43,10 @@ while True:
           if event.key == pygame.K_SPACE:
             game.is_running = True
             erase_messages(game)
+            spawn_enemy(game)
             game.setup()
     continue
 
-  if should_enemy_spawn(game): spawn_enemy(game)
   update_missile_mergers(game)
   update_shot_missiles(game)
   update_enemies(game)

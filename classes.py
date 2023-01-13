@@ -232,7 +232,6 @@ class Enemy(Display):
   
   def update_position(self):
     self.erase()
-    self.border_rect.y += 1
     self.draw()
 
   def destroy(self):
